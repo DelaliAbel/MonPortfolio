@@ -129,7 +129,7 @@ else
         </div>
 
         <div class="field">
-            <span class="field__label">Image de couverture <span class="field__hint">facultative — sinon les logos de la stack</span></span>
+            <span class="field__label">Image de couverture <span class="field__hint">facultative — capture d'écran paysage (16:10) conseillée ; sinon les logos de la stack</span></span>
             <ImageUploadField @ref="imageField" @bind-Value="Input.ImageUrl" Folder="ImageFolder.Projects" />
             <ValidationMessage For="() => Input.ImageUrl" />
         </div>

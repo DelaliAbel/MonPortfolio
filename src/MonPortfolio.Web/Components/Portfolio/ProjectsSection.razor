@@ -25,24 +25,35 @@
                 @foreach (var (project, index) in Projects.Select((p, i) => (p, i)))
                 {
                     <article class="project-card glow-card reveal @(project.IsFeatured ? "is-featured" : null)" data-category="@project.Category">
+                        @* Aperçu incliné façon capture d'application ; sans image, une fenêtre aux logos de la stack. *@
                         <div class="project-card__cover" data-variant="@(index % 4)">
-                            @if (project.ImageUrl is not null)
-                            {
-                                <img src="@project.ImageUrl" alt="" loading="lazy" />
-                            }
-                            else if (CoverStack(project) is { Count: > 0 } stack)
-                            {
-                                <div class="project-card__stack" aria-hidden="true">
-                                    @foreach (var technology in stack)
-                                    {
-                                        <span class="stack-tile"><TechLogo Name="@technology" Size="34" ShowFallback="false" /></span>
-                                    }
-                                </div>
-                            }
-                            else
-                            {
-                                <span class="project-card__monogram mono" aria-hidden="true">@Monogram(project.Title)</span>
-                            }
+                            <div class="project-shot">
+                                @if (project.ImageUrl is not null)
+                                {
+                                    <img src="@project.ImageUrl" alt="Aperçu de @project.Title" loading="lazy" decoding="async" />
+                                }
+                                else
+                                {
+                                    <span class="project-shot__bar" aria-hidden="true">
+                                        <span class="code-window__dots"><i></i><i></i><i></i></span>
+                                    </span>
+                                    <span class="project-shot__screen" aria-hidden="true">
+                                        @if (CoverStack(project) is { Count: > 0 } stack)
+                                        {
+                                            <span class="project-card__stack">
+                                                @foreach (var technology in stack)
+                                                {
+                                                    <span class="stack-tile"><TechLogo Name="@technology" Size="30" ShowFallback="false" /></span>
+                                                }
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="project-card__monogram mono">@Monogram(project.Title)</span>
+                                        }
+                                    </span>
+                                }
+                            </div>
                             @if (project.IsFeatured)
                             {
                                 <span class="ribbon"><Icon Name="star" Size="13" /> À la une</span>
@@ -50,7 +61,7 @@
                         </div>
 
                         <div class="project-card__body">
-                            <p class="eyebrow-sm mono">@project.Category</p>
+                            <p class="project-card__category">@project.Category</p>
                             <h3>@project.Title</h3>
                             <p class="project-card__summary">@project.Summary</p>
 
@@ -70,16 +81,16 @@
                             </ul>
                         </div>
 
-                        @if (project.RepositoryUrl is not null || project.LiveUrl is not null)
+                        @if ((project.LiveUrl ?? project.RepositoryUrl) is { } projectUrl)
                         {
                             <footer class="project-card__links">
-                                @if (project.RepositoryUrl is not null)
+                                <a class="project-card__cta" href="@projectUrl" target="_blank" rel="noopener noreferrer">
+                                    Voir le projet <Icon Name="arrow-right" Size="18" />
+                                </a>
+                                @if (project.LiveUrl is not null && project.RepositoryUrl is not null)
                                 {
-                                    <a href="@project.RepositoryUrl" target="_blank" rel="noopener noreferrer"><Icon Name="github" Size="16" /> Code source</a>
-                                }
-                                @if (project.LiveUrl is not null)
-                                {
-                                    <a href="@project.LiveUrl" target="_blank" rel="noopener noreferrer"><Icon Name="external" Size="16" /> Démo</a>
+                                    <a class="project-card__repo" href="@project.RepositoryUrl" target="_blank" rel="noopener noreferrer"
+                                       aria-label="Code source de @project.Title" title="Code source"><Icon Name="github" Size="18" /></a>
                                 }
                             </footer>
                         }
