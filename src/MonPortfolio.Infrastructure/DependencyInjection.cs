@@ -39,11 +39,14 @@ public static class DependencyInjection
     {
         // SQL Server partout : LocalDB en développement, base MonsterASP (ou autre) en production.
         // En production, la chaîne vient d'une variable d'environnement : ConnectionStrings__Portfolio.
-        var connectionString = configuration.GetConnectionString("Portfolio");
-        if (string.IsNullOrWhiteSpace(connectionString))
+        var rawConnectionString = configuration.GetConnectionString("Portfolio");
+        if (string.IsNullOrWhiteSpace(rawConnectionString))
             throw new InvalidOperationException(
-                "La chaîne de connexion « ConnectionStrings:Portfolio » est absente. " +
-                $"Environnement « {environment.EnvironmentName} » : définissez la variable ConnectionStrings__Portfolio.");
+                $"La chaîne de connexion « {ConnectionStringGuard.SettingName} » est absente. " +
+                $"Environnement « {environment.EnvironmentName} » : définissez la variable {ConnectionStringGuard.EnvironmentVariableName}.");
+
+        var connectionString = ConnectionStringGuard.Normalize(rawConnectionString);
+        ConnectionStringGuard.Validate(connectionString);
 
         // Enregistre la fabrique (dépôts) ET le DbContext scoped (stores Identity, clés Data Protection).
         services.AddDbContextFactory<PortfolioDbContext>(options =>

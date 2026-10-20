@@ -34,6 +34,13 @@ public sealed record StartupDiagnosis(string Title, string Advice, string Techni
 
     private static StartupDiagnosis? Match(Exception exception) => exception switch
     {
+        InvalidOperationException when exception.Message.Contains("ConnectionStrings:Portfolio", StringComparison.Ordinal)
+                                       && exception.Message.Contains("mal formée", StringComparison.Ordinal) => new(
+            "Chaîne de connexion mal formée",
+            "Éditez la variable « ConnectionStrings__Portfolio » : sa valeur doit commencer directement par « Server= », " +
+            "sans guillemets, sans le nom de la variable et sans accolades JSON. Puis cliquez sur « Restart application ».",
+            Describe(exception)),
+
         InvalidOperationException when exception.Message.Contains("ConnectionStrings:Portfolio", StringComparison.Ordinal) => new(
             "Chaîne de connexion absente",
             "Créez la variable d'environnement « ConnectionStrings__Portfolio » (deux tirets bas) avec la chaîne LOCALE " +
@@ -81,14 +88,26 @@ public sealed record StartupDiagnosis(string Title, string Advice, string Techni
             "Republiez le site : « profile.json » doit se trouver à la racine du site.",
             Describe(exception)),
 
-        ArgumentException when exception.Message.Contains("initialization string", StringComparison.OrdinalIgnoreCase)
-                               || exception.Message.Contains("Keyword not supported", StringComparison.OrdinalIgnoreCase) => new(
+        ArgumentException when IsConnectionStringFormatError(exception) => new(
             "Chaîne de connexion mal formée",
-            "Recopiez la chaîne depuis le panneau, sans guillemets autour, en séparant les paramètres par « ; ».",
+            "Éditez la variable « ConnectionStrings__Portfolio » : sa valeur doit commencer directement par « Server= », " +
+            "sans guillemets, sans le nom de la variable et sans accolades JSON, paramètres séparés par « ; ».",
             Describe(exception)),
 
         _ => null
     };
+
+    /// <summary>
+    /// Les messages .NET sont traduits selon la langue du serveur : on reconnaît l'anglais et le français,
+    /// et, quelle que soit la langue, l'analyseur de chaînes de connexion présent dans la pile d'appels.
+    /// </summary>
+    private static bool IsConnectionStringFormatError(Exception exception) =>
+        exception.Message.Contains("initialization string", StringComparison.OrdinalIgnoreCase)
+        || exception.Message.Contains("chaîne d'initialisation", StringComparison.OrdinalIgnoreCase)
+        || exception.Message.Contains("Keyword not supported", StringComparison.OrdinalIgnoreCase)
+        || exception.Message.Contains("Mot clé non pris en charge", StringComparison.OrdinalIgnoreCase)
+        || exception.StackTrace?.Contains("DbConnectionOptions", StringComparison.Ordinal) == true
+        || exception.StackTrace?.Contains("DbConnectionStringBuilder", StringComparison.Ordinal) == true;
 
     private static bool IsCertificateError(SqlException exception) =>
         exception.Message.Contains("certificat", StringComparison.OrdinalIgnoreCase)

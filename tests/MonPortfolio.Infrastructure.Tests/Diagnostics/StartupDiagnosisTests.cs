@@ -30,9 +30,28 @@ public class StartupDiagnosisTests
 
     [Theory]
     [InlineData("Format of the initialization string does not conform to specification starting at index 0.")]
+    [InlineData("Le format de la chaîne d'initialisation n'est pas conforme à la spécification qui débute à l'index 0.")]
     [InlineData("Keyword not supported: 'serveur'.")]
-    public void Malformed_connection_string_is_explained(string message) =>
+    [InlineData("Mot clé non pris en charge : 'serveur'.")]
+    public void Malformed_connection_string_is_explained_in_english_and_french(string message) =>
         Assert.Equal("Chaîne de connexion mal formée", StartupDiagnosis.From(new ArgumentException(message)).Title);
+
+    [Fact]
+    public void Malformed_connection_string_is_recognised_from_the_stack_trace_whatever_the_language()
+    {
+        // Message volontairement inconnu : seule la pile d'appels (non traduite) permet de reconnaître l'erreur.
+        var exception = Record.Exception(() => new Microsoft.Data.SqlClient.SqlConnectionStringBuilder("\"Server=x\""));
+        Assert.NotNull(exception);
+
+        var diagnosis = StartupDiagnosis.From(exception);
+
+        Assert.Equal("Chaîne de connexion mal formée", diagnosis.Title);
+    }
+
+    [Fact]
+    public void Guard_message_for_malformed_value_is_recognised() =>
+        Assert.Equal("Chaîne de connexion mal formée", StartupDiagnosis.From(new InvalidOperationException(
+            "La chaîne « ConnectionStrings:Portfolio » est mal formée (premier caractère « \" »).")).Title);
 
     [Fact]
     public void Missing_profile_file_is_explained() =>
