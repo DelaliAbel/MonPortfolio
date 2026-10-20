@@ -1,0 +1,10 @@
+@* Sélecteur FR | EN. Chargement complet (pas de navigation améliorée) : l'attribut lang de <html> doit suivre.
+   Le serveur mémorise le choix dans un cookie puis redirige vers l'adresse propre ; site.js conserve la section affichée. *@
+<nav class="lang-switch" aria-label="@L["Langue du site"]">
+    <a href="@SiteLanguage.SwitchTo(Languages.French)" hreflang="fr" lang="fr" data-lang-switch data-enhance-nav="false"
+       class="@(SiteLanguage.IsEnglish ? null : "is-active")" aria-current="@(SiteLanguage.IsEnglish ? null : "page")"
+       title="Version française">FR</a>
+    <a href="@SiteLanguage.SwitchTo(Languages.English)" hreflang="en" lang="en" data-lang-switch data-enhance-nav="false"
+       class="@(SiteLanguage.IsEnglish ? "is-active" : null)" aria-current="@(SiteLanguage.IsEnglish ? "page" : null)"
+       title="English version">EN</a>
+</nav>

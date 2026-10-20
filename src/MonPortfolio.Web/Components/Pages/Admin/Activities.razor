@@ -41,7 +41,7 @@ else
                 </div>
                 <div class="activity-admin-card__body">
                     <p class="mono muted">@DisplayFormat.DayMonthYear(activity.Date) · @activity.KindLabel</p>
-                    <strong>@activity.Title</strong>
+                    <strong>@activity.Title <TranslationBadge IsTranslated="activity.IsTranslated" /></strong>
                     @if (activity.Organizer is not null)
                     {
                         <small class="muted">@activity.Organizer</small>
@@ -71,11 +71,18 @@ else
         <DataAnnotationsValidator />
         <FormErrors Errors="SaveErrors" />
 
-        <div class="field">
-            <label for="a-title">Titre</label>
-            <InputText id="a-title" @bind-Value="Input.Title" placeholder="Introduction à .NET Aspire" />
-            <ValidationMessage For="() => Input.Title" />
-        </div>
+        <p class="form-note form-note--start"><Icon Name="globe" Size="14" /> Traduction anglaise facultative : sans elle, la version anglaise du site affiche le français.</p>
+
+        <BilingualField Id="a-title" Label="Titre">
+            <French>
+                <InputText id="a-title" @bind-Value="Input.Title" placeholder="Introduction à .NET Aspire" />
+                <ValidationMessage For="() => Input.Title" />
+            </French>
+            <English>
+                <InputText id="a-title-en" @bind-Value="Input.TitleEn" placeholder="Introduction to .NET Aspire" />
+                <ValidationMessage For="() => Input.TitleEn" />
+            </English>
+        </BilingualField>
 
         <div class="form-row form-row--3">
             <div class="field">
@@ -110,11 +117,16 @@ else
             <ValidationMessage For="() => Input.Organizer" />
         </div>
 
-        <div class="field">
-            <label for="a-description">Description <span class="field__hint">facultative, 2 à 3 phrases</span></label>
-            <InputTextArea id="a-description" @bind-Value="Input.Description" rows="3" />
-            <ValidationMessage For="() => Input.Description" />
-        </div>
+        <BilingualField Id="a-description" Label="Description" Hint="facultative, 2 à 3 phrases">
+            <French>
+                <InputTextArea id="a-description" @bind-Value="Input.Description" rows="3" />
+                <ValidationMessage For="() => Input.Description" />
+            </French>
+            <English>
+                <InputTextArea id="a-description-en" @bind-Value="Input.DescriptionEn" rows="3" />
+                <ValidationMessage For="() => Input.DescriptionEn" />
+            </English>
+        </BilingualField>
 
         <div class="field">
             <label for="a-publication">Lien de la publication <span class="field__hint">post LinkedIn, événement Facebook, replay YouTube…</span></label>

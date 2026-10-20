@@ -15,10 +15,10 @@ public sealed class Project : AuditableEntity
 
     private Project() { } // EF Core
 
-    public string Title { get; private set; } = string.Empty;
-    public string Summary { get; private set; } = string.Empty;
-    public string? Description { get; private set; }
-    public string Category { get; private set; } = string.Empty;
+    public LocalizedText Title { get; private set; } = new(string.Empty);
+    public LocalizedText Summary { get; private set; } = new(string.Empty);
+    public LocalizedText? Description { get; private set; }
+    public LocalizedText Category { get; private set; } = new(string.Empty);
     public IReadOnlyList<string> Technologies { get; private set; } = [];
 
     /// <summary>Capture d'écran (web ou desktop), présentée dans une fenêtre inclinée.</summary>
@@ -33,10 +33,10 @@ public sealed class Project : AuditableEntity
     public int DisplayOrder { get; private set; }
 
     public static Project Create(
-        string title,
-        string summary,
-        string? description,
-        string category,
+        LocalizedText title,
+        LocalizedText summary,
+        LocalizedText? description,
+        LocalizedText category,
         IEnumerable<string>? technologies,
         string? imageUrl,
         string? mobileImageUrl,
@@ -53,10 +53,10 @@ public sealed class Project : AuditableEntity
     }
 
     public void Update(
-        string title,
-        string summary,
-        string? description,
-        string category,
+        LocalizedText title,
+        LocalizedText summary,
+        LocalizedText? description,
+        LocalizedText category,
         IEnumerable<string>? technologies,
         string? imageUrl,
         string? mobileImageUrl,
@@ -71,10 +71,10 @@ public sealed class Project : AuditableEntity
     }
 
     private void Apply(
-        string title,
-        string summary,
-        string? description,
-        string category,
+        LocalizedText title,
+        LocalizedText summary,
+        LocalizedText? description,
+        LocalizedText category,
         IEnumerable<string>? technologies,
         string? imageUrl,
         string? mobileImageUrl,
@@ -83,10 +83,10 @@ public sealed class Project : AuditableEntity
         bool isFeatured,
         int displayOrder)
     {
-        Title = Guard.Required(title, "Titre", TitleMaxLength);
-        Summary = Guard.Required(summary, "Résumé", SummaryMaxLength);
-        Description = Guard.Optional(description, "Description", DescriptionMaxLength);
-        Category = Guard.Required(category, "Catégorie", CategoryMaxLength);
+        Title = Guard.RequiredText(title, "Titre", TitleMaxLength);
+        Summary = Guard.RequiredText(summary, "Résumé", SummaryMaxLength);
+        Description = Guard.OptionalText(description, "Description", DescriptionMaxLength);
+        Category = Guard.RequiredText(category, "Catégorie", CategoryMaxLength);
         Technologies = Guard.Tags(technologies, "Technologies", MaxTechnologies, TechnologyMaxLength);
         ImageUrl = Guard.SafeUrl(imageUrl, "Capture écran", UrlMaxLength);
         MobileImageUrl = Guard.SafeUrl(mobileImageUrl, "Capture mobile", UrlMaxLength);

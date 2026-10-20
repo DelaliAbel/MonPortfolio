@@ -12,10 +12,10 @@ internal sealed class SkillService(ISkillRepository repository, TimeProvider clo
     protected override SkillDto ToDto(Skill skill) => skill.ToDto();
 
     protected override Skill CreateEntity(SkillInput input, DateTime utcNow) =>
-        Skill.Create(input.Name, input.Category, input.Level, input.DisplayOrder, utcNow);
+        Skill.Create(Bilingual.Text(input.Name, input.NameEn), input.Category, input.Level, input.DisplayOrder, utcNow);
 
     protected override void UpdateEntity(Skill skill, SkillInput input, DateTime utcNow) =>
-        skill.Update(input.Name, input.Category, input.Level, input.DisplayOrder, utcNow);
+        skill.Update(Bilingual.Text(input.Name, input.NameEn), input.Category, input.Level, input.DisplayOrder, utcNow);
 }
 
 internal static class SkillMappings

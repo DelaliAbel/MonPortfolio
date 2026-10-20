@@ -39,7 +39,13 @@ else
                         <li>
                             <div class="skill-admin-list__main">
                                 <div class="skill__row">
-                                    <span class="skill__name"><TechLogo Name="@skill.Name" Size="18" Class="tech-logo--tile" /> <strong>@skill.Name</strong></span>
+                                    <span class="skill__name">
+                                        <TechLogo Name="@skill.Name.Fr" Size="18" Class="tech-logo--tile" /> <strong>@skill.Name</strong>
+                                        @if (skill.Name.En is { } english)
+                                        {
+                                            <small class="muted" title="Nom affiché sur la version anglaise">EN : @english</small>
+                                        }
+                                    </span>
                                     <span class="mono muted">@skill.Level%</span>
                                 </div>
                                 <div class="skill-bar"><span style="--level: @(skill.Level)%"></span></div>
@@ -61,18 +67,23 @@ else
         <DataAnnotationsValidator />
         <FormErrors Errors="SaveErrors" />
 
-        <div class="field">
-            <label for="s-name">Nom</label>
-            <LiveInputText id="s-name" @bind-Value="Input.Name" placeholder="Blazor" />
-            <ValidationMessage For="() => Input.Name" />
-            @if (!string.IsNullOrWhiteSpace(Input.Name))
-            {
-                <p class="logo-preview">
-                    <TechLogo Name="@Input.Name" Size="20" Class="tech-logo--tile" />
-                    @(TechLogos.Resolve(Input.Name).Count > 0 ? "Logo reconnu automatiquement." : "Aucun logo de marque : une icône générique sera affichée.")
-                </p>
-            }
-        </div>
+        <BilingualField Id="s-name" Label="Nom" Hint="l'anglais n'est utile que si le nom se traduit">
+            <French>
+                <LiveInputText id="s-name" @bind-Value="Input.Name" placeholder="Blazor" />
+                <ValidationMessage For="() => Input.Name" />
+                @if (!string.IsNullOrWhiteSpace(Input.Name))
+                {
+                    <p class="logo-preview">
+                        <TechLogo Name="@Input.Name" Size="20" Class="tech-logo--tile" />
+                        @(TechLogos.Resolve(Input.Name).Count > 0 ? "Logo reconnu automatiquement." : "Aucun logo de marque : une icône générique sera affichée.")
+                    </p>
+                }
+            </French>
+            <English>
+                <InputText id="s-name-en" @bind-Value="Input.NameEn" placeholder="Application security" />
+                <ValidationMessage For="() => Input.NameEn" />
+            </English>
+        </BilingualField>
 
         <div class="field">
             <label for="s-category">Catégorie</label>

@@ -1,3 +1,4 @@
+using MonPortfolio.Domain.Common;
 using MonPortfolio.Domain.Enums;
 
 namespace MonPortfolio.Application.SocialLinks;
@@ -24,8 +25,8 @@ public static class SocialPlatforms
         SocialPlatform.Instagram => "Instagram",
         SocialPlatform.StackOverflow => "Stack Overflow",
         SocialPlatform.Medium => "Medium",
-        SocialPlatform.Website => "Site web / Blog",
-        SocialPlatform.Other => "Autre",
+        SocialPlatform.Website => Languages.Current == Languages.English ? "Website / Blog" : "Site web / Blog",
+        SocialPlatform.Other => Languages.Current == Languages.English ? "Other" : "Autre",
         _ => platform.ToString()
     };
 

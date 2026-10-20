@@ -45,7 +45,7 @@ public sealed class PortfolioContentCopierTests : IDisposable
         source.Projects.Add(Project.Create("Portfolio", "Vitrine Blazor", null, ".NET", ["Blazor"], null, null, null, null, true, 1, Now));
         source.Skills.Add(Skill.Create("C#", SkillCategory.Languages, 95, 0, Now));
         source.Experiences.Add(Experience.Create("Développeur", "Contoso", null, ExperienceType.Professional,
-            new DateOnly(2024, 1, 1), null, null, ["Livraison"], ["C#"], "https://contoso.example.com", Now));
+            new DateOnly(2024, 1, 1), null, null, new(["Livraison"]), ["C#"], "https://contoso.example.com", Now));
         source.CommunityActivities.Add(CommunityActivity.Create("Meetup Blazor", CommunityActivityKind.Meetup,
             new DateOnly(2026, 3, 12), ".NET Niger", "Niamey", null, "https://www.linkedin.com/posts/x", null, Now));
         source.SocialLinks.Add(SocialLink.Create(SocialPlatform.LinkedIn, "https://www.linkedin.com/in/exemple", null, 1, Now));

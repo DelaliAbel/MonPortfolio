@@ -1,11 +1,11 @@
 <section class="section" id="skills">
     <div class="container">
-        <SectionHeading Index="03" Eyebrow="Compétences" Title="Une stack polyglotte," Highlight="maîtrisée de bout en bout."
-                        Subtitle="Du langage au cloud, organisée par domaine d'expertise." />
+        <SectionHeading Index="03" Eyebrow="@L["Compétences"]" Title="@L["Une stack polyglotte,"]" Highlight="@L["maîtrisée de bout en bout."]"
+                        Subtitle="@L["Du langage au cloud, organisée par domaine d'expertise."]" />
 
         @if (Groups.Count == 0)
         {
-            <p class="empty-state">Les compétences seront bientôt publiées.</p>
+            <p class="empty-state">@L["Les compétences seront bientôt publiées."]</p>
         }
 
         <div class="skills-grid">
@@ -22,10 +22,10 @@
                         {
                             <li>
                                 <div class="skill__row">
-                                    <span class="skill__name"><TechLogo Name="@skill.Name" Size="18" Class="tech-logo--tile" /> @skill.Name</span>
+                                    <span class="skill__name"><TechLogo Name="@skill.Name.Fr" Size="18" Class="tech-logo--tile" /> @skill.Name</span>
                                     <span class="mono muted">@skill.Level%</span>
                                 </div>
-                                <div class="skill-bar" role="progressbar" aria-label="@skill.Name" aria-valuenow="@skill.Level" aria-valuemin="0" aria-valuemax="100">
+                                <div class="skill-bar" role="progressbar" aria-label="@skill.Name.ToString()" aria-valuenow="@skill.Level" aria-valuemin="0" aria-valuemax="100">
                                     <span style="--level: @(skill.Level)%"></span>
                                 </div>
                             </li>
@@ -44,7 +44,7 @@
                 {
                     @foreach (var name in allSkills)
                     {
-                        <span class="marquee__item"><TechLogo Name="@name" Size="22" ShowFallback="false" />@name</span>
+                        <span class="marquee__item"><TechLogo Name="@name.Fr" Size="22" ShowFallback="false" />@name</span>
                     }
                 }
             </div>
@@ -55,7 +55,7 @@
 @code {
     [Parameter, EditorRequired] public IReadOnlyList<SkillGroupDto> Groups { get; set; } = [];
 
-    private List<string> allSkills = [];
+    private List<LocalizedText> allSkills = [];
 
     protected override void OnParametersSet() =>
         allSkills = Groups.SelectMany(g => g.Skills).Select(s => s.Name).ToList();

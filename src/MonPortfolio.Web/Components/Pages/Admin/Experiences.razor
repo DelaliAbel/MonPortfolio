@@ -46,15 +46,16 @@ else
                     <div class="cell-title">
                         <strong>@experience.Title</strong>
                         <span class="chip">@experience.TypeLabel</span>
+                        <TranslationBadge IsTranslated="experience.IsTranslated" />
                         @if (experience.IsCurrent)
                         {
                             <span class="pill pill--live"><span class="dot-live"></span> En cours</span>
                         }
                     </div>
                     <small class="muted">@experience.Organization@(experience.Location is null ? null : $" · {experience.Location}")</small>
-                    @if (experience.Highlights.Count > 0)
+                    @if (experience.Highlights.Fr.Count > 0)
                     {
-                        <small class="muted">@experience.Highlights.Count réalisation(s) · @experience.Technologies.Count techno(s)</small>
+                        <small class="muted">@experience.Highlights.Fr.Count réalisation(s) · @experience.Technologies.Count techno(s)</small>
                     }
                 </div>
                 <div class="actions">
@@ -71,21 +72,27 @@ else
         <DataAnnotationsValidator />
         <FormErrors Errors="SaveErrors" />
 
-        <div class="form-row">
-            <div class="field">
-                <label for="e-title">Intitulé</label>
+        <p class="form-note form-note--start"><Icon Name="globe" Size="14" /> Traduction anglaise facultative : sans elle, la version anglaise du site affiche le français. L'organisation et le lieu ne se traduisent pas.</p>
+
+        <BilingualField Id="e-title" Label="Intitulé">
+            <French>
                 <InputText id="e-title" @bind-Value="Input.Title" placeholder="Développeur Full-Stack" />
                 <ValidationMessage For="() => Input.Title" />
-            </div>
-            <div class="field">
-                <label for="e-type">Type</label>
-                <InputSelect id="e-type" @bind-Value="Input.Type">
-                    @foreach (var type in ExperienceTypes.All)
-                    {
-                        <option value="@type">@ExperienceTypes.Label(type)</option>
-                    }
-                </InputSelect>
-            </div>
+            </French>
+            <English>
+                <InputText id="e-title-en" @bind-Value="Input.TitleEn" placeholder="Full-Stack Developer" />
+                <ValidationMessage For="() => Input.TitleEn" />
+            </English>
+        </BilingualField>
+
+        <div class="field">
+            <label for="e-type">Type</label>
+            <InputSelect id="e-type" @bind-Value="Input.Type">
+                @foreach (var type in ExperienceTypes.All)
+                {
+                    <option value="@type">@ExperienceTypes.Label(type)</option>
+                }
+            </InputSelect>
         </div>
 
         <div class="form-row">
@@ -117,17 +124,27 @@ else
             </label>
         </div>
 
-        <div class="field">
-            <label for="e-desc">Description <span class="field__hint">optionnelle</span></label>
-            <InputTextArea id="e-desc" @bind-Value="Input.Description" rows="2" />
-            <ValidationMessage For="() => Input.Description" />
-        </div>
+        <BilingualField Id="e-desc" Label="Description" Hint="optionnelle">
+            <French>
+                <InputTextArea id="e-desc" @bind-Value="Input.Description" rows="2" />
+                <ValidationMessage For="() => Input.Description" />
+            </French>
+            <English>
+                <InputTextArea id="e-desc-en" @bind-Value="Input.DescriptionEn" rows="2" />
+                <ValidationMessage For="() => Input.DescriptionEn" />
+            </English>
+        </BilingualField>
 
-        <div class="field">
-            <label for="e-highlights">Réalisations clés <span class="field__hint">une par ligne</span></label>
-            <InputTextArea id="e-highlights" @bind-Value="Input.Highlights" rows="4" />
-            <ValidationMessage For="() => Input.Highlights" />
-        </div>
+        <BilingualField Id="e-highlights" Label="Réalisations clés" Hint="une par ligne">
+            <French>
+                <InputTextArea id="e-highlights" @bind-Value="Input.Highlights" rows="5" />
+                <ValidationMessage For="() => Input.Highlights" />
+            </French>
+            <English>
+                <InputTextArea id="e-highlights-en" @bind-Value="Input.HighlightsEn" rows="5" />
+                <ValidationMessage For="() => Input.HighlightsEn" />
+            </English>
+        </BilingualField>
 
         <div class="field">
             <label for="e-tech">Technologies <span class="field__hint">séparées par des virgules</span></label>

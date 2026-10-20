@@ -2,25 +2,25 @@
 
 <section class="section" id="contact">
     <div class="container">
-        <SectionHeading Index="07" Eyebrow="Contact" Title="Construisons quelque chose" Highlight="d'exceptionnel."
-                        Subtitle="Une mission, un projet, une intervention ? Laissez-moi un message, je reviens vers vous." />
+        <SectionHeading Index="07" Eyebrow="@L["Contact"]" Title="@L["Construisons quelque chose"]" Highlight="@L["d'exceptionnel."]"
+                        Subtitle="@L["Une mission, un projet, une intervention ? Laissez-moi un message, je reviens vers vous."]" />
 
         <div class="contact-grid">
             <div class="contact-info reveal">
                 <a class="contact-item glow-card" href="mailto:@Profile.Email">
                     <span class="card-icon"><Icon Name="mail" Size="18" /></span>
-                    <span><small>E-mail</small><strong>@Profile.Email</strong></span>
+                    <span><small>@L["E-mail"]</small><strong>@Profile.Email</strong></span>
                 </a>
                 @if (!string.IsNullOrWhiteSpace(Profile.Phone))
                 {
                     <a class="contact-item glow-card" href="tel:@Profile.Phone.Replace(" ", "")">
                         <span class="card-icon"><Icon Name="phone" Size="18" /></span>
-                        <span><small>Téléphone</small><strong>@Profile.Phone</strong></span>
+                        <span><small>@L["Téléphone"]</small><strong>@Profile.Phone</strong></span>
                     </a>
                 }
                 <div class="contact-item glow-card">
                     <span class="card-icon"><Icon Name="map-pin" Size="18" /></span>
-                    <span><small>Localisation</small><strong>@Profile.Location</strong></span>
+                    <span><small>@L["Localisation"]</small><strong>@Profile.Location</strong></span>
                 </div>
                 <SocialLinks Links="SocialLinks" Variant="SocialLinksVariant.List" />
                 @if (!string.IsNullOrWhiteSpace(Profile.Availability))
@@ -34,9 +34,9 @@
                 {
                     <div class="contact-success" role="status">
                         <span class="contact-success__icon"><Icon Name="check" Size="28" Stroke="2.5" /></span>
-                        <h3>Message envoyé !</h3>
-                        <p>Merci pour votre message. Je vous réponds dans les meilleurs délais.</p>
-                        <a class="btn btn-ghost btn-sm" href="/#contact">Écrire un autre message</a>
+                        <h3>@L["Message envoyé !"]</h3>
+                        <p>@L["Merci pour votre message. Je vous réponds dans les meilleurs délais."]</p>
+                        <a class="btn btn-ghost btn-sm" href="@SiteLanguage.Section("contact")">@L["Écrire un autre message"]</a>
                     </div>
                 }
                 else
@@ -48,45 +48,45 @@
                         {
                             <div class="alert alert--error" role="alert">
                                 <Icon Name="alert" Size="18" />
-                                <div>@foreach (var error in errors) { <p>@error</p> }</div>
+                                <div>@foreach (var error in errors) { <p>@L[error]</p> }</div>
                             </div>
                         }
 
                         <div class="form-row">
                             <div class="field">
-                                <label for="contact-name">Nom complet</label>
+                                <label for="contact-name">@L["Nom complet"]</label>
                                 <InputText id="contact-name" @bind-Value="Input!.Name" autocomplete="name" placeholder="Ada Lovelace" />
-                                <ValidationMessage For="() => Input!.Name" />
+                                <LocalizedValidationMessage For="() => Input!.Name" />
                             </div>
                             <div class="field">
-                                <label for="contact-email">E-mail</label>
-                                <InputText id="contact-email" type="email" @bind-Value="Input!.Email" autocomplete="email" placeholder="vous@exemple.com" />
-                                <ValidationMessage For="() => Input!.Email" />
+                                <label for="contact-email">@L["E-mail"]</label>
+                                <InputText id="contact-email" type="email" @bind-Value="Input!.Email" autocomplete="email" placeholder="@L["vous@exemple.com"]" />
+                                <LocalizedValidationMessage For="() => Input!.Email" />
                             </div>
                         </div>
 
                         <div class="field">
-                            <label for="contact-subject">Sujet</label>
-                            <InputText id="contact-subject" @bind-Value="Input!.Subject" placeholder="Mission Blazor / Azure, conférence…" />
-                            <ValidationMessage For="() => Input!.Subject" />
+                            <label for="contact-subject">@L["Sujet"]</label>
+                            <InputText id="contact-subject" @bind-Value="Input!.Subject" placeholder="@L["Mission Blazor / Azure, conférence…"]" />
+                            <LocalizedValidationMessage For="() => Input!.Subject" />
                         </div>
 
                         <div class="field">
-                            <label for="contact-message">Message</label>
-                            <InputTextArea id="contact-message" @bind-Value="Input!.Message" rows="6" placeholder="Parlez-moi de votre projet…" />
-                            <ValidationMessage For="() => Input!.Message" />
+                            <label for="contact-message">@L["Message"]</label>
+                            <InputTextArea id="contact-message" @bind-Value="Input!.Message" rows="6" placeholder="@L["Parlez-moi de votre projet…"]" />
+                            <LocalizedValidationMessage For="() => Input!.Message" />
                         </div>
 
                         @* Pot de miel : invisible pour les humains, rempli par les robots. *@
                         <div class="hp" aria-hidden="true">
-                            <label for="contact-website">Ne pas remplir</label>
+                            <label for="contact-website">@L["Ne pas remplir"]</label>
                             <InputText id="contact-website" @bind-Value="Input!.Website" tabindex="-1" autocomplete="off" />
                         </div>
 
                         <button type="submit" class="btn btn-gold btn-block">
-                            Envoyer le message <Icon Name="send" Size="16" />
+                            @L["Envoyer le message"] <Icon Name="send" Size="16" />
                         </button>
-                        <p class="form-note"><Icon Name="lock" Size="14" /> Vos informations servent uniquement à vous répondre.</p>
+                        <p class="form-note"><Icon Name="lock" Size="14" /> @L["Vos informations servent uniquement à vous répondre."]</p>
                     </EditForm>
                 }
             </div>

@@ -1,17 +1,27 @@
 ﻿@page "/"
+@page "/en"
 @inject IPortfolioService PortfolioService
 @inject IOptionsSnapshot<ProfileOptions> ProfileOptions
+@inject NavigationManager Navigation
 
 @* Vitrine publique : rendu statique côté serveur (SSR), indexable et sans WebSocket.
+   Une adresse par langue (« / » en français, « /en » en anglais), reliées entre elles par hreflang.
    Seuls quelques comportements légers (thème, filtres, animations) passent par wwwroot/js/site.js. *@
 
 <PageTitle>@Profile.FullName — @Profile.Headline</PageTitle>
 <HeadContent>
     <meta name="description" content="@Profile.Tagline" />
+    <link rel="canonical" href="@Absolute(SiteLanguage.Home)" />
+    <link rel="alternate" hreflang="fr" href="@Absolute(SiteLanguage.HomeOf(Languages.French))" />
+    <link rel="alternate" hreflang="en" href="@Absolute(SiteLanguage.HomeOf(Languages.English))" />
+    <link rel="alternate" hreflang="x-default" href="@Absolute(SiteLanguage.HomeOf(Languages.French))" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="@(SiteLanguage.IsEnglish ? "en_US" : "fr_FR")" />
+    <meta property="og:locale:alternate" content="@(SiteLanguage.IsEnglish ? "fr_FR" : "en_US")" />
+    <meta property="og:url" content="@Absolute(SiteLanguage.Home)" />
     <meta property="og:title" content="@Profile.FullName — @Profile.Headline" />
     <meta property="og:description" content="@Profile.Tagline" />
-    <meta property="og:image" content="@Profile.PhotoUrl" />
+    <meta property="og:image" content="@Absolute(Profile.PhotoUrl)" />
 </HeadContent>
 
 <HeroSection Profile="Profile" SocialLinks="portfolio.SocialLinks" />
@@ -26,8 +36,11 @@
 @code {
     private PortfolioDto portfolio = PortfolioDto.Empty;
 
-    private ProfileOptions Profile => ProfileOptions.Value;
+    private ProfileOptions Profile => ProfileOptions.Get(SiteLanguage.ProfileName);
 
     protected override async Task OnInitializedAsync() =>
         portfolio = await PortfolioService.GetPublicPortfolioAsync();
+
+    /// <summary>Adresse absolue, exigée par hreflang, canonical et Open Graph.</summary>
+    private string Absolute(string path) => Navigation.ToAbsoluteUri(path).ToString();
 }

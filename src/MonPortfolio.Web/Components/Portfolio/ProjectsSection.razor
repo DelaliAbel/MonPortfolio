@@ -1,17 +1,17 @@
 <section class="section section--alt" id="projects">
     <div class="container">
-        <SectionHeading Index="04" Eyebrow="Projets" Title="Des réalisations" Highlight="à fort impact."
-                        Subtitle="Fintech, ERP, secteur public, multiplateforme : une sélection de projets menés de la conception à la production." />
+        <SectionHeading Index="04" Eyebrow="@L["Projets"]" Title="@L["Des réalisations"]" Highlight="@L["à fort impact."]"
+                        Subtitle="@L["Fintech, ERP, secteur public, multiplateforme : une sélection de projets menés de la conception à la production."]" />
 
         @if (Projects.Count == 0)
         {
-            <p class="empty-state">Les projets seront bientôt publiés.</p>
+            <p class="empty-state">@L["Les projets seront bientôt publiés."]</p>
         }
         else
         {
-            <div class="filters reveal" role="toolbar" aria-label="Filtrer les projets par catégorie" data-project-filters>
+            <div class="filters reveal" role="toolbar" aria-label="@L["Filtrer les projets par catégorie"]" data-project-filters>
                 <button type="button" class="filter is-active" data-filter="*" aria-pressed="true">
-                    Tous <span class="filter__count">@Projects.Count</span>
+                    @L["Tous"] <span class="filter__count">@Projects.Count</span>
                 </button>
                 @foreach (var category in categories)
                 {
@@ -33,7 +33,7 @@
                                 <div class="project-shot">
                                     @if (project.ImageUrl is not null)
                                     {
-                                        <img src="@project.ImageUrl" alt="Aperçu de @project.Title" loading="lazy" decoding="async" />
+                                        <img src="@project.ImageUrl" alt="@L["Aperçu de {0}", project.Title]" loading="lazy" decoding="async" />
                                     }
                                     else
                                     {
@@ -52,7 +52,7 @@
                                             }
                                             else
                                             {
-                                                <span class="project-card__monogram mono">@Monogram(project.Title)</span>
+                                                <span class="project-card__monogram mono">@Monogram(project.Title.ToString())</span>
                                             }
                                         </span>
                                     }
@@ -61,12 +61,12 @@
                             @if (project.MobileImageUrl is not null)
                             {
                                 <div class="project-phone">
-                                    <img src="@project.MobileImageUrl" alt="Aperçu mobile de @project.Title" loading="lazy" decoding="async" />
+                                    <img src="@project.MobileImageUrl" alt="@L["Aperçu mobile de {0}", project.Title]" loading="lazy" decoding="async" />
                                 </div>
                             }
                             @if (project.IsFeatured)
                             {
-                                <span class="ribbon"><Icon Name="star" Size="13" /> À la une</span>
+                                <span class="ribbon"><Icon Name="star" Size="13" /> @L["À la une"]</span>
                             }
                         </div>
 
@@ -78,12 +78,12 @@
                             @if (project.Description is not null)
                             {
                                 <details class="project-card__more">
-                                    <summary>En savoir plus</summary>
+                                    <summary>@L["En savoir plus"]</summary>
                                     <p>@project.Description</p>
                                 </details>
                             }
 
-                            <ul class="chips" aria-label="Technologies">
+                            <ul class="chips" aria-label="@L["Technologies"]">
                                 @foreach (var technology in project.Technologies)
                                 {
                                     <TechChip Name="@technology" />
@@ -95,12 +95,12 @@
                         {
                             <footer class="project-card__links">
                                 <a class="project-card__cta" href="@projectUrl" target="_blank" rel="noopener noreferrer">
-                                    Voir le projet <Icon Name="arrow-right" Size="18" />
+                                    @L["Voir le projet"] <Icon Name="arrow-right" Size="18" />
                                 </a>
                                 @if (project.LiveUrl is not null && project.RepositoryUrl is not null)
                                 {
                                     <a class="project-card__repo" href="@project.RepositoryUrl" target="_blank" rel="noopener noreferrer"
-                                       aria-label="Code source de @project.Title" title="Code source"><Icon Name="github" Size="18" /></a>
+                                       aria-label="@L["Code source de {0}", project.Title]" title="@L["Code source"]"><Icon Name="github" Size="18" /></a>
                                 }
                             </footer>
                         }
@@ -117,7 +117,7 @@
     private List<(string Name, int Count)> categories = [];
 
     protected override void OnParametersSet() =>
-        categories = Projects.GroupBy(p => p.Category).Select(g => (g.Key, g.Count())).ToList();
+        categories = Projects.GroupBy(p => p.Category.ToString()).Select(g => (g.Key, g.Count())).ToList();
 
     private static string? CoverModifier(ProjectDto project) => (project.ImageUrl, project.MobileImageUrl) switch
     {

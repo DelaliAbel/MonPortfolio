@@ -57,6 +57,7 @@ else
                                         <span class="text-gold" title="À la une"><Icon Name="star" Size="14" /></span>
                                     }
                                     <strong>@project.Title</strong>
+                                    <TranslationBadge IsTranslated="project.IsTranslated" />
                                 </div>
                                 <small class="muted clamp-1">@project.Summary</small>
                             </td>
@@ -91,14 +92,21 @@ else
         <DataAnnotationsValidator />
         <FormErrors Errors="SaveErrors" />
 
-        <div class="form-row">
-            <div class="field">
-                <label for="p-title">Titre</label>
+        <p class="form-note form-note--start"><Icon Name="globe" Size="14" /> Traduction anglaise facultative : sans elle, la version anglaise du site affiche le français.</p>
+
+        <BilingualField Id="p-title" Label="Titre">
+            <French>
                 <InputText id="p-title" @bind-Value="Input.Title" />
                 <ValidationMessage For="() => Input.Title" />
-            </div>
-            <div class="field">
-                <label for="p-category">Catégorie</label>
+            </French>
+            <English>
+                <InputText id="p-title-en" @bind-Value="Input.TitleEn" placeholder="Money transfer platform" />
+                <ValidationMessage For="() => Input.TitleEn" />
+            </English>
+        </BilingualField>
+
+        <BilingualField Id="p-category" Label="Catégorie" Hint="sert aussi de filtre">
+            <French>
                 <InputText id="p-category" @bind-Value="Input.Category" list="project-categories" placeholder="Fintech, ERP, .NET…" />
                 <datalist id="project-categories">
                     @foreach (var category in Categories)
@@ -107,20 +115,40 @@ else
                     }
                 </datalist>
                 <ValidationMessage For="() => Input.Category" />
-            </div>
-        </div>
+            </French>
+            <English>
+                <InputText id="p-category-en" @bind-Value="Input.CategoryEn" list="project-categories-en" placeholder="Public sector…" />
+                <datalist id="project-categories-en">
+                    @foreach (var category in CategoriesEn)
+                    {
+                        <option value="@category"></option>
+                    }
+                </datalist>
+                <ValidationMessage For="() => Input.CategoryEn" />
+            </English>
+        </BilingualField>
 
-        <div class="field">
-            <label for="p-summary">Résumé <span class="field__hint">affiché sur la carte</span></label>
-            <InputTextArea id="p-summary" @bind-Value="Input.Summary" rows="2" />
-            <ValidationMessage For="() => Input.Summary" />
-        </div>
+        <BilingualField Id="p-summary" Label="Résumé" Hint="affiché sur la carte">
+            <French>
+                <InputTextArea id="p-summary" @bind-Value="Input.Summary" rows="3" />
+                <ValidationMessage For="() => Input.Summary" />
+            </French>
+            <English>
+                <InputTextArea id="p-summary-en" @bind-Value="Input.SummaryEn" rows="3" />
+                <ValidationMessage For="() => Input.SummaryEn" />
+            </English>
+        </BilingualField>
 
-        <div class="field">
-            <label for="p-description">Description détaillée <span class="field__hint">optionnelle, section « En savoir plus »</span></label>
-            <InputTextArea id="p-description" @bind-Value="Input.Description" rows="4" />
-            <ValidationMessage For="() => Input.Description" />
-        </div>
+        <BilingualField Id="p-description" Label="Description détaillée" Hint="optionnelle, section « En savoir plus »">
+            <French>
+                <InputTextArea id="p-description" @bind-Value="Input.Description" rows="4" />
+                <ValidationMessage For="() => Input.Description" />
+            </French>
+            <English>
+                <InputTextArea id="p-description-en" @bind-Value="Input.DescriptionEn" rows="4" />
+                <ValidationMessage For="() => Input.DescriptionEn" />
+            </English>
+        </BilingualField>
 
         <div class="field">
             <label for="p-tech">Technologies <span class="field__hint">séparées par des virgules</span></label>
@@ -201,11 +229,13 @@ else
     protected override ProjectInput ToInput(ProjectDto item) => ProjectInput.From(item);
     protected override ProjectInput NewInput() => new() { DisplayOrder = (Items?.Count ?? 0) + 1 };
 
-    private IEnumerable<string> Categories => Items?.Select(p => p.Category).Distinct() ?? [];
+    private IEnumerable<string> Categories => Items?.Select(p => p.Category.Fr).Distinct() ?? [];
+
+    private IEnumerable<string> CategoriesEn => Items?.Select(p => p.Category.En).OfType<string>().Distinct() ?? [];
 
     private IEnumerable<ProjectDto> Filtered => (Items ?? []).Where(p =>
         string.IsNullOrWhiteSpace(search)
-        || p.Title.Contains(search, StringComparison.OrdinalIgnoreCase)
-        || p.Category.Contains(search, StringComparison.OrdinalIgnoreCase)
+        || p.Title.Matches(search)
+        || p.Category.Matches(search)
         || p.Technologies.Any(t => t.Contains(search, StringComparison.OrdinalIgnoreCase)));
 }

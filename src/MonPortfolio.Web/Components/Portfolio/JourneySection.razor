@@ -1,15 +1,15 @@
 <section class="section section--alt" id="journey">
     <div class="container">
-        <SectionHeading Index="02" Eyebrow="Parcours" Title="Expérience" Highlight="& formation"
-                        Subtitle="Du secteur public aux ERP puis à la fintech : un parcours bâti sur la qualité logicielle et le leadership technique." />
+        <SectionHeading Index="02" Eyebrow="@L["Parcours"]" Title="@L["Expérience"]" Highlight="@L["& formation"]"
+                        Subtitle="@L["Du secteur public aux ERP puis à la fintech : un parcours bâti sur la qualité logicielle et le leadership technique."]" />
 
         <div class="journey-grid">
             <div class="journey__main">
-                <h3 class="column-title reveal"><Icon Name="briefcase" Size="18" /> Expérience professionnelle</h3>
+                <h3 class="column-title reveal"><Icon Name="briefcase" Size="18" /> @L["Expérience professionnelle"]</h3>
 
                 @if (professional.Count == 0)
                 {
-                    <p class="empty-state">Le parcours professionnel sera bientôt publié.</p>
+                    <p class="empty-state">@L["Le parcours professionnel sera bientôt publié."]</p>
                 }
 
                 <ol class="timeline">
@@ -37,16 +37,16 @@
 
                                 @if (experience.IsCurrent)
                                 {
-                                    <span class="pill pill--live"><span class="dot-live" aria-hidden="true"></span> En poste</span>
+                                    <span class="pill pill--live"><span class="dot-live" aria-hidden="true"></span> @L["En poste"]</span>
                                 }
                                 @if (experience.Description is not null)
                                 {
                                     <p class="timeline__desc">@experience.Description</p>
                                 }
-                                @if (experience.Highlights.Count > 0)
+                                @if (experience.Highlights.Current.Count > 0)
                                 {
                                     <ul class="bullets">
-                                        @foreach (var highlight in experience.Highlights)
+                                        @foreach (var highlight in experience.Highlights.Current)
                                         {
                                             <li>@highlight</li>
                                         }
@@ -54,7 +54,7 @@
                                 }
                                 @if (experience.Technologies.Count > 0)
                                 {
-                                    <ul class="chips" aria-label="Technologies">
+                                    <ul class="chips" aria-label="@L["Technologies"]">
                                         @foreach (var technology in experience.Technologies)
                                         {
                                             <TechChip Name="@technology" />
@@ -74,7 +74,7 @@
             </div>
 
             <aside class="journey__side">
-                <h3 class="column-title reveal"><Icon Name="graduation" Size="18" /> Formation</h3>
+                <h3 class="column-title reveal"><Icon Name="graduation" Size="18" /> @L["Formation"]</h3>
                 <ol class="edu-list">
                     @foreach (var diploma in education)
                     {
@@ -94,7 +94,7 @@
 
                 @if (community.Count > 0)
                 {
-                    <h3 class="column-title reveal"><Icon Name="users" Size="18" /> Communauté</h3>
+                    <h3 class="column-title reveal"><Icon Name="users" Size="18" /> @L["Communauté"]</h3>
                     <ol class="edu-list">
                         @foreach (var item in community)
                         {
@@ -105,7 +105,7 @@
                                     <p>@item.Organization</p>
                                     @if (item.LinkUrl is not null)
                                     {
-                                        <a class="edu__link" href="@item.LinkUrl" target="_blank" rel="noopener noreferrer">Voir la publication <Icon Name="arrow-up-right" Size="13" /></a>
+                                        <a class="edu__link" href="@item.LinkUrl" target="_blank" rel="noopener noreferrer">@L["Voir la publication"] <Icon Name="arrow-up-right" Size="13" /></a>
                                     }
                                 </div>
                             </li>
@@ -115,7 +115,7 @@
 
                 <div class="journey__note glow-card reveal">
                     <Icon Name="target" Size="18" />
-                    <p>Encadrement technique, revues de code et bonnes pratiques : mon fil rouge depuis la première équipe coordonnée.</p>
+                    <p>@L["Encadrement technique, revues de code et bonnes pratiques : mon fil rouge depuis la première équipe coordonnée."]</p>
                 </div>
             </aside>
         </div>

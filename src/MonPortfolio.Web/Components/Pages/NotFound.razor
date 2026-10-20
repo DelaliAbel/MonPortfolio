@@ -1,13 +1,13 @@
 ﻿@page "/not-found"
 @layout MainLayout
 
-<PageTitle>Page introuvable</PageTitle>
+<PageTitle>@L["Page introuvable"]</PageTitle>
 
 <section class="status-page">
     <div class="container status-page__inner">
         <p class="status-page__code mono">404</p>
-        <h1>Cette page n'existe <span class="text-gradient-gold">pas (encore)</span>.</h1>
-        <p class="muted">Le lien est peut-être erroné, ou la page a été déplacée.</p>
-        <a class="btn btn-gold" href="/"><Icon Name="arrow-left" Size="16" /> Retour à l'accueil</a>
+        <h1>@L["Cette page n'existe"] <span class="text-gradient-gold">@L["pas (encore)"]</span>.</h1>
+        <p class="muted">@L["Le lien est peut-être erroné, ou la page a été déplacée."]</p>
+        <a class="btn btn-gold" href="@SiteLanguage.Home"><Icon Name="arrow-left" Size="16" /> @L["Retour à l'accueil"]</a>
     </div>
 </section>

@@ -17,7 +17,7 @@ public sealed class CommunityActivity : AuditableEntity
 
     private CommunityActivity() { } // EF Core
 
-    public string Title { get; private set; } = string.Empty;
+    public LocalizedText Title { get; private set; } = new(string.Empty);
     public CommunityActivityKind Kind { get; private set; }
     public DateOnly Date { get; private set; }
 
@@ -25,7 +25,7 @@ public sealed class CommunityActivity : AuditableEntity
     public string? Organizer { get; private set; }
 
     public string? Location { get; private set; }
-    public string? Description { get; private set; }
+    public LocalizedText? Description { get; private set; }
 
     /// <summary>Publication externe qui relate l'activité (post LinkedIn, événement Facebook, replay…).</summary>
     public string? PublicationUrl { get; private set; }
@@ -34,12 +34,12 @@ public sealed class CommunityActivity : AuditableEntity
     public string? ImageUrl { get; private set; }
 
     public static CommunityActivity Create(
-        string title,
+        LocalizedText title,
         CommunityActivityKind kind,
         DateOnly date,
         string? organizer,
         string? location,
-        string? description,
+        LocalizedText? description,
         string? publicationUrl,
         string? imageUrl,
         DateTime utcNow)
@@ -51,12 +51,12 @@ public sealed class CommunityActivity : AuditableEntity
     }
 
     public void Update(
-        string title,
+        LocalizedText title,
         CommunityActivityKind kind,
         DateOnly date,
         string? organizer,
         string? location,
-        string? description,
+        LocalizedText? description,
         string? publicationUrl,
         string? imageUrl,
         DateTime utcNow)
@@ -66,20 +66,20 @@ public sealed class CommunityActivity : AuditableEntity
     }
 
     private void Apply(
-        string title,
+        LocalizedText title,
         CommunityActivityKind kind,
         DateOnly date,
         string? organizer,
         string? location,
-        string? description,
+        LocalizedText? description,
         string? publicationUrl,
         string? imageUrl)
     {
-        var validTitle = Guard.Required(title, "Titre", TitleMaxLength);
+        var validTitle = Guard.RequiredText(title, "Titre", TitleMaxLength);
         var validKind = Guard.Defined(kind, "Type d'activité");
         var validOrganizer = Guard.Optional(organizer, "Organisateur", OrganizerMaxLength);
         var validLocation = Guard.Optional(location, "Lieu", LocationMaxLength);
-        var validDescription = Guard.Optional(description, "Description", DescriptionMaxLength);
+        var validDescription = Guard.OptionalText(description, "Description", DescriptionMaxLength);
         var validPublication = Guard.OptionalWebUrl(publicationUrl, "Lien de la publication", UrlMaxLength);
         var validImage = Guard.SafeUrl(imageUrl, "Image", UrlMaxLength);
 

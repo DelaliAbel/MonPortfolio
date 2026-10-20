@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.Extensions.Localization
 @using Microsoft.Extensions.Options
 @using Microsoft.JSInterop
 @using MonPortfolio.Application.Activities
@@ -16,6 +17,7 @@
 @using MonPortfolio.Application.Security
 @using MonPortfolio.Application.Skills
 @using MonPortfolio.Application.SocialLinks
+@using MonPortfolio.Domain.Common
 @using MonPortfolio.Domain.Enums
 @using MonPortfolio.Web
 @using MonPortfolio.Web.Components
@@ -24,5 +26,9 @@
 @using MonPortfolio.Web.Components.Portfolio
 @using MonPortfolio.Web.Components.Shared
 @using MonPortfolio.Web.Formatting
+@using MonPortfolio.Web.Localization
 @using MonPortfolio.Web.Options
 @using TechLogos = MonPortfolio.Web.TechStack.TechLogos
+
+@* Textes de l'interface : la clé est le texte français ; la traduction anglaise vient de Resources/SharedResource.en.resx. *@
+@inject IStringLocalizer<SharedResource> L

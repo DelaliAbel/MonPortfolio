@@ -15,10 +15,10 @@ internal sealed class ProjectService(IProjectRepository repository, TimeProvider
 
     protected override Project CreateEntity(ProjectInput input, DateTime utcNow) =>
         Project.Create(
-            input.Title,
-            input.Summary,
-            input.Description,
-            input.Category,
+            Bilingual.Text(input.Title, input.TitleEn),
+            Bilingual.Text(input.Summary, input.SummaryEn),
+            Bilingual.OptionalText(input.Description, input.DescriptionEn),
+            Bilingual.Text(input.Category, input.CategoryEn),
             TextList.SplitTags(input.Technologies),
             input.ImageUrl,
             input.MobileImageUrl,
@@ -30,10 +30,10 @@ internal sealed class ProjectService(IProjectRepository repository, TimeProvider
 
     protected override void UpdateEntity(Project project, ProjectInput input, DateTime utcNow) =>
         project.Update(
-            input.Title,
-            input.Summary,
-            input.Description,
-            input.Category,
+            Bilingual.Text(input.Title, input.TitleEn),
+            Bilingual.Text(input.Summary, input.SummaryEn),
+            Bilingual.OptionalText(input.Description, input.DescriptionEn),
+            Bilingual.Text(input.Category, input.CategoryEn),
             TextList.SplitTags(input.Technologies),
             input.ImageUrl,
             input.MobileImageUrl,

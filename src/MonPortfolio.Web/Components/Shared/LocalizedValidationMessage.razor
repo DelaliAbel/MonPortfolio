@@ -1,0 +1,25 @@
+@using System.Linq.Expressions
+@implements IDisposable
+
+@* Équivalent de <ValidationMessage> pour la vitrine : les messages des annotations, rédigés en français,
+   servent de clés de traduction (Resources/SharedResource.en.resx). *@
+@foreach (var message in EditContext.GetValidationMessages(field))
+{
+    <div class="validation-message">@L[message]</div>
+}
+
+@code {
+    private FieldIdentifier field;
+
+    [CascadingParameter] private EditContext EditContext { get; set; } = default!;
+
+    [Parameter, EditorRequired] public Expression<Func<object>> For { get; set; } = default!;
+
+    protected override void OnInitialized() => EditContext.OnValidationStateChanged += OnValidationStateChanged;
+
+    protected override void OnParametersSet() => field = FieldIdentifier.Create(For);
+
+    private void OnValidationStateChanged(object? sender, ValidationStateChangedEventArgs e) => StateHasChanged();
+
+    public void Dispose() => EditContext.OnValidationStateChanged -= OnValidationStateChanged;
+}

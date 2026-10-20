@@ -1,7 +1,7 @@
-@* En-tête public : liens d'ancre vers chaque rubrique du CV, bascule de thème, menu mobile (JS délégué). *@
+@* En-tête public : liens d'ancre vers chaque rubrique du CV, sélecteur de langue, bascule de thème, menu mobile (JS délégué). *@
 <header class="site-header" data-site-header>
-    <nav class="container nav" aria-label="Navigation principale">
-        <a class="brand" href="/#top" aria-label="Accueil — @Profile.FullName">
+    <nav class="container nav" aria-label="@L["Navigation principale"]">
+        <a class="brand" href="@SiteLanguage.Section("top")" aria-label="@L["Accueil — {0}", Profile.FullName]">
             <span class="brand__mark">@Profile.Initials</span>
             <span class="brand__name">@Profile.FirstName.Split(' ')[0]<span class="text-gold">.</span>dev</span>
         </a>
@@ -9,20 +9,21 @@
         <ul class="nav__links" id="nav-links">
             @foreach (var link in Links)
             {
-                <li><a class="nav__link" href="/#@link.Anchor" data-nav-link="@link.Anchor">@link.Label</a></li>
+                <li><a class="nav__link" href="@SiteLanguage.Section(link.Anchor)" data-nav-link="@link.Anchor">@L[link.Label]</a></li>
             }
-            <li class="nav__cta-mobile"><a class="btn btn-gold btn-sm" href="/#contact">Me contacter</a></li>
+            <li class="nav__cta-mobile"><a class="btn btn-gold btn-sm" href="@SiteLanguage.Section("contact")">@L["Me contacter"]</a></li>
         </ul>
 
         <div class="nav__actions">
-            <button type="button" class="icon-btn" data-theme-toggle aria-label="Basculer le thème clair / sombre">
+            <LanguageSwitch />
+            <button type="button" class="icon-btn" data-theme-toggle aria-label="@L["Basculer le thème clair / sombre"]">
                 <Icon Name="sun" Class="theme-icon--light" />
                 <Icon Name="moon" Class="theme-icon--dark" />
             </button>
-            <a class="btn btn-gold btn-sm nav__cta" href="/#contact">
-                Contact <Icon Name="arrow-up-right" Size="15" />
+            <a class="btn btn-gold btn-sm nav__cta" href="@SiteLanguage.Section("contact")">
+                @L["Contact"] <Icon Name="arrow-up-right" Size="15" />
             </a>
-            <button type="button" class="icon-btn nav__toggle" data-nav-toggle aria-controls="nav-links" aria-expanded="false" aria-label="Ouvrir le menu">
+            <button type="button" class="icon-btn nav__toggle" data-nav-toggle aria-controls="nav-links" aria-expanded="false" aria-label="@L["Ouvrir le menu"]">
                 <Icon Name="menu" Class="nav__toggle-open" />
                 <Icon Name="x" Class="nav__toggle-close" />
             </button>

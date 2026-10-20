@@ -58,7 +58,7 @@ internal sealed class PortfolioService(
             .Select(s => s.ToDto())
             .GroupBy(s => s.Category)
             .OrderBy(g => g.Key)
-            .Select(g => new SkillGroupDto(g.Key, SkillCategories.Label(g.Key), g.ToList()))
+            .Select(g => new SkillGroupDto(g.Key, g.ToList()))
             .ToList();
 
         return new PortfolioDto(

@@ -1,12 +1,14 @@
 using System.Globalization;
 using MonPortfolio.Application;
 using MonPortfolio.Application.Security;
+using MonPortfolio.Domain.Common;
 using MonPortfolio.Infrastructure;
 using MonPortfolio.Infrastructure.Persistence.Seeding;
 using MonPortfolio.Infrastructure.Persistence.Transfer;
 using MonPortfolio.Web.Components;
 using MonPortfolio.Web.Diagnostics;
 using MonPortfolio.Web.Endpoints;
+using MonPortfolio.Web.Localization;
 using MonPortfolio.Web.Options;
 using MonPortfolio.Web.Security;
 
@@ -19,8 +21,18 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     // Contenu éditorial (textes, distinctions, liens) : modifiable sans recompiler.
+    // Version anglaise : profile.json complété par les traductions de profile.en.json (mêmes clés, mêmes listes).
     builder.Configuration.AddJsonFile("profile.json", optional: false, reloadOnChange: true);
     builder.Services.Configure<ProfileOptions>(builder.Configuration.GetSection(ProfileOptions.SectionName));
+    var englishProfile = new ConfigurationBuilder()
+        .SetBasePath(builder.Environment.ContentRootPath)
+        .AddJsonFile("profile.json", optional: false, reloadOnChange: true)
+        .AddJsonFile("profile.en.json", optional: true, reloadOnChange: true)
+        .Build();
+    builder.Services.Configure<ProfileOptions>(Languages.English, englishProfile.GetSection(ProfileOptions.SectionName));
+
+    // Textes de l'interface : clé = texte français, traductions dans Resources/SharedResource.en.resx.
+    builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
     // Couches de la Clean Architecture (Program.cs est la racine de composition).
     builder.Services.AddApplication();
@@ -43,6 +55,8 @@ try
         return await app.Services.ImportContentAsync(importSource, app.Configuration.GetValue<bool>("Import:Replace"));
 
     await app.Services.InitializeDatabaseAsync();
+
+    app.UseSiteLanguage();
 
     if (!app.Environment.IsDevelopment())
     {

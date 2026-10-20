@@ -73,13 +73,25 @@ Les secrets ne sont jamais dans le dépôt. En production, ils passent par des v
 
 Les images sont stockées dans `App_Data/uploads` (hors de `wwwroot`) et servies sous `/uploads`. Seuls les fichiers JPG, PNG et WebP de 2 Mo au plus sont acceptés : le type est vérifié sur le contenu réel du fichier, et le nom est généré par l'application. Une image remplacée ou supprimée est effacée du disque. **Sauvegardez la base SQL Server et le dossier `App_Data/uploads`** : ensemble, ils contiennent tout le contenu.
 
+## Français / anglais
+
+La vitrine existe en deux langues, chacune à sa propre adresse : `/` en français (langue par défaut) et `/en` en anglais. Les deux pages sont reliées par des balises `hreflang` et une `canonical`, ce qui permet à Google d'indexer les deux versions. Le sélecteur **FR | EN** de l'en-tête mémorise le choix dans un cookie : un visiteur qui a choisi l'anglais et revient sur `/` est renvoyé vers `/en`. L'administration reste en français.
+
+| Contenu | Où le traduire |
+|---|---|
+| Projets, parcours, activités, compétences | Dans `/admin` : chaque texte a un champ **FR** (obligatoire) et un champ **EN** (facultatif). Le badge « EN à traduire » signale les éléments incomplets. |
+| Profil (accroche, présentation, expertises, langues, distinctions, certifications) | `src/MonPortfolio.Web/profile.en.json`. Il complète `profile.json` clé par clé : gardez les mêmes listes, dans le même ordre. |
+| Textes de l'interface (titres, boutons, formulaire) | `src/MonPortfolio.Web/Resources/SharedResource.en.resx`. La clé est le texte français du composant. |
+
+Une traduction absente n'est jamais un trou : la version anglaise affiche le texte français. Au démarrage, les textes du contenu initial (issu du CV) encore identiques à l'original reçoivent automatiquement leur traduction anglaise. Un texte modifié depuis `/admin` n'est jamais touché.
+
 ## Logos des technologies
 
 Les logos de `src/MonPortfolio.Web/wwwroot/logos` proviennent de [Devicon](https://devicon.dev) 2.17.0 (licence MIT, voir `LICENSE-devicon.txt`). Les marques restent la propriété de leurs détenteurs.
 Les logos sont associés automatiquement au nom des compétences et technologies par `Web/TechStack/TechLogos.cs`. Les noms composés sont découpés (« Oracle & MySQL » affiche deux logos), et les notions sans marque (architecture, sécurité, IA…) reçoivent une icône générique.
 Pour une nouvelle technologie : déposez son SVG dans `wwwroot/logos`, puis ajoutez un alias dans `TechLogos.Aliases`.
 
-Les réseaux sociaux utilisent leurs **logos officiels, affichés tels quels**, dans `wwwroot/logos/social`. Ils proviennent de *SVG Logos* (Gil Barbara, licence CC0), sauf Instagram qui vient de *Skill Icons* (MIT). Les sources et licences sont dans `LICENSES.txt`. Chaque logo est posé sur une tuile blanche neutre pour rester lisible sur le fond sombre, sans aucune recoloration.
+Les réseaux sociaux utilisent leurs **logos officiels, affichés tels quels**, dans `wwwroot/logos/social`. Ils proviennent de *SVG Logos* (Gil Barbara, licence CC0), sauf Instagram qui vient de *Skill Icons* (MIT). Les sources et licences sont dans `LICENSES.txt`. Chaque logo est affiché seul, dans ses couleurs d'origine. GitHub, X et Medium, noirs à l'origine, passent sur leur variante officielle blanche en thème sombre.
 
 ## Migrations
 

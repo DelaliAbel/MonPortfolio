@@ -1,18 +1,18 @@
 ﻿@page "/Error"
 @using System.Diagnostics
 
-<PageTitle>Erreur</PageTitle>
+<PageTitle>@L["Erreur"]</PageTitle>
 
 <section class="status-page">
     <div class="container status-page__inner">
         <p class="status-page__code mono">500</p>
-        <h1>Une erreur inattendue <span class="text-gradient-gold">est survenue</span>.</h1>
-        <p class="muted">Réessayez dans un instant. Si le problème persiste, contactez-moi.</p>
+        <h1>@L["Une erreur inattendue"] <span class="text-gradient-gold">@L["est survenue"]</span>.</h1>
+        <p class="muted">@L["Réessayez dans un instant. Si le problème persiste, contactez-moi."]</p>
         @if (ShowRequestId)
         {
-            <p class="mono muted">Référence : @RequestId</p>
+            <p class="mono muted">@L["Référence : {0}", RequestId!]</p>
         }
-        <a class="btn btn-gold" href="/"><Icon Name="arrow-left" Size="16" /> Retour à l'accueil</a>
+        <a class="btn btn-gold" href="@SiteLanguage.Home"><Icon Name="arrow-left" Size="16" /> @L["Retour à l'accueil"]</a>
     </div>
 </section>
 

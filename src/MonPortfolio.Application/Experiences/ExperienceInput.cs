@@ -11,6 +11,9 @@ public sealed class ExperienceInput : IValidatableObject
     [StringLength(Experience.TitleMaxLength, ErrorMessage = "L'intitulé ne doit pas dépasser {1} caractères.")]
     public string Title { get; set; } = string.Empty;
 
+    [StringLength(Experience.TitleMaxLength, ErrorMessage = "L'intitulé anglais ne doit pas dépasser {1} caractères.")]
+    public string? TitleEn { get; set; }
+
     [Required(ErrorMessage = "L'organisation est obligatoire.")]
     [StringLength(Experience.OrganizationMaxLength, ErrorMessage = "L'organisation ne doit pas dépasser {1} caractères.")]
     public string Organization { get; set; } = string.Empty;
@@ -31,9 +34,15 @@ public sealed class ExperienceInput : IValidatableObject
     [StringLength(Experience.DescriptionMaxLength, ErrorMessage = "La description ne doit pas dépasser {1} caractères.")]
     public string? Description { get; set; }
 
+    [StringLength(Experience.DescriptionMaxLength, ErrorMessage = "La description anglaise ne doit pas dépasser {1} caractères.")]
+    public string? DescriptionEn { get; set; }
+
     /// <summary>Réalisations clés, une par ligne.</summary>
     [StringLength(2500, ErrorMessage = "Les réalisations sont trop longues.")]
     public string? Highlights { get; set; }
+
+    [StringLength(2500, ErrorMessage = "Les réalisations en anglais sont trop longues.")]
+    public string? HighlightsEn { get; set; }
 
     /// <summary>Technologies séparées par des virgules.</summary>
     [StringLength(600, ErrorMessage = "La liste des technologies est trop longue.")]
@@ -59,15 +68,18 @@ public sealed class ExperienceInput : IValidatableObject
 
     public static ExperienceInput From(ExperienceDto dto) => new()
     {
-        Title = dto.Title,
+        Title = dto.Title.Fr,
+        TitleEn = dto.Title.En,
         Organization = dto.Organization,
         Location = dto.Location,
         Type = dto.Type,
         StartDate = dto.StartDate,
         EndDate = dto.EndDate,
         IsCurrent = dto.IsCurrent,
-        Description = dto.Description,
-        Highlights = TextList.JoinLines(dto.Highlights),
+        Description = dto.Description?.Fr,
+        DescriptionEn = dto.Description?.En,
+        Highlights = TextList.JoinLines(dto.Highlights.Fr),
+        HighlightsEn = TextList.JoinLines(dto.Highlights.En),
         Technologies = TextList.JoinTags(dto.Technologies),
         LinkUrl = dto.LinkUrl
     };

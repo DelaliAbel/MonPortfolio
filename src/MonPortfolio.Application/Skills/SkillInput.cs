@@ -10,6 +10,10 @@ public sealed class SkillInput
     [StringLength(Skill.NameMaxLength, ErrorMessage = "Le nom ne doit pas dépasser {1} caractères.")]
     public string Name { get; set; } = string.Empty;
 
+    /// <summary>Traduction facultative : la plupart des noms (C#, Blazor…) sont identiques en anglais.</summary>
+    [StringLength(Skill.NameMaxLength, ErrorMessage = "Le nom anglais ne doit pas dépasser {1} caractères.")]
+    public string? NameEn { get; set; }
+
     [EnumDataType(typeof(SkillCategory), ErrorMessage = "Catégorie inconnue.")]
     public SkillCategory Category { get; set; } = SkillCategory.DotNet;
 
@@ -21,7 +25,8 @@ public sealed class SkillInput
 
     public static SkillInput From(SkillDto dto) => new()
     {
-        Name = dto.Name,
+        Name = dto.Name.Fr,
+        NameEn = dto.Name.En,
         Category = dto.Category,
         Level = dto.Level,
         DisplayOrder = dto.DisplayOrder

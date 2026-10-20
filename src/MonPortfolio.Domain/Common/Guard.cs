@@ -16,6 +16,34 @@ internal static class Guard
     public static string? Optional(string? value, string field, int maxLength) =>
         string.IsNullOrWhiteSpace(value) ? null : MaxLength(value.Trim(), field, maxLength);
 
+    /// <summary>Texte bilingue obligatoire : le français est requis, l'anglais facultatif ; même longueur maximale.</summary>
+    public static LocalizedText RequiredText(LocalizedText? value, string field, int maxLength) =>
+        new(Required(value?.Fr, field, maxLength), Optional(value?.En, EnglishField(field), maxLength));
+
+    /// <summary>Texte bilingue facultatif : une traduction anglaise sans texte français est refusée.</summary>
+    public static LocalizedText? OptionalText(LocalizedText? value, string field, int maxLength)
+    {
+        var fr = Optional(value?.Fr, field, maxLength);
+        var en = Optional(value?.En, EnglishField(field), maxLength);
+
+        if (fr is null && en is not null)
+            throw new DomainException($"Renseignez « {field} » en français avant sa traduction anglaise.");
+
+        return fr is null ? null : new LocalizedText(fr, en);
+    }
+
+    /// <summary>Liste bilingue normalisée comme <see cref="Tags"/> ; une traduction sans liste française est refusée.</summary>
+    public static LocalizedList TagsText(LocalizedList? values, string field, int maxCount, int maxLength)
+    {
+        var fr = Tags(values?.Fr, field, maxCount, maxLength);
+        var en = Tags(values?.En, EnglishField(field), maxCount, maxLength);
+
+        if (fr.Count == 0 && en.Count > 0)
+            throw new DomainException($"Renseignez « {field} » en français avant leur traduction anglaise.");
+
+        return new LocalizedList(fr, en);
+    }
+
     public static int InRange(int value, int min, int max, string field) =>
         value < min || value > max
             ? throw new DomainException($"Le champ « {field} » doit être compris entre {min} et {max}.")
@@ -78,6 +106,8 @@ internal static class Guard
             ? throw new DomainException($"Le champ « {field} » accepte au plus {maxCount} éléments.")
             : tags;
     }
+
+    private static string EnglishField(string field) => $"{field} (anglais)";
 
     private static string MaxLength(string value, string field, int maxLength) =>
         value.Length > maxLength

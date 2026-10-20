@@ -13,28 +13,28 @@ internal sealed class ExperienceService(IExperienceRepository repository, TimePr
 
     protected override Experience CreateEntity(ExperienceInput input, DateTime utcNow) =>
         Experience.Create(
-            input.Title,
+            Bilingual.Text(input.Title, input.TitleEn),
             input.Organization,
             input.Location,
             input.Type,
             input.StartDate,
             input.EffectiveEndDate,
-            input.Description,
-            TextList.SplitLines(input.Highlights),
+            Bilingual.OptionalText(input.Description, input.DescriptionEn),
+            Bilingual.Lines(input.Highlights, input.HighlightsEn),
             TextList.SplitTags(input.Technologies),
             input.LinkUrl,
             utcNow);
 
     protected override void UpdateEntity(Experience experience, ExperienceInput input, DateTime utcNow) =>
         experience.Update(
-            input.Title,
+            Bilingual.Text(input.Title, input.TitleEn),
             input.Organization,
             input.Location,
             input.Type,
             input.StartDate,
             input.EffectiveEndDate,
-            input.Description,
-            TextList.SplitLines(input.Highlights),
+            Bilingual.OptionalText(input.Description, input.DescriptionEn),
+            Bilingual.Lines(input.Highlights, input.HighlightsEn),
             TextList.SplitTags(input.Technologies),
             input.LinkUrl,
             utcNow);

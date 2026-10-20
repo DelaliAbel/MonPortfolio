@@ -24,7 +24,9 @@ public static class DatabaseInitializer
         await db.Database.MigrateAsync(cancellationToken);
 
         await SeedAdminAsync(provider, logger);
-        await PortfolioSeedData.SeedAsync(db, provider.GetRequiredService<TimeProvider>(), logger, cancellationToken);
+        var clock = provider.GetRequiredService<TimeProvider>();
+        await PortfolioSeedData.SeedAsync(db, clock, logger, cancellationToken);
+        await PortfolioSeedData.CompleteTranslationsAsync(db, clock, logger, cancellationToken);
     }
 
     private static async Task SeedAdminAsync(IServiceProvider provider, ILogger logger)

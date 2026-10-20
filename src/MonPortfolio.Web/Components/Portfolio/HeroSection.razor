@@ -7,7 +7,7 @@
 
     <div class="container hero__inner">
         <div class="hero__content">
-            <p class="hero__hello mono reveal"><span class="text-gold">&gt;_</span> Hello, World — je suis</p>
+            <p class="hero__hello mono reveal"><span class="text-gold">&gt;_</span> @L["Hello, World — je suis"]</p>
 
             <h1 class="hero__title reveal">
                 @Profile.FirstName
@@ -16,7 +16,7 @@
 
             <p class="hero__headline reveal">@Profile.Headline</p>
 
-            <ul class="hero__roles mono reveal" aria-label="Rôles">
+            <ul class="hero__roles mono reveal" aria-label="@L["Rôles"]">
                 @foreach (var role in Profile.Roles)
                 {
                     <li>@role</li>
@@ -26,18 +26,18 @@
             <p class="hero__tagline reveal">@Profile.Tagline</p>
 
             <div class="hero__actions reveal">
-                <a class="btn btn-gold" href="/#projects">Voir mes projets <Icon Name="arrow-right" Size="16" /></a>
-                <a class="btn btn-ghost" href="/#contact">Me contacter</a>
+                <a class="btn btn-gold" href="@SiteLanguage.Section("projects")">@L["Voir mes projets"] <Icon Name="arrow-right" Size="16" /></a>
+                <a class="btn btn-ghost" href="@SiteLanguage.Section("contact")">@L["Me contacter"]</a>
                 @if (!string.IsNullOrWhiteSpace(Profile.CvUrl))
                 {
-                    <a class="btn btn-link" href="@Profile.CvUrl" download><Icon Name="download" Size="16" /> Télécharger le CV</a>
+                    <a class="btn btn-link" href="@Profile.CvUrl" download><Icon Name="download" Size="16" /> @L["Télécharger le CV"]</a>
                 }
             </div>
 
             @if (SocialLinks.Count > 0)
             {
                 <div class="hero__social reveal">
-                    <span class="hero__social-label mono">Retrouvez-moi</span>
+                    <span class="hero__social-label mono">@L["Retrouvez-moi"]</span>
                     <SocialLinks Links="SocialLinks" />
                 </div>
             }
@@ -56,14 +56,14 @@
         <div class="hero__visual reveal">
             <div class="portrait">
                 <div class="portrait__ring" aria-hidden="true"></div>
-                <img src="@Profile.PhotoUrl" alt="Portrait de @Profile.FullName" width="360" height="360" fetchpriority="high" />
+                <img src="@Profile.PhotoUrl" alt="@L["Portrait de {0}", Profile.FullName]" width="360" height="360" fetchpriority="high" />
             </div>
 
             <div class="float-chip float-chip--a">
                 <span class="float-chip__icon"><Icon Name="award" Size="16" /></span>
                 <span><small>Microsoft</small><strong>Gold Ambassador</strong></span>
             </div>
-            <div class="float-chip float-chip--stack" role="img" aria-label="Stack principale : .NET, Java, Flutter, Azure">
+            <div class="float-chip float-chip--stack" role="img" aria-label="@L["Stack principale : .NET, Java, Flutter, Azure"]">
                 <TechLogo Name=".NET" Size="22" />
                 <TechLogo Name="Java" Size="22" />
                 <TechLogo Name="Flutter" Size="22" />
@@ -72,7 +72,7 @@
         </div>
     </div>
 
-    <a class="scroll-cue" href="/#about" aria-label="Descendre vers la section À propos"><span></span></a>
+    <a class="scroll-cue" href="@SiteLanguage.Section("about")" aria-label="@L["Descendre vers la section À propos"]"><span></span></a>
 </section>
 
 @code {

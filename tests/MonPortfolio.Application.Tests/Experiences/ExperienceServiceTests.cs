@@ -1,5 +1,6 @@
 using MonPortfolio.Application.Experiences;
 using MonPortfolio.Application.Tests.Fakes;
+using MonPortfolio.Domain.Common;
 using MonPortfolio.Domain.Entities;
 using MonPortfolio.Domain.Enums;
 
@@ -27,6 +28,23 @@ public class ExperienceServiceTests
     };
 
     [Fact]
+    public async Task CreateAsync_splits_english_highlights_and_round_trips_them()
+    {
+        var input = ValidInput();
+        input.TitleEn = ".NET Developer";
+        input.HighlightsEn = "Migration to .NET 10\nCI setup";
+
+        var id = (await service.CreateAsync(input)).Value;
+        var dto = await service.GetByIdAsync(id);
+
+        Assert.NotNull(dto);
+        Assert.Equal(["Migration to .NET 10", "CI setup"], dto.Highlights.In(Languages.English));
+        Assert.Equal(["Migration vers .NET 10", "Mise en place de la CI"], dto.Highlights.In(Languages.French));
+        Assert.True(dto.IsTranslated);
+        Assert.Equal("Migration to .NET 10" + Environment.NewLine + "CI setup", ExperienceInput.From(dto).HighlightsEn);
+    }
+
+    [Fact]
     public async Task CreateAsync_persists_experience_with_split_lists()
     {
         var result = await service.CreateAsync(ValidInput());
@@ -35,7 +53,7 @@ public class ExperienceServiceTests
         var saved = Assert.Single(repository.Items);
         Assert.Equal(saved.Id, result.Value);
         Assert.Equal(new DateOnly(2024, 6, 30), saved.EndDate);
-        Assert.Equal(["Migration vers .NET 10", "Mise en place de la CI"], saved.Highlights);
+        Assert.Equal(["Migration vers .NET 10", "Mise en place de la CI"], saved.Highlights.Fr);
         Assert.Equal(["C#", "Azure"], saved.Technologies);
         Assert.Equal(clock.UtcDateTime, saved.CreatedAtUtc);
     }

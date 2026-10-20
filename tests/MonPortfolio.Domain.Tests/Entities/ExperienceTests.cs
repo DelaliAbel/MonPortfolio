@@ -28,7 +28,7 @@ public class ExperienceTests
         Assert.Equal(Start, experience.StartDate);
         Assert.Equal(new DateOnly(2024, 6, 30), experience.EndDate);
         Assert.False(experience.IsCurrent);
-        Assert.Equal(["Migration vers .NET 10"], experience.Highlights);
+        Assert.Equal(["Migration vers .NET 10"], experience.Highlights.Fr);
         Assert.Equal(["C#", "Azure"], experience.Technologies);
         Assert.Equal(Make.Now, experience.CreatedAtUtc);
     }
@@ -88,7 +88,7 @@ public class ExperienceTests
     {
         var atLimit = Enumerable.Range(1, Experience.MaxHighlights).Select(i => $"Réalisation {i}").ToList();
 
-        Assert.Equal(Experience.MaxHighlights, Make.Experience(highlights: atLimit).Highlights.Count);
+        Assert.Equal(Experience.MaxHighlights, Make.Experience(highlights: atLimit).Highlights.Fr.Count);
         Assert.Throws<DomainException>(() => Make.Experience(highlights: [.. atLimit, "Une de trop"]));
         Assert.Throws<DomainException>(() => Make.Experience(highlights: [Make.Text(Experience.HighlightMaxLength + 1)]));
     }
@@ -109,14 +109,14 @@ public class ExperienceTests
 
         experience.Update(
             "Architecte", "Fabrikam", "Lomé", ExperienceType.Professional,
-            Start, new DateOnly(2025, 12, 31), "Description", ["Livraison"], ["Azure"], "https://fabrikam.example.com", Make.Later);
+            Start, new DateOnly(2025, 12, 31), "Description", new(["Livraison"]), ["Azure"], "https://fabrikam.example.com", Make.Later);
 
         Assert.Equal("Architecte", experience.Title);
         Assert.Equal("Fabrikam", experience.Organization);
         Assert.Equal("Lomé", experience.Location);
         Assert.Equal(new DateOnly(2025, 12, 31), experience.EndDate);
         Assert.False(experience.IsCurrent);
-        Assert.Equal(["Livraison"], experience.Highlights);
+        Assert.Equal(["Livraison"], experience.Highlights.Fr);
         Assert.Equal(["Azure"], experience.Technologies);
         Assert.Equal("https://fabrikam.example.com", experience.LinkUrl);
         Assert.Equal(Make.Now, experience.CreatedAtUtc);

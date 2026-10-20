@@ -1,5 +1,6 @@
 using MonPortfolio.Application.Projects;
 using MonPortfolio.Application.Tests.Fakes;
+using MonPortfolio.Domain.Common;
 using MonPortfolio.Domain.Entities;
 
 namespace MonPortfolio.Application.Tests.Projects;
@@ -39,6 +40,51 @@ public class ProjectServiceTests
         Assert.Equal("Portfolio", saved.Title);
         Assert.Equal(["C#", "Blazor", "EF Core"], saved.Technologies);
         Assert.Equal(clock.UtcDateTime, saved.CreatedAtUtc);
+    }
+
+    [Fact]
+    public async Task CreateAsync_stores_english_translations_and_round_trips_them_to_the_form()
+    {
+        var input = ValidInput();
+        input.TitleEn = "Portfolio site";
+        input.SummaryEn = "Blazor showcase";
+        input.CategoryEn = "Web";
+
+        var id = (await service.CreateAsync(input)).Value;
+        var dto = await service.GetByIdAsync(id);
+
+        Assert.NotNull(dto);
+        Assert.Equal(new LocalizedText("Portfolio", "Portfolio site"), dto.Title);
+        Assert.Equal("Blazor showcase", dto.Summary.In(Languages.English));
+        Assert.True(dto.IsTranslated);
+
+        var form = ProjectInput.From(dto);
+        Assert.Equal("Portfolio site", form.TitleEn);
+        Assert.Equal("Blazor showcase", form.SummaryEn);
+        Assert.Null(form.DescriptionEn);
+    }
+
+    [Fact]
+    public async Task Project_without_translation_is_flagged_and_falls_back_to_french()
+    {
+        var id = (await service.CreateAsync(ValidInput())).Value;
+        var dto = await service.GetByIdAsync(id);
+
+        Assert.NotNull(dto);
+        Assert.False(dto.IsTranslated);
+        Assert.Equal("Portfolio", dto.Title.In(Languages.English));
+    }
+
+    [Fact]
+    public async Task CreateAsync_rejects_an_english_description_without_french()
+    {
+        var input = ValidInput();
+        input.DescriptionEn = "English only";
+
+        var result = await service.CreateAsync(input);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(0, repository.AddCount);
     }
 
     [Theory]

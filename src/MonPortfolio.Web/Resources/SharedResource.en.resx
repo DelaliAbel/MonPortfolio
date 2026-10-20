@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Traductions anglaises de l'interface publique.
+  La clé (name) est le texte français tel qu'il apparaît dans les composants : un texte sans entrée ici
+  s'affiche en français sur la version anglaise. Les textes identiques dans les deux langues (Contact,
+  Certifications, Technologies…) n'ont pas besoin d'entrée.
+-->
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Mise en page, navigation -->
+  <data name="Aller au contenu" xml:space="preserve"><value>Skip to content</value></data>
+  <data name="Navigation principale" xml:space="preserve"><value>Main navigation</value></data>
+  <data name="Accueil — {0}" xml:space="preserve"><value>Home — {0}</value></data>
+  <data name="À propos" xml:space="preserve"><value>About</value></data>
+  <data name="Parcours" xml:space="preserve"><value>Career</value></data>
+  <data name="Compétences" xml:space="preserve"><value>Skills</value></data>
+  <data name="Projets" xml:space="preserve"><value>Projects</value></data>
+  <data name="Me contacter" xml:space="preserve"><value>Contact me</value></data>
+  <data name="Langue du site" xml:space="preserve"><value>Site language</value></data>
+  <data name="Basculer le thème clair / sombre" xml:space="preserve"><value>Toggle light / dark theme</value></data>
+  <data name="Ouvrir le menu" xml:space="preserve"><value>Open menu</value></data>
+  <data name="E-mail" xml:space="preserve"><value>Email</value></data>
+  <data name="Réseaux sociaux" xml:space="preserve"><value>Social networks</value></data>
+  <data name="Tous droits réservés." xml:space="preserve"><value>All rights reserved.</value></data>
+
+  <!-- Accueil -->
+  <data name="Hello, World — je suis" xml:space="preserve"><value>Hello, World — I'm</value></data>
+  <data name="Rôles" xml:space="preserve"><value>Roles</value></data>
+  <data name="Voir mes projets" xml:space="preserve"><value>View my projects</value></data>
+  <data name="Télécharger le CV" xml:space="preserve"><value>Download CV</value></data>
+  <data name="Retrouvez-moi" xml:space="preserve"><value>Find me on</value></data>
+  <data name="Portrait de {0}" xml:space="preserve"><value>Portrait of {0}</value></data>
+  <data name="Stack principale : .NET, Java, Flutter, Azure" xml:space="preserve"><value>Main stack: .NET, Java, Flutter, Azure</value></data>
+  <data name="Descendre vers la section À propos" xml:space="preserve"><value>Scroll down to the About section</value></data>
+
+  <!-- À propos -->
+  <data name="La rigueur d'un architecte," xml:space="preserve"><value>An architect's rigor,</value></data>
+  <data name="l'énergie d'un leader." xml:space="preserve"><value>a leader's energy.</value></data>
+  <data name="Langues" xml:space="preserve"><value>Languages</value></data>
+  <data name="Niveau {0} sur 5" xml:space="preserve"><value>Level {0} out of 5</value></data>
+  <data name="Extrait de code C# décrivant le profil" xml:space="preserve"><value>C# code snippet describing the profile</value></data>
+  <data name="Sécurité by design, du domaine jusqu'au cloud." xml:space="preserve"><value>Security by design, from the domain to the cloud.</value></data>
+
+  <!-- Parcours -->
+  <data name="Expérience" xml:space="preserve"><value>Experience</value></data>
+  <data name="&amp; formation" xml:space="preserve"><value>&amp; education</value></data>
+  <data name="Du secteur public aux ERP puis à la fintech : un parcours bâti sur la qualité logicielle et le leadership technique." xml:space="preserve"><value>From the public sector to ERP systems and fintech: a career built on software quality and technical leadership.</value></data>
+  <data name="Expérience professionnelle" xml:space="preserve"><value>Professional experience</value></data>
+  <data name="Le parcours professionnel sera bientôt publié." xml:space="preserve"><value>My professional experience will be published soon.</value></data>
+  <data name="En poste" xml:space="preserve"><value>Current role</value></data>
+  <data name="Formation" xml:space="preserve"><value>Education</value></data>
+  <data name="Communauté" xml:space="preserve"><value>Community</value></data>
+  <data name="Voir la publication" xml:space="preserve"><value>View post</value></data>
+  <data name="Encadrement technique, revues de code et bonnes pratiques : mon fil rouge depuis la première équipe coordonnée." xml:space="preserve"><value>Technical leadership, code reviews and best practices: my common thread since the first team I coordinated.</value></data>
+
+  <!-- Compétences -->
+  <data name="Une stack polyglotte," xml:space="preserve"><value>A polyglot stack,</value></data>
+  <data name="maîtrisée de bout en bout." xml:space="preserve"><value>mastered end to end.</value></data>
+  <data name="Du langage au cloud, organisée par domaine d'expertise." xml:space="preserve"><value>From languages to the cloud, organized by area of expertise.</value></data>
+  <data name="Les compétences seront bientôt publiées." xml:space="preserve"><value>Skills will be published soon.</value></data>
+
+  <!-- Projets -->
+  <data name="Des réalisations" xml:space="preserve"><value>Projects that</value></data>
+  <data name="à fort impact." xml:space="preserve"><value>make an impact.</value></data>
+  <data name="Fintech, ERP, secteur public, multiplateforme : une sélection de projets menés de la conception à la production." xml:space="preserve"><value>Fintech, ERP, public sector, cross-platform: a selection of projects taken from design to production.</value></data>
+  <data name="Les projets seront bientôt publiés." xml:space="preserve"><value>Projects will be published soon.</value></data>
+  <data name="Filtrer les projets par catégorie" xml:space="preserve"><value>Filter projects by category</value></data>
+  <data name="Tous" xml:space="preserve"><value>All</value></data>
+  <data name="Aperçu de {0}" xml:space="preserve"><value>Preview of {0}</value></data>
+  <data name="Aperçu mobile de {0}" xml:space="preserve"><value>Mobile preview of {0}</value></data>
+  <data name="À la une" xml:space="preserve"><value>Featured</value></data>
+  <data name="En savoir plus" xml:space="preserve"><value>Learn more</value></data>
+  <data name="Voir le projet" xml:space="preserve"><value>View project</value></data>
+  <data name="Code source" xml:space="preserve"><value>Source code</value></data>
+  <data name="Code source de {0}" xml:space="preserve"><value>Source code of {0}</value></data>
+
+  <!-- Ambassador et communauté -->
+  <data name="Distinction &amp; communauté" xml:space="preserve"><value>Recognition &amp; community</value></data>
+  <data name="Partager, fédérer, élever le niveau : l'engagement communautaire au cœur de ma pratique." xml:space="preserve"><value>Sharing, bringing people together, raising the bar: community engagement is at the heart of my practice.</value></data>
+  <data name="Communauté tech" xml:space="preserve"><value>Tech community</value></data>
+  <data name="Rejoindre la communauté" xml:space="preserve"><value>Join the community</value></data>
+  <data name="Activités communautaires" xml:space="preserve"><value>Community activities</value></data>
+  <data name="Voir les {0} autres activités" xml:space="preserve"><value>See {0} more activities</value></data>
+
+  <!-- Certifications -->
+  <data name="Apprendre," xml:space="preserve"><value>Always</value></data>
+  <data name="toujours." xml:space="preserve"><value>learning.</value></data>
+  <data name="Parcours certifiants suivis pour rester à la pointe : cloud, architecture, sécurité, IA." xml:space="preserve"><value>Certification paths completed to stay at the cutting edge: cloud, architecture, security, AI.</value></data>
+  <data name="Délivrées par" xml:space="preserve"><value>Issued by</value></data>
+
+  <!-- Contact -->
+  <data name="Construisons quelque chose" xml:space="preserve"><value>Let's build something</value></data>
+  <data name="d'exceptionnel." xml:space="preserve"><value>exceptional.</value></data>
+  <data name="Une mission, un projet, une intervention ? Laissez-moi un message, je reviens vers vous." xml:space="preserve"><value>A contract, a project, a speaking engagement? Leave me a message and I'll get back to you.</value></data>
+  <data name="Téléphone" xml:space="preserve"><value>Phone</value></data>
+  <data name="Localisation" xml:space="preserve"><value>Location</value></data>
+  <data name="Message envoyé !" xml:space="preserve"><value>Message sent!</value></data>
+  <data name="Merci pour votre message. Je vous réponds dans les meilleurs délais." xml:space="preserve"><value>Thank you for your message. I'll get back to you as soon as possible.</value></data>
+  <data name="Écrire un autre message" xml:space="preserve"><value>Write another message</value></data>
+  <data name="Nom complet" xml:space="preserve"><value>Full name</value></data>
+  <data name="vous@exemple.com" xml:space="preserve"><value>you@example.com</value></data>
+  <data name="Sujet" xml:space="preserve"><value>Subject</value></data>
+  <data name="Mission Blazor / Azure, conférence…" xml:space="preserve"><value>Blazor / Azure contract, talk…</value></data>
+  <data name="Parlez-moi de votre projet…" xml:space="preserve"><value>Tell me about your project…</value></data>
+  <data name="Ne pas remplir" xml:space="preserve"><value>Leave empty</value></data>
+  <data name="Envoyer le message" xml:space="preserve"><value>Send message</value></data>
+  <data name="Vos informations servent uniquement à vous répondre." xml:space="preserve"><value>Your details are only used to reply to you.</value></data>
+
+  <!-- Contact : messages de validation (annotations de ContactInput et règles du domaine) -->
+  <data name="Votre nom est obligatoire." xml:space="preserve"><value>Your name is required.</value></data>
+  <data name="Le nom ne doit pas dépasser 100 caractères." xml:space="preserve"><value>Your name must not exceed 100 characters.</value></data>
+  <data name="Votre e-mail est obligatoire." xml:space="preserve"><value>Your email address is required.</value></data>
+  <data name="Adresse e-mail invalide." xml:space="preserve"><value>Invalid email address.</value></data>
+  <data name="Le sujet est obligatoire." xml:space="preserve"><value>A subject is required.</value></data>
+  <data name="Le sujet ne doit pas dépasser 150 caractères." xml:space="preserve"><value>The subject must not exceed 150 characters.</value></data>
+  <data name="Le message est obligatoire." xml:space="preserve"><value>A message is required.</value></data>
+  <data name="Le message doit contenir entre 10 et 4000 caractères." xml:space="preserve"><value>The message must be between 10 and 4,000 characters long.</value></data>
+  <data name="Le message doit contenir au moins 10 caractères." xml:space="preserve"><value>The message must be at least 10 characters long.</value></data>
+  <data name="Le champ « E-mail » doit être une adresse e-mail valide." xml:space="preserve"><value>Please enter a valid email address.</value></data>
+
+  <!-- Pages d'erreur -->
+  <data name="Page introuvable" xml:space="preserve"><value>Page not found</value></data>
+  <data name="Cette page n'existe" xml:space="preserve"><value>This page doesn't exist</value></data>
+  <data name="pas (encore)" xml:space="preserve"><value>(yet)</value></data>
+  <data name="Le lien est peut-être erroné, ou la page a été déplacée." xml:space="preserve"><value>The link may be broken, or the page may have moved.</value></data>
+  <data name="Retour à l'accueil" xml:space="preserve"><value>Back to home</value></data>
+  <data name="Erreur" xml:space="preserve"><value>Error</value></data>
+  <data name="Une erreur inattendue" xml:space="preserve"><value>An unexpected error</value></data>
+  <data name="est survenue" xml:space="preserve"><value>has occurred</value></data>
+  <data name="Réessayez dans un instant. Si le problème persiste, contactez-moi." xml:space="preserve"><value>Please try again in a moment. If the problem persists, get in touch.</value></data>
+  <data name="Référence : {0}" xml:space="preserve"><value>Reference: {0}</value></data>
+</root>

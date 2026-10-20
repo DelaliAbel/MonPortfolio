@@ -1,7 +1,7 @@
 <section class="section" id="ambassador">
     <div class="container">
-        <SectionHeading Index="05" Eyebrow="Distinction & communauté" Title="Microsoft" Highlight="Gold Ambassador"
-                        Subtitle="Partager, fédérer, élever le niveau : l'engagement communautaire au cœur de ma pratique." />
+        <SectionHeading Index="05" Eyebrow="@L["Distinction & communauté"]" Title="Microsoft" Highlight="Gold Ambassador"
+                        Subtitle="@L["Partager, fédérer, élever le niveau : l'engagement communautaire au cœur de ma pratique."]" />
 
         <div class="ambassador-grid">
             <article class="ambassador-card reveal">
@@ -60,7 +60,7 @@
 
             <article class="community-card glow-card reveal">
                 <span class="card-icon card-icon--lg"><Icon Name="users" Size="24" /></span>
-                <p class="eyebrow-sm mono">Communauté tech</p>
+                <p class="eyebrow-sm mono">@L["Communauté tech"]</p>
                 <h3>@Profile.Community.Name</h3>
                 <p class="community-card__role">@Profile.Community.Role</p>
                 <p>@Profile.Community.Description</p>
@@ -76,7 +76,7 @@
                 @if (!string.IsNullOrWhiteSpace(Profile.Community.Url))
                 {
                     <a class="btn btn-ghost btn-sm" href="@Profile.Community.Url" target="_blank" rel="noopener noreferrer">
-                        Rejoindre la communauté <Icon Name="arrow-up-right" Size="15" />
+                        @L["Rejoindre la communauté"] <Icon Name="arrow-up-right" Size="15" />
                     </a>
                 }
             </article>
@@ -86,7 +86,7 @@
         {
             <div class="activities">
                 <header class="activities__header reveal">
-                    <h3><Icon Name="sparkles" Size="18" /> Activités communautaires</h3>
+                    <h3><Icon Name="sparkles" Size="18" /> @L["Activités communautaires"]</h3>
                     <span class="muted mono">@Activities.Count.ToString("00")</span>
                 </header>
 
@@ -100,7 +100,7 @@
                 @if (Activities.Count > VisibleCount)
                 {
                     <details class="activities__more">
-                        <summary class="btn btn-ghost btn-sm">Voir les @(Activities.Count - VisibleCount) autres activités</summary>
+                        <summary class="btn btn-ghost btn-sm">@L["Voir les {0} autres activités", Activities.Count - VisibleCount]</summary>
                         <div class="activities-grid">
                             @foreach (var activity in Activities.Skip(VisibleCount))
                             {

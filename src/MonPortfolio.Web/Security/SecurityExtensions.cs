@@ -31,7 +31,8 @@ public static class SecurityExtensions
             {
                 rejected.HttpContext.Response.ContentType = "text/plain; charset=utf-8";
                 await rejected.HttpContext.Response.WriteAsync(
-                    "Trop de tentatives. Merci de réessayer dans une minute.", cancellationToken);
+                    "Trop de tentatives. Merci de réessayer dans une minute.\nToo many attempts. Please try again in a minute.",
+                    cancellationToken);
             };
         });
 

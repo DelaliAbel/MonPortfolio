@@ -1,0 +1,65 @@
+{
+  "_Note": "Version anglaise du profil. Elle complète profile.json clé par clé : une valeur absente ici reprend la valeur française (nom, e-mail, photo, icônes…). Les listes sont fusionnées élément par élément : gardez le même nombre d'éléments et le même ordre que dans profile.json.",
+
+  "Profile": {
+    "Headline": "Senior Full-Stack Developer",
+    "Roles": [ "Senior Java & .NET Developer", "Microsoft Gold Ambassador", "Computer security" ],
+    "Tagline": "I build robust, secure web, mobile and desktop applications — from the public sector to ERP and fintech — with an architect's rigor and a community leader's energy.",
+    "Availability": "Open to contracts & collaborations",
+
+    "About": [
+      "Senior Java and .NET developer, I have been building web, mobile and desktop applications for more than five years, from the public sector to ERP and fintech. I hold a master's degree in computer security, I am a Microsoft Gold Ambassador and the founder of the .NET Niger community."
+    ],
+
+    "Stats": [
+      { "Label": "years of experience" },
+      { "Label": "developers coordinated" },
+      { "Label": "Microsoft Ambassador" },
+      { "Value": "MSc", "Label": "Computer security" }
+    ],
+
+    "Expertises": [
+      { "Title": "Software architecture", "Description": "Clean Architecture, DDD, microservices, N-tier, MVVM / MVC." },
+      { "Title": "Full-stack .NET & Java", "Description": "ASP.NET Core, Blazor, WPF, .NET MAUI, Aspire, Spring Boot, Flutter." },
+      { "Title": "Cloud & DevOps", "Description": "Microsoft Azure, CI/CD pipelines, Git, Power Platform." },
+      { "Title": "Application security", "Description": "Master's degree in computer security, transactional reliability, code reviews." }
+    ],
+
+    "Languages": [
+      { "Name": "French" },
+      { "Name": "Zarma" },
+      { "Name": "English" },
+      { "Name": "Hausa" }
+    ],
+
+    "Ambassador": {
+      "Description": "A steady progression through the Microsoft Ambassador program up to the Gold / Senior level: a recognized commitment to knowledge sharing and to growing the tech community.",
+      "Milestones": [
+        { "Date": "Jan 2025", "Description": "Joined the program" },
+        { "Date": "Jul 2025", "Description": "Commitment confirmed" },
+        { "Date": "Feb 2026", "Description": "Highest level reached" }
+      ]
+    },
+
+    "Community": {
+      "Role": "Lead & Founder",
+      "Description": "Founder and organizer of the .NET Niger community: bringing developers together, sharing best practices and promoting the Microsoft ecosystem in Niger.",
+      "Pillars": [ "Knowledge sharing", "Mentoring", ".NET & Azure ecosystem" ]
+    },
+
+    "Certifications": {
+      "Items": [
+        { "Name": "C# Fundamentals" },
+        { "Name": "Software architect" },
+        { "Name": "Microsoft Azure" },
+        { "Name": "DevOps" },
+        { "Name": "IT security specialist" },
+        { "Name": "AI & ML specialist" },
+        { "Name": "Mobile app developer" },
+        { "Name": "JavaScript" },
+        { "Name": "Figma" },
+        { "Name": "Bootstrap" }
+      ]
+    }
+  }
+}

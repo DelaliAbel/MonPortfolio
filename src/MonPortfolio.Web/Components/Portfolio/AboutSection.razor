@@ -3,7 +3,7 @@
 
 <section class="section" id="about">
     <div class="container">
-        <SectionHeading Index="01" Eyebrow="À propos" Title="La rigueur d'un architecte," Highlight="l'énergie d'un leader." />
+        <SectionHeading Index="01" Eyebrow="@L["À propos"]" Title="@L["La rigueur d'un architecte,"]" Highlight="@L["l'énergie d'un leader."]" />
 
         <div class="about-grid">
             <div class="about__text reveal">
@@ -14,13 +14,13 @@
 
                 @if (Profile.Languages.Count > 0)
                 {
-                    <ul class="languages" aria-label="Langues">
-                        <li class="languages__label"><Icon Name="globe" Size="15" /> Langues</li>
+                    <ul class="languages" aria-label="@L["Langues"]">
+                        <li class="languages__label"><Icon Name="globe" Size="15" /> @L["Langues"]</li>
                         @foreach (var language in Profile.Languages)
                         {
                             <li>
                                 <span>@language.Name</span>
-                                <span class="level-dots" role="img" aria-label="Niveau @language.Level sur 5">
+                                <span class="level-dots" role="img" aria-label="@L["Niveau {0} sur 5", language.Level]">
                                     @for (var i = 1; i <= 5; i++)
                                     {
                                         <i class="@(i <= language.Level ? "on" : null)"></i>
@@ -32,7 +32,7 @@
                 }
             </div>
 
-            <figure class="code-window glow-card reveal" aria-label="Extrait de code C# décrivant le profil">
+            <figure class="code-window glow-card reveal" aria-label="@L["Extrait de code C# décrivant le profil"]">
                 <div class="code-window__bar">
                     <span class="code-window__dots" aria-hidden="true"><i></i><i></i><i></i></span>
                     <span class="mono">Developer.cs</span>
@@ -45,7 +45,7 @@
                     <span class="line">    <span class="tk-kw">public string</span> <span class="tk-prop">Role</span> =&gt; <span class="tk-str">"Full-Stack Senior"</span>;</span>
                     <span class="line">    <span class="tk-kw">public string</span>[] <span class="tk-prop">Stack</span> =&gt; [<span class="tk-str">".NET"</span>, <span class="tk-str">"Java"</span>, <span class="tk-str">"Azure"</span>];</span>
                     <span class="line"> </span>
-                    <span class="line">    <span class="tk-cm">// Sécurité by design, du domaine jusqu'au cloud.</span></span>
+                    <span class="line">    <span class="tk-cm">// @L["Sécurité by design, du domaine jusqu'au cloud."]</span></span>
                     <span class="line">    <span class="tk-kw">public</span> <span class="tk-type">Task</span>&lt;<span class="tk-type">Product</span>&gt; <span class="tk-fn">ShipAsync</span>(<span class="tk-type">Idea</span> <span class="tk-param">idea</span>) =&gt;</span>
                     <span class="line">        <span class="tk-type">CleanArchitecture</span>.<span class="tk-fn">From</span>(<span class="tk-param">idea</span>).<span class="tk-fn">DeployAsync</span>();</span>
                     <span class="line">}</span>

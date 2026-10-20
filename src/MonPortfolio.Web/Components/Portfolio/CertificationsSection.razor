@@ -1,12 +1,12 @@
 <section class="section section--alt" id="certifications">
     <div class="container">
-        <SectionHeading Index="06" Eyebrow="Certifications" Title="Apprendre," Highlight="toujours."
-                        Subtitle="Parcours certifiants suivis pour rester à la pointe : cloud, architecture, sécurité, IA." />
+        <SectionHeading Index="06" Eyebrow="@L["Certifications"]" Title="@L["Apprendre,"]" Highlight="@L["toujours."]"
+                        Subtitle="@L["Parcours certifiants suivis pour rester à la pointe : cloud, architecture, sécurité, IA."]" />
 
         @if (Profile.Certifications.Providers.Count > 0)
         {
             <p class="providers reveal">
-                <span class="muted">Délivrées par</span>
+                <span class="muted">@L["Délivrées par"]</span>
                 @foreach (var provider in Profile.Certifications.Providers)
                 {
                     <span class="provider mono">@provider</span>

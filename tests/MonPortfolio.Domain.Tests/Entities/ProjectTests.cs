@@ -19,6 +19,23 @@ public class ProjectTests
         Assert.Null(project.UpdatedAtUtc);
     }
 
+    [Fact]
+    public void Create_keeps_trimmed_english_translations()
+    {
+        var project = Make.Project(title: " Plateforme ", titleEn: " Platform ", description: "Détails", descriptionEn: "  ");
+
+        Assert.Equal(new LocalizedText("Plateforme", "Platform"), project.Title);
+        Assert.Equal(new LocalizedText("Détails"), project.Description);
+    }
+
+    [Fact]
+    public void English_translation_obeys_the_same_max_length() =>
+        Assert.Throws<DomainException>(() => Make.Project(titleEn: Make.Text(Project.TitleMaxLength + 1)));
+
+    [Fact]
+    public void Optional_text_rejects_a_translation_without_french() =>
+        Assert.Throws<DomainException>(() => Make.Project(description: "  ", descriptionEn: "English only"));
+
     [Theory]
     [InlineData(nameof(Project.Title), null)]
     [InlineData(nameof(Project.Title), "")]

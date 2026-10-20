@@ -1,0 +1,30 @@
+@* Champ traduisible : saisie française (obligatoire selon le champ) et traduction anglaise facultative, côte à côte.
+   Sans traduction, la version anglaise du site affiche le texte français. *@
+<div class="field">
+    <label for="@Id">
+        @Label
+        @if (Hint is not null)
+        {
+            <span class="field__hint">@Hint</span>
+        }
+    </label>
+    <div class="bilingual">
+        <div class="bilingual__lang">
+            <span class="lang-tag" aria-hidden="true">FR</span>
+            @French
+        </div>
+        <div class="bilingual__lang">
+            <label class="lang-tag lang-tag--en" for="@($"{Id}-en")">EN<span class="sr-only"> : @Label en anglais</span></label>
+            @English
+        </div>
+    </div>
+</div>
+
+@code {
+    /// <summary>Identifiant du champ français ; le champ anglais doit porter « {Id}-en ».</summary>
+    [Parameter, EditorRequired] public string Id { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
+    [Parameter] public string? Hint { get; set; }
+    [Parameter, EditorRequired] public RenderFragment French { get; set; } = default!;
+    [Parameter, EditorRequired] public RenderFragment English { get; set; } = default!;
+}

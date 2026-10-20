@@ -11,6 +11,9 @@ public sealed class CommunityActivityInput
     [StringLength(CommunityActivity.TitleMaxLength, ErrorMessage = "Le titre ne doit pas dépasser {1} caractères.")]
     public string Title { get; set; } = string.Empty;
 
+    [StringLength(CommunityActivity.TitleMaxLength, ErrorMessage = "Le titre anglais ne doit pas dépasser {1} caractères.")]
+    public string? TitleEn { get; set; }
+
     [EnumDataType(typeof(CommunityActivityKind), ErrorMessage = "Type d'activité inconnu.")]
     public CommunityActivityKind Kind { get; set; } = CommunityActivityKind.Talk;
 
@@ -25,6 +28,9 @@ public sealed class CommunityActivityInput
     [StringLength(CommunityActivity.DescriptionMaxLength, ErrorMessage = "La description ne doit pas dépasser {1} caractères.")]
     public string? Description { get; set; }
 
+    [StringLength(CommunityActivity.DescriptionMaxLength, ErrorMessage = "La description anglaise ne doit pas dépasser {1} caractères.")]
+    public string? DescriptionEn { get; set; }
+
     [WebUrl, Display(Name = "« Lien de la publication »")]
     [StringLength(CommunityActivity.UrlMaxLength)]
     public string? PublicationUrl { get; set; }
@@ -35,12 +41,14 @@ public sealed class CommunityActivityInput
 
     public static CommunityActivityInput From(CommunityActivityDto dto) => new()
     {
-        Title = dto.Title,
+        Title = dto.Title.Fr,
+        TitleEn = dto.Title.En,
         Kind = dto.Kind,
         Date = dto.Date,
         Organizer = dto.Organizer,
         Location = dto.Location,
-        Description = dto.Description,
+        Description = dto.Description?.Fr,
+        DescriptionEn = dto.Description?.En,
         PublicationUrl = dto.PublicationUrl,
         ImageUrl = dto.ImageUrl
     };

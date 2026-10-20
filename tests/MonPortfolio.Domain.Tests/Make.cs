@@ -1,3 +1,4 @@
+using MonPortfolio.Domain.Common;
 using MonPortfolio.Domain.Entities;
 using MonPortfolio.Domain.Enums;
 
@@ -24,10 +25,13 @@ internal static class Make
         string? repositoryUrl = null,
         string? liveUrl = null,
         bool isFeatured = false,
-        int displayOrder = 0) =>
+        int displayOrder = 0,
+        string? titleEn = null,
+        string? descriptionEn = null) =>
         global::MonPortfolio.Domain.Entities.Project.Create(
-            title, summary, description, category, technologies,
-            imageUrl, mobileImageUrl, repositoryUrl, liveUrl, isFeatured, displayOrder, Now);
+            new LocalizedText(title, titleEn), summary,
+            description is null && descriptionEn is null ? null : new LocalizedText(description!, descriptionEn),
+            category, technologies, imageUrl, mobileImageUrl, repositoryUrl, liveUrl, isFeatured, displayOrder, Now);
 
     public static Skill Skill(
         string name = "C#",
@@ -49,7 +53,7 @@ internal static class Make
         string? linkUrl = null) =>
         global::MonPortfolio.Domain.Entities.Experience.Create(
             title, organization, location, type, startDate ?? new DateOnly(2022, 1, 1), endDate,
-            description, highlights, technologies, linkUrl, Now);
+            description, LocalizedList.Of(highlights), technologies, linkUrl, Now);
 
     public static SocialLink SocialLink(
         SocialPlatform platform = SocialPlatform.LinkedIn,

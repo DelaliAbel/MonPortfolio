@@ -2,17 +2,19 @@
 @inject IOptionsSnapshot<ProfileOptions> ProfileOptions
 @inject ISocialLinkService SocialLinkService
 
-<a class="skip-link" href="#main">Aller au contenu</a>
-<SiteHeader Profile="ProfileOptions.Value" />
+<a class="skip-link" href="#main">@L["Aller au contenu"]</a>
+<SiteHeader Profile="Profile" />
 
 <main id="main">
     @Body
 </main>
 
-<SiteFooter Profile="ProfileOptions.Value" SocialLinks="socialLinks" />
+<SiteFooter Profile="Profile" SocialLinks="socialLinks" />
 
 @code {
     private IReadOnlyList<SocialLinkDto> socialLinks = [];
+
+    private ProfileOptions Profile => ProfileOptions.Get(SiteLanguage.ProfileName);
 
     protected override async Task OnInitializedAsync() =>
         socialLinks = await SocialLinkService.GetAllAsync();

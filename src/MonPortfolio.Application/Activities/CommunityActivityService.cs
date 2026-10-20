@@ -19,24 +19,24 @@ internal sealed class CommunityActivityService(
 
     protected override CommunityActivity CreateEntity(CommunityActivityInput input, DateTime utcNow) =>
         CommunityActivity.Create(
-            input.Title,
+            Bilingual.Text(input.Title, input.TitleEn),
             input.Kind,
             input.Date,
             input.Organizer,
             input.Location,
-            input.Description,
+            Bilingual.OptionalText(input.Description, input.DescriptionEn),
             input.PublicationUrl,
             input.ImageUrl,
             utcNow);
 
     protected override void UpdateEntity(CommunityActivity activity, CommunityActivityInput input, DateTime utcNow) =>
         activity.Update(
-            input.Title,
+            Bilingual.Text(input.Title, input.TitleEn),
             input.Kind,
             input.Date,
             input.Organizer,
             input.Location,
-            input.Description,
+            Bilingual.OptionalText(input.Description, input.DescriptionEn),
             input.PublicationUrl,
             input.ImageUrl,
             utcNow);

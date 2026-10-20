@@ -12,10 +12,10 @@ internal sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.HasKey(p => p.Id);
         builder.Property(p => p.Id).ValueGeneratedNever();
 
-        builder.Property(p => p.Title).HasMaxLength(Project.TitleMaxLength).IsRequired();
-        builder.Property(p => p.Summary).HasMaxLength(Project.SummaryMaxLength).IsRequired();
-        builder.Property(p => p.Description).HasMaxLength(Project.DescriptionMaxLength);
-        builder.Property(p => p.Category).HasMaxLength(Project.CategoryMaxLength).IsRequired();
+        builder.Property(p => p.Title).HasConversion(LocalizedConverters.Text).IsRequired();
+        builder.Property(p => p.Summary).HasConversion(LocalizedConverters.Text).IsRequired();
+        builder.Property(p => p.Description).HasConversion(LocalizedConverters.OptionalText);
+        builder.Property(p => p.Category).HasConversion(LocalizedConverters.Text).IsRequired();
         builder.Property(p => p.ImageUrl).HasMaxLength(Project.UrlMaxLength);
         builder.Property(p => p.MobileImageUrl).HasMaxLength(Project.UrlMaxLength);
         builder.Property(p => p.RepositoryUrl).HasMaxLength(Project.UrlMaxLength);
@@ -34,7 +34,7 @@ internal sealed class SkillConfiguration : IEntityTypeConfiguration<Skill>
         builder.HasKey(s => s.Id);
         builder.Property(s => s.Id).ValueGeneratedNever();
 
-        builder.Property(s => s.Name).HasMaxLength(Skill.NameMaxLength).IsRequired();
+        builder.Property(s => s.Name).HasConversion(LocalizedConverters.Text).IsRequired();
         builder.Property(s => s.Category).IsRequired();
 
         builder.HasIndex(s => new { s.Category, s.DisplayOrder });
@@ -49,11 +49,11 @@ internal sealed class ExperienceConfiguration : IEntityTypeConfiguration<Experie
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).ValueGeneratedNever();
 
-        builder.Property(e => e.Title).HasMaxLength(Experience.TitleMaxLength).IsRequired();
+        builder.Property(e => e.Title).HasConversion(LocalizedConverters.Text).IsRequired();
         builder.Property(e => e.Organization).HasMaxLength(Experience.OrganizationMaxLength).IsRequired();
         builder.Property(e => e.Location).HasMaxLength(Experience.LocationMaxLength);
-        builder.Property(e => e.Description).HasMaxLength(Experience.DescriptionMaxLength);
-        builder.PrimitiveCollection(e => e.Highlights);
+        builder.Property(e => e.Description).HasConversion(LocalizedConverters.OptionalText);
+        builder.Property(e => e.Highlights).HasConversion(LocalizedConverters.List).IsRequired();
         builder.PrimitiveCollection(e => e.Technologies);
         builder.Property(e => e.LinkUrl).HasMaxLength(Experience.UrlMaxLength);
         builder.Ignore(e => e.IsCurrent);
@@ -86,11 +86,11 @@ internal sealed class CommunityActivityConfiguration : IEntityTypeConfiguration<
         builder.HasKey(a => a.Id);
         builder.Property(a => a.Id).ValueGeneratedNever();
 
-        builder.Property(a => a.Title).HasMaxLength(CommunityActivity.TitleMaxLength).IsRequired();
+        builder.Property(a => a.Title).HasConversion(LocalizedConverters.Text).IsRequired();
         builder.Property(a => a.Kind).IsRequired();
         builder.Property(a => a.Organizer).HasMaxLength(CommunityActivity.OrganizerMaxLength);
         builder.Property(a => a.Location).HasMaxLength(CommunityActivity.LocationMaxLength);
-        builder.Property(a => a.Description).HasMaxLength(CommunityActivity.DescriptionMaxLength);
+        builder.Property(a => a.Description).HasConversion(LocalizedConverters.OptionalText);
         builder.Property(a => a.PublicationUrl).HasMaxLength(CommunityActivity.UrlMaxLength);
         builder.Property(a => a.ImageUrl).HasMaxLength(CommunityActivity.UrlMaxLength);
 

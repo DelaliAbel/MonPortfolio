@@ -49,6 +49,13 @@ document.addEventListener("click", (event) => {
     if (target.closest(".nav__links a")) {
         toggleNav(false);
     }
+    // Changement de langue : on reste sur la section affichée (le fragment survit à la redirection du serveur).
+    const langLink = target.closest("[data-lang-switch]");
+    if (langLink instanceof HTMLAnchorElement) {
+        const section = document.querySelector("[data-nav-link].is-active")?.dataset.navLink;
+        langLink.hash = section ? `#${section}` : location.hash;
+        return;
+    }
     const filter = target.closest("[data-filter]");
     if (filter) {
         applyFilter(filter);

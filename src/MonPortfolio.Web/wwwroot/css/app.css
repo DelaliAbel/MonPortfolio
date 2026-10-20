@@ -738,6 +738,48 @@ code {
     gap: 0.5rem;
 }
 
+/* Sélecteur de langue FR | EN */
+.lang-switch {
+    display: inline-flex;
+    flex: none;
+    height: 40px;
+    padding: 4px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+}
+
+.lang-switch a {
+    display: inline-grid;
+    place-items: center;
+    min-width: 32px;
+    padding-inline: 0.4rem;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.lang-switch a:hover,
+.lang-switch a:focus-visible {
+    color: var(--text);
+}
+
+.lang-switch a.is-active {
+    background: var(--gold-soft);
+    color: var(--gold-400);
+}
+
+/* Très petits écrans : le monogramme suffit, la place va au sélecteur de langue. */
+@media (max-width: 359px) {
+    .site-header .brand__name {
+        display: none;
+    }
+}
+
 .nav__cta {
     display: none;
 }
@@ -3670,6 +3712,53 @@ code {
     color: var(--text-strong);
     font-size: 0.86rem;
     font-weight: 500;
+}
+
+/* ---------- Admin : champs bilingues FR / EN ---------- */
+.form-note--start {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.bilingual {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.bilingual__lang {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+}
+
+.lang-tag {
+    justify-self: start;
+    padding: 0.05rem 0.45rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
+
+.lang-tag--en {
+    border-color: var(--gold-line);
+    color: var(--gold-400);
+}
+
+.chip--todo {
+    border-color: rgba(251, 191, 36, 0.35);
+    background: rgba(251, 191, 36, 0.08);
+    color: var(--gold-400);
+    font-size: 0.68rem;
+}
+
+@media (min-width: 720px) {
+    .bilingual {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 .image-field {

@@ -1,0 +1,9 @@
+@* Signale un contenu dont la traduction anglaise est incomplète (le site anglais affiche alors le français). *@
+@if (!IsTranslated)
+{
+    <span class="chip chip--todo" title="Traduction anglaise incomplète : la version anglaise du site affiche le français.">EN à traduire</span>
+}
+
+@code {
+    [Parameter] public bool IsTranslated { get; set; }
+}

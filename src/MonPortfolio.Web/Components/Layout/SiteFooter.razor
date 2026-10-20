@@ -1,7 +1,7 @@
 <footer class="site-footer">
     <div class="container site-footer__inner">
         <div class="site-footer__brand">
-            <a class="brand" href="/#top">
+            <a class="brand" href="@SiteLanguage.Section("top")">
                 <span class="brand__mark">@Profile.Initials</span>
                 <span class="brand__name">@Profile.FullName</span>
             </a>
@@ -9,13 +9,13 @@
         </div>
 
         <div class="site-footer__social">
-            <a class="social-btn" href="mailto:@Profile.Email" aria-label="E-mail" title="E-mail"><span class="social-logo" aria-hidden="true"><Icon Name="mail" Size="24" /></span></a>
+            <a class="social-btn" href="mailto:@Profile.Email" aria-label="@L["E-mail"]" title="@L["E-mail"]"><span class="social-logo" aria-hidden="true"><Icon Name="mail" Size="24" /></span></a>
             <SocialLinks Links="SocialLinks" />
         </div>
     </div>
 
     <div class="container site-footer__bottom">
-        <span>© @DateTime.Now.Year @Profile.FullName. Tous droits réservés.</span>
+        <span>© @DateTime.Now.Year @Profile.FullName. @L["Tous droits réservés."]</span>
         <span class="mono">Built with <span class="text-gold">.NET 10</span> · Blazor · Clean Architecture</span>
     </div>
 </footer>
