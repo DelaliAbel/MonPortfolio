@@ -45,10 +45,19 @@ internal sealed partial class LocalImageStorage(IOptions<ImageStorageOptions> op
 
         var folderName = FolderName(folder);
         var directory = Path.Combine(root, folderName);
-        Directory.CreateDirectory(directory);
-
         var fileName = $"{Guid.CreateVersion7():N}{extension}";
-        await File.WriteAllBytesAsync(Path.Combine(directory, fileName), bytes, cancellationToken);
+        try
+        {
+            Directory.CreateDirectory(directory);
+            await File.WriteAllBytesAsync(Path.Combine(directory, fileName), bytes, cancellationToken);
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+        {
+            logger.LogError(ex, "Écriture impossible dans {Directory}.", directory);
+            return Result<string>.Failure(
+                "Le serveur refuse l'enregistrement de l'image (droits d'écriture manquants sur App_Data). " +
+                "Utilisez une URL d'image en attendant.");
+        }
 
         logger.LogInformation("Image téléversée : {Folder}/{File} ({Size} octets).", folderName, fileName, bytes.Length);
         return $"{PublicPrefix}{folderName}/{fileName}";
@@ -63,7 +72,7 @@ internal sealed partial class LocalImageStorage(IOptions<ImageStorageOptions> op
         {
             File.Delete(path);
         }
-        catch (IOException ex)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
             // Un fichier orphelin n'est pas bloquant : on journalise sans faire échouer l'opération métier.
             logger.LogWarning(ex, "Suppression impossible de l'image {Path}.", publicUrl);

@@ -80,6 +80,23 @@ public sealed class LocalImageStorageTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveAsync_reports_a_failure_instead_of_throwing_when_the_disk_refuses_writes()
+    {
+        // La racine pointe sur un fichier : toute création de dossier en dessous échoue (comme un dossier en lecture seule).
+        Directory.CreateDirectory(root);
+        var blocked = Path.Combine(root, "bloque");
+        await File.WriteAllTextAsync(blocked, "pas un dossier");
+        var readOnlyStorage = new LocalImageStorage(
+            OptionsFactory.Create(new ImageStorageOptions { RootPath = blocked }),
+            NullLogger<LocalImageStorage>.Instance);
+
+        var result = await readOnlyStorage.SaveAsync(new MemoryStream(Jpeg), ImageFolder.Projects);
+
+        Assert.True(result.IsFailure);
+        Assert.Contains("App_Data", result.Error);
+    }
+
+    [Fact]
     public async Task DeleteAsync_removes_a_managed_image()
     {
         var url = (await storage.SaveAsync(new MemoryStream(Jpeg), ImageFolder.Projects)).Value!;

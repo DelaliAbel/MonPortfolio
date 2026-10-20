@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MonPortfolio.Application.Common;
 using MonPortfolio.Application.Security;
@@ -125,7 +126,20 @@ public static class DependencyInjection
     public static IApplicationBuilder UseUploadedImages(this IApplicationBuilder app)
     {
         var root = app.ApplicationServices.GetRequiredService<IOptions<ImageStorageOptions>>().Value.RootPath;
-        Directory.CreateDirectory(root);
+        try
+        {
+            Directory.CreateDirectory(root);
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+        {
+            // Sans droit d'écriture (hébergement mutualisé), le site doit tout de même démarrer :
+            // seules les images téléversées sont indisponibles.
+            app.ApplicationServices.GetRequiredService<ILoggerFactory>()
+                .CreateLogger(typeof(DependencyInjection))
+                .LogError(ex, "Dossier d'images inaccessible ({Root}) : le téléversement est désactivé. " +
+                              "Accordez les droits d'écriture sur App_Data.", root);
+            return app;
+        }
 
         return app.UseStaticFiles(new StaticFileOptions
         {
