@@ -1,0 +1,33 @@
+﻿@page "/"
+@inject IPortfolioService PortfolioService
+@inject IOptionsSnapshot<ProfileOptions> ProfileOptions
+
+@* Vitrine publique : rendu statique côté serveur (SSR), indexable et sans WebSocket.
+   Seuls quelques comportements légers (thème, filtres, animations) passent par wwwroot/js/site.js. *@
+
+<PageTitle>@Profile.FullName — @Profile.Headline</PageTitle>
+<HeadContent>
+    <meta name="description" content="@Profile.Tagline" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@Profile.FullName — @Profile.Headline" />
+    <meta property="og:description" content="@Profile.Tagline" />
+    <meta property="og:image" content="@Profile.PhotoUrl" />
+</HeadContent>
+
+<HeroSection Profile="Profile" SocialLinks="portfolio.SocialLinks" />
+<AboutSection Profile="Profile" />
+<JourneySection Experiences="portfolio.Experiences" />
+<SkillsSection Groups="portfolio.SkillGroups" />
+<ProjectsSection Projects="portfolio.Projects" />
+<AmbassadorSection Profile="Profile" Activities="portfolio.Activities" />
+<CertificationsSection Profile="Profile" />
+<ContactSection Profile="Profile" SocialLinks="portfolio.SocialLinks" />
+
+@code {
+    private PortfolioDto portfolio = PortfolioDto.Empty;
+
+    private ProfileOptions Profile => ProfileOptions.Value;
+
+    protected override async Task OnInitializedAsync() =>
+        portfolio = await PortfolioService.GetPublicPortfolioAsync();
+}

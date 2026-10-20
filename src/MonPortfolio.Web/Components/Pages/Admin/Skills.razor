@@ -1,0 +1,120 @@
+@page "/admin/competences"
+@rendermode AppRenderModes.InteractiveAdmin
+@inherits CrudPageBase<SkillDto, SkillInput>
+@inject ISkillService SkillService
+
+<PageTitle>Compétences — Administration</PageTitle>
+
+<AdminPageHeader Title="Compétences" Subtitle="Stack technique affichée par catégorie, avec son niveau de maîtrise.">
+    <Actions>
+        <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate"><Icon Name="plus" Size="16" /> Nouvelle compétence</button>
+    </Actions>
+</AdminPageHeader>
+
+@if (Items is null)
+{
+    <LoadingState />
+}
+else if (Items.Count == 0)
+{
+    <div class="empty-panel">
+        <Icon Name="cpu" Size="28" />
+        <p>Aucune compétence pour l'instant.</p>
+        <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate">Ajouter une compétence</button>
+    </div>
+}
+else
+{
+    <div class="admin-cards">
+        @foreach (var group in Items.GroupBy(s => s.Category).OrderBy(g => g.Key))
+        {
+            <section class="panel">
+                <header class="panel__header">
+                    <h2>@SkillCategories.Label(group.Key)</h2>
+                    <span class="muted mono">@group.Count()</span>
+                </header>
+                <ul class="skill-admin-list">
+                    @foreach (var skill in group)
+                    {
+                        <li>
+                            <div class="skill-admin-list__main">
+                                <div class="skill__row">
+                                    <span class="skill__name"><TechLogo Name="@skill.Name" Size="18" Class="tech-logo--tile" /> <strong>@skill.Name</strong></span>
+                                    <span class="mono muted">@skill.Level%</span>
+                                </div>
+                                <div class="skill-bar"><span style="--level: @(skill.Level)%"></span></div>
+                            </div>
+                            <div class="actions">
+                                <button type="button" class="icon-btn" @onclick="() => OpenEdit(skill)" aria-label="Modifier @skill.Name"><Icon Name="pencil" Size="16" /></button>
+                                <button type="button" class="icon-btn icon-btn--danger" @onclick="() => AskDelete(skill)" aria-label="Supprimer @skill.Name"><Icon Name="trash" Size="16" /></button>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </section>
+        }
+    </div>
+}
+
+<Modal IsOpen="EditorOpen" Title="@(IsEditing ? "Modifier la compétence" : "Nouvelle compétence")" OnClose="CloseEditorAsync">
+    <EditForm Model="Input" OnValidSubmit="SaveAsync" class="form">
+        <DataAnnotationsValidator />
+        <FormErrors Errors="SaveErrors" />
+
+        <div class="field">
+            <label for="s-name">Nom</label>
+            <LiveInputText id="s-name" @bind-Value="Input.Name" placeholder="Blazor" />
+            <ValidationMessage For="() => Input.Name" />
+            @if (!string.IsNullOrWhiteSpace(Input.Name))
+            {
+                <p class="logo-preview">
+                    <TechLogo Name="@Input.Name" Size="20" Class="tech-logo--tile" />
+                    @(TechLogos.Resolve(Input.Name).Count > 0 ? "Logo reconnu automatiquement." : "Aucun logo de marque : une icône générique sera affichée.")
+                </p>
+            }
+        </div>
+
+        <div class="field">
+            <label for="s-category">Catégorie</label>
+            <InputSelect id="s-category" @bind-Value="Input.Category">
+                @foreach (var category in SkillCategories.All)
+                {
+                    <option value="@category">@SkillCategories.Label(category)</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="() => Input.Category" />
+        </div>
+
+        <div class="field">
+            <label for="s-level">Niveau <span class="field__hint mono text-gold">@Input.Level%</span></label>
+            <input id="s-level" type="range" min="1" max="100" class="range" @bind="Input.Level" @bind:event="oninput" />
+            <div class="skill-bar skill-bar--preview"><span style="--level: @(Input.Level)%"></span></div>
+            <ValidationMessage For="() => Input.Level" />
+        </div>
+
+        <div class="field">
+            <label for="s-order">Ordre dans la catégorie</label>
+            <InputNumber id="s-order" @bind-Value="Input.DisplayOrder" min="0" max="999" />
+            <ValidationMessage For="() => Input.DisplayOrder" />
+        </div>
+
+        <div class="modal__footer">
+            <button type="button" class="btn btn-ghost" @onclick="CloseEditorAsync">Annuler</button>
+            <button type="submit" class="btn btn-gold" disabled="@Saving">@(Saving ? "Enregistrement…" : "Enregistrer")</button>
+        </div>
+    </EditForm>
+</Modal>
+
+<ConfirmDialog IsOpen="PendingDelete is not null" Busy="Deleting"
+               Title="Supprimer cette compétence ?"
+               Message="@($"« {PendingDelete?.Name} » ne sera plus affichée sur le portfolio.")"
+               OnConfirm="ConfirmDeleteAsync" OnCancel="CancelDelete" />
+
+<Toast @ref="Toast" />
+
+@code {
+    protected override ICrudService<SkillDto, SkillInput> Service => SkillService;
+    protected override CrudMessages Messages { get; } = new("Compétence ajoutée.", "Compétence mise à jour.", "Compétence supprimée.");
+    protected override Guid IdOf(SkillDto item) => item.Id;
+    protected override SkillInput ToInput(SkillDto item) => SkillInput.From(item);
+}

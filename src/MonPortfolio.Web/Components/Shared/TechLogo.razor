@@ -1,0 +1,35 @@
+@using MonPortfolio.Web.TechStack
+
+@* Logo(s) de la technologie nommée ; icône générique dorée si aucune marque n'est reconnue.
+   Décoratif (alt vide) : le nom de la technologie est toujours affiché à côté. *@
+
+@if (logos.Count > 0)
+{
+    <span class="tech-logo @(logos.Count > 1 ? "tech-logo--pair" : null) @Class" aria-hidden="true">
+        @foreach (var logo in logos)
+        {
+            <img src="@Assets[$"logos/{logo.File}.svg"]" alt="" width="@Size" height="@Size" loading="lazy" decoding="async"
+                 class="@(logo.InvertOnDark ? "tech-logo__img--invert" : null)" />
+        }
+    </span>
+}
+else if (ShowFallback)
+{
+    <span class="tech-logo tech-logo--icon @Class" aria-hidden="true">
+        <Icon Name="@TechLogos.FallbackIcon(Name)" Size="@Size" />
+    </span>
+}
+
+@code {
+    private IReadOnlyList<BrandLogo> logos = [];
+
+    [Parameter, EditorRequired] public string? Name { get; set; }
+    [Parameter] public int Size { get; set; } = 18;
+
+    /// <summary>Afficher une icône générique quand aucun logo de marque n'existe.</summary>
+    [Parameter] public bool ShowFallback { get; set; } = true;
+
+    [Parameter] public string? Class { get; set; }
+
+    protected override void OnParametersSet() => logos = TechLogos.Resolve(Name);
+}

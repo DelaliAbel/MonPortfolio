@@ -1,0 +1,73 @@
+<section class="section" id="skills">
+    <div class="container">
+        <SectionHeading Index="03" Eyebrow="Compétences" Title="Une stack polyglotte," Highlight="maîtrisée de bout en bout."
+                        Subtitle="Du langage au cloud, organisée par domaine d'expertise." />
+
+        @if (Groups.Count == 0)
+        {
+            <p class="empty-state">Les compétences seront bientôt publiées.</p>
+        }
+
+        <div class="skills-grid">
+            @foreach (var group in Groups)
+            {
+                <article class="skill-card glow-card reveal">
+                    <header class="skill-card__header">
+                        <span class="card-icon"><Icon Name="@CategoryIcon(group.Category)" Size="20" /></span>
+                        <h3>@group.Label</h3>
+                        <span class="skill-card__count mono">@group.Skills.Count.ToString("00")</span>
+                    </header>
+                    <ul class="skill-list">
+                        @foreach (var skill in group.Skills)
+                        {
+                            <li>
+                                <div class="skill__row">
+                                    <span class="skill__name"><TechLogo Name="@skill.Name" Size="18" Class="tech-logo--tile" /> @skill.Name</span>
+                                    <span class="mono muted">@skill.Level%</span>
+                                </div>
+                                <div class="skill-bar" role="progressbar" aria-label="@skill.Name" aria-valuenow="@skill.Level" aria-valuemin="0" aria-valuemax="100">
+                                    <span style="--level: @(skill.Level)%"></span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </article>
+            }
+        </div>
+    </div>
+
+    @if (allSkills.Count > 0)
+    {
+        <div class="marquee" aria-hidden="true">
+            <div class="marquee__track mono">
+                @for (var copy = 0; copy < 2; copy++)
+                {
+                    @foreach (var name in allSkills)
+                    {
+                        <span class="marquee__item"><TechLogo Name="@name" Size="22" ShowFallback="false" />@name</span>
+                    }
+                }
+            </div>
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<SkillGroupDto> Groups { get; set; } = [];
+
+    private List<string> allSkills = [];
+
+    protected override void OnParametersSet() =>
+        allSkills = Groups.SelectMany(g => g.Skills).Select(s => s.Name).ToList();
+
+    private static string CategoryIcon(SkillCategory category) => category switch
+    {
+        SkillCategory.Languages => "code",
+        SkillCategory.DotNet => "layers",
+        SkillCategory.JavaAndMobile => "smartphone",
+        SkillCategory.Architecture => "cpu",
+        SkillCategory.CloudDevOpsData => "cloud",
+        SkillCategory.SecurityAiTools => "shield",
+        _ => "sparkles"
+    };
+}

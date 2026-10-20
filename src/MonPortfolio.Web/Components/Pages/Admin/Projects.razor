@@ -1,0 +1,204 @@
+@page "/admin/projets"
+@rendermode AppRenderModes.InteractiveAdmin
+@inherits CrudPageBase<ProjectDto, ProjectInput>
+@inject IProjectService ProjectService
+
+<PageTitle>Projets — Administration</PageTitle>
+
+<AdminPageHeader Title="Projets" Subtitle="Les réalisations affichées dans la grille du portfolio.">
+    <Actions>
+        <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate"><Icon Name="plus" Size="16" /> Nouveau projet</button>
+    </Actions>
+</AdminPageHeader>
+
+@if (Items is null)
+{
+    <LoadingState />
+}
+else
+{
+    <div class="admin-toolbar">
+        <label class="search">
+            <Icon Name="search" Size="16" />
+            <input type="search" placeholder="Rechercher un projet, une techno…" @bind="search" @bind:event="oninput" aria-label="Rechercher" />
+        </label>
+        <span class="muted mono">@Filtered.Count() / @Items.Count projet(s)</span>
+    </div>
+
+    @if (Items.Count == 0)
+    {
+        <div class="empty-panel">
+            <Icon Name="folder" Size="28" />
+            <p>Aucun projet pour l'instant.</p>
+            <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate">Créer le premier projet</button>
+        </div>
+    }
+    else
+    {
+        <div class="table-card">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Projet</th>
+                        <th>Catégorie</th>
+                        <th class="hide-md">Technologies</th>
+                        <th class="num">Ordre</th>
+                        <th><span class="sr-only">Actions</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var project in Filtered)
+                    {
+                        <tr>
+                            <td>
+                                <div class="cell-title">
+                                    @if (project.IsFeatured)
+                                    {
+                                        <span class="text-gold" title="À la une"><Icon Name="star" Size="14" /></span>
+                                    }
+                                    <strong>@project.Title</strong>
+                                </div>
+                                <small class="muted clamp-1">@project.Summary</small>
+                            </td>
+                            <td><span class="chip">@project.Category</span></td>
+                            <td class="hide-md">
+                                <ul class="chips chips--compact">
+                                    @foreach (var technology in project.Technologies.Take(3))
+                                    {
+                                        <TechChip Name="@technology" />
+                                    }
+                                    @if (project.Technologies.Count > 3)
+                                    {
+                                        <li class="chip chip--more">+@(project.Technologies.Count - 3)</li>
+                                    }
+                                </ul>
+                            </td>
+                            <td class="num mono">@project.DisplayOrder</td>
+                            <td class="actions">
+                                <button type="button" class="icon-btn" @onclick="() => OpenEdit(project)" aria-label="Modifier @project.Title"><Icon Name="pencil" Size="16" /></button>
+                                <button type="button" class="icon-btn icon-btn--danger" @onclick="() => AskDelete(project)" aria-label="Supprimer @project.Title"><Icon Name="trash" Size="16" /></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
+<Modal IsOpen="EditorOpen" Title="@(IsEditing ? "Modifier le projet" : "Nouveau projet")" OnClose="CloseEditorAsync" Wide>
+    <EditForm Model="Input" OnValidSubmit="SaveAsync" class="form">
+        <DataAnnotationsValidator />
+        <FormErrors Errors="SaveErrors" />
+
+        <div class="form-row">
+            <div class="field">
+                <label for="p-title">Titre</label>
+                <InputText id="p-title" @bind-Value="Input.Title" />
+                <ValidationMessage For="() => Input.Title" />
+            </div>
+            <div class="field">
+                <label for="p-category">Catégorie</label>
+                <InputText id="p-category" @bind-Value="Input.Category" list="project-categories" placeholder="Fintech, ERP, .NET…" />
+                <datalist id="project-categories">
+                    @foreach (var category in Categories)
+                    {
+                        <option value="@category"></option>
+                    }
+                </datalist>
+                <ValidationMessage For="() => Input.Category" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="p-summary">Résumé <span class="field__hint">affiché sur la carte</span></label>
+            <InputTextArea id="p-summary" @bind-Value="Input.Summary" rows="2" />
+            <ValidationMessage For="() => Input.Summary" />
+        </div>
+
+        <div class="field">
+            <label for="p-description">Description détaillée <span class="field__hint">optionnelle, section « En savoir plus »</span></label>
+            <InputTextArea id="p-description" @bind-Value="Input.Description" rows="4" />
+            <ValidationMessage For="() => Input.Description" />
+        </div>
+
+        <div class="field">
+            <label for="p-tech">Technologies <span class="field__hint">séparées par des virgules</span></label>
+            <InputText id="p-tech" @bind-Value="Input.Technologies" placeholder="C#, Blazor, Azure" />
+            <ValidationMessage For="() => Input.Technologies" />
+        </div>
+
+        <div class="field">
+            <span class="field__label">Image de couverture <span class="field__hint">facultative — sinon les logos de la stack</span></span>
+            <ImageUploadField @ref="imageField" @bind-Value="Input.ImageUrl" Folder="ImageFolder.Projects" />
+            <ValidationMessage For="() => Input.ImageUrl" />
+        </div>
+
+        <div class="form-row">
+            <div class="field">
+                <label for="p-repo">Dépôt de code</label>
+                <InputText id="p-repo" @bind-Value="Input.RepositoryUrl" placeholder="https://github.com/…" />
+                <ValidationMessage For="() => Input.RepositoryUrl" />
+            </div>
+            <div class="field">
+                <label for="p-live">Démo en ligne</label>
+                <InputText id="p-live" @bind-Value="Input.LiveUrl" placeholder="https://…" />
+                <ValidationMessage For="() => Input.LiveUrl" />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="field">
+                <label for="p-order">Ordre d'affichage</label>
+                <InputNumber id="p-order" @bind-Value="Input.DisplayOrder" min="0" max="999" />
+                <ValidationMessage For="() => Input.DisplayOrder" />
+            </div>
+            <label class="checkbox checkbox--card">
+                <InputCheckbox @bind-Value="Input.IsFeatured" />
+                <span><strong>Mettre à la une</strong><small class="muted">Badge doré sur la carte du projet</small></span>
+            </label>
+        </div>
+
+        <div class="modal__footer">
+            <button type="button" class="btn btn-ghost" @onclick="CloseEditorAsync">Annuler</button>
+            <button type="submit" class="btn btn-gold" disabled="@Saving">@(Saving ? "Enregistrement…" : "Enregistrer")</button>
+        </div>
+    </EditForm>
+</Modal>
+
+<ConfirmDialog IsOpen="PendingDelete is not null" Busy="Deleting"
+               Title="Supprimer ce projet ?"
+               Message="@($"« {PendingDelete?.Title} » sera retiré définitivement du portfolio.")"
+               OnConfirm="ConfirmDeleteAsync" OnCancel="CancelDelete" />
+
+<Toast @ref="Toast" />
+
+@code {
+    private string search = string.Empty;
+    private ImageUploadField? imageField;
+
+    protected override async Task OnEditorClosingAsync(bool saved)
+    {
+        if (imageField is null)
+            return;
+
+        if (saved)
+            imageField.Commit();
+        else
+            await imageField.DiscardAsync();
+    }
+
+    protected override ICrudService<ProjectDto, ProjectInput> Service => ProjectService;
+    protected override CrudMessages Messages { get; } = new("Projet créé.", "Projet mis à jour.", "Projet supprimé.");
+    protected override Guid IdOf(ProjectDto item) => item.Id;
+    protected override ProjectInput ToInput(ProjectDto item) => ProjectInput.From(item);
+    protected override ProjectInput NewInput() => new() { DisplayOrder = (Items?.Count ?? 0) + 1 };
+
+    private IEnumerable<string> Categories => Items?.Select(p => p.Category).Distinct() ?? [];
+
+    private IEnumerable<ProjectDto> Filtered => (Items ?? []).Where(p =>
+        string.IsNullOrWhiteSpace(search)
+        || p.Title.Contains(search, StringComparison.OrdinalIgnoreCase)
+        || p.Category.Contains(search, StringComparison.OrdinalIgnoreCase)
+        || p.Technologies.Any(t => t.Contains(search, StringComparison.OrdinalIgnoreCase)));
+}

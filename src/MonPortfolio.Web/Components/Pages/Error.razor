@@ -1,0 +1,28 @@
+﻿@page "/Error"
+@using System.Diagnostics
+
+<PageTitle>Erreur</PageTitle>
+
+<section class="status-page">
+    <div class="container status-page__inner">
+        <p class="status-page__code mono">500</p>
+        <h1>Une erreur inattendue <span class="text-gradient-gold">est survenue</span>.</h1>
+        <p class="muted">Réessayez dans un instant. Si le problème persiste, contactez-moi.</p>
+        @if (ShowRequestId)
+        {
+            <p class="mono muted">Référence : @RequestId</p>
+        }
+        <a class="btn btn-gold" href="/"><Icon Name="arrow-left" Size="16" /> Retour à l'accueil</a>
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    private string? RequestId { get; set; }
+    private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+    protected override void OnInitialized() =>
+        RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+}

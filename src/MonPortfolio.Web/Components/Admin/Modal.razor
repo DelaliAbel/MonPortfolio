@@ -1,0 +1,41 @@
+@if (IsOpen)
+{
+    <div class="modal-layer">
+        <div class="modal-backdrop" @onclick="CloseAsync"></div>
+        <div class="modal @(Wide ? "modal--wide" : null)" role="dialog" aria-modal="true" aria-labelledby="@titleId"
+             tabindex="-1" @ref="dialog" @onkeydown="OnKeyDownAsync">
+            <header class="modal__header">
+                <h2 id="@titleId">@Title</h2>
+                <button type="button" class="icon-btn" @onclick="CloseAsync" aria-label="Fermer"><Icon Name="x" /></button>
+            </header>
+            <div class="modal__body">
+                @ChildContent
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private readonly string titleId = $"modal-{Guid.NewGuid():N}";
+    private ElementReference dialog;
+    private bool wasOpen;
+
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public bool Wide { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Le focus entre dans la boîte de dialogue à l'ouverture : clavier (Échap, Tab) et lecteurs d'écran.
+        if (IsOpen && !wasOpen)
+            await dialog.FocusAsync();
+
+        wasOpen = IsOpen;
+    }
+
+    private Task CloseAsync() => OnClose.InvokeAsync();
+
+    private Task OnKeyDownAsync(KeyboardEventArgs e) => e.Key == "Escape" ? CloseAsync() : Task.CompletedTask;
+}

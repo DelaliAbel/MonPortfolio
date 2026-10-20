@@ -1,0 +1,166 @@
+@page "/admin/activites"
+@rendermode AppRenderModes.InteractiveAdmin
+@inherits CrudPageBase<CommunityActivityDto, CommunityActivityInput>
+@inject ICommunityActivityService ActivityService
+
+<PageTitle>Activités — Administration</PageTitle>
+
+<AdminPageHeader Title="Activités communautaires" Subtitle="Conférences, meetups, ateliers, articles… avec leur publication et une image pour la carte.">
+    <Actions>
+        <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate"><Icon Name="plus" Size="16" /> Nouvelle activité</button>
+    </Actions>
+</AdminPageHeader>
+
+@if (Items is null)
+{
+    <LoadingState />
+}
+else if (Items.Count == 0)
+{
+    <div class="empty-panel">
+        <Icon Name="sparkles" Size="28" />
+        <p>Aucune activité pour l'instant. Ajoutez vos conférences, meetups et ateliers .NET Niger.</p>
+        <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate">Ajouter une première activité</button>
+    </div>
+}
+else
+{
+    <div class="activity-admin-grid">
+        @foreach (var activity in Items)
+        {
+            <article class="panel activity-admin-card">
+                <div class="activity-admin-card__thumb">
+                    @if (activity.ImageUrl is not null)
+                    {
+                        <img src="@activity.ImageUrl" alt="" loading="lazy" />
+                    }
+                    else
+                    {
+                        <Icon Name="@LinkDisplay.ActivityIcon(activity.Kind)" Size="26" Stroke="1.5" />
+                    }
+                </div>
+                <div class="activity-admin-card__body">
+                    <p class="mono muted">@DisplayFormat.DayMonthYear(activity.Date) · @activity.KindLabel</p>
+                    <strong>@activity.Title</strong>
+                    @if (activity.Organizer is not null)
+                    {
+                        <small class="muted">@activity.Organizer</small>
+                    }
+                    @if (activity.PublicationUrl is not null)
+                    {
+                        <a class="link-gold" href="@activity.PublicationUrl" target="_blank" rel="noopener noreferrer">
+                            <Icon Name="link" Size="13" /> @LinkDisplay.Host(activity.PublicationUrl)
+                        </a>
+                    }
+                    else
+                    {
+                        <small class="activity-admin-card__warn"><Icon Name="alert" Size="13" /> Sans lien de publication</small>
+                    }
+                </div>
+                <div class="actions">
+                    <button type="button" class="icon-btn" @onclick="() => OpenEdit(activity)" aria-label="Modifier @activity.Title"><Icon Name="pencil" Size="16" /></button>
+                    <button type="button" class="icon-btn icon-btn--danger" @onclick="() => AskDelete(activity)" aria-label="Supprimer @activity.Title"><Icon Name="trash" Size="16" /></button>
+                </div>
+            </article>
+        }
+    </div>
+}
+
+<Modal IsOpen="EditorOpen" Title="@(IsEditing ? "Modifier l'activité" : "Nouvelle activité")" OnClose="CloseEditorAsync" Wide>
+    <EditForm Model="Input" OnValidSubmit="SaveAsync" class="form">
+        <DataAnnotationsValidator />
+        <FormErrors Errors="SaveErrors" />
+
+        <div class="field">
+            <label for="a-title">Titre</label>
+            <InputText id="a-title" @bind-Value="Input.Title" placeholder="Introduction à .NET Aspire" />
+            <ValidationMessage For="() => Input.Title" />
+        </div>
+
+        <div class="form-row form-row--3">
+            <div class="field">
+                <label for="a-kind">Type</label>
+                <InputSelect id="a-kind" @bind-Value="Input.Kind">
+                    @foreach (var kind in ActivityKinds.All)
+                    {
+                        <option value="@kind">@ActivityKinds.Label(kind)</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="field">
+                <label for="a-date">Date</label>
+                <InputDate id="a-date" @bind-Value="Input.Date" />
+            </div>
+            <div class="field">
+                <label for="a-location">Lieu</label>
+                <InputText id="a-location" @bind-Value="Input.Location" placeholder="Niamey · En ligne" />
+                <ValidationMessage For="() => Input.Location" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="a-organizer">Communauté / organisateur</label>
+            <InputText id="a-organizer" @bind-Value="Input.Organizer" list="activity-organizers" placeholder=".NET Niger" />
+            <datalist id="activity-organizers">
+                @foreach (var organizer in Organizers)
+                {
+                    <option value="@organizer"></option>
+                }
+            </datalist>
+            <ValidationMessage For="() => Input.Organizer" />
+        </div>
+
+        <div class="field">
+            <label for="a-description">Description <span class="field__hint">facultative, 2 à 3 phrases</span></label>
+            <InputTextArea id="a-description" @bind-Value="Input.Description" rows="3" />
+            <ValidationMessage For="() => Input.Description" />
+        </div>
+
+        <div class="field">
+            <label for="a-publication">Lien de la publication <span class="field__hint">post LinkedIn, événement Facebook, replay YouTube…</span></label>
+            <InputText id="a-publication" type="url" @bind-Value="Input.PublicationUrl" placeholder="https://www.linkedin.com/posts/…" />
+            <ValidationMessage For="() => Input.PublicationUrl" />
+        </div>
+
+        <div class="field">
+            <span class="field__label">Image de la carte <span class="field__hint">facultative — photo de l'événement, visuel ou affiche</span></span>
+            <ImageUploadField @ref="imageField" @bind-Value="Input.ImageUrl" Folder="ImageFolder.Activities" />
+            <ValidationMessage For="() => Input.ImageUrl" />
+        </div>
+
+        <div class="modal__footer">
+            <button type="button" class="btn btn-ghost" @onclick="CloseEditorAsync">Annuler</button>
+            <button type="submit" class="btn btn-gold" disabled="@Saving">@(Saving ? "Enregistrement…" : "Enregistrer")</button>
+        </div>
+    </EditForm>
+</Modal>
+
+<ConfirmDialog IsOpen="PendingDelete is not null" Busy="Deleting"
+               Title="Supprimer cette activité ?"
+               Message="@($"« {PendingDelete?.Title} » et son image seront supprimées définitivement.")"
+               OnConfirm="ConfirmDeleteAsync" OnCancel="CancelDelete" />
+
+<Toast @ref="Toast" />
+
+@code {
+    private ImageUploadField? imageField;
+
+    protected override ICrudService<CommunityActivityDto, CommunityActivityInput> Service => ActivityService;
+    protected override CrudMessages Messages { get; } = new("Activité ajoutée.", "Activité mise à jour.", "Activité supprimée.");
+    protected override Guid IdOf(CommunityActivityDto item) => item.Id;
+    protected override CommunityActivityInput ToInput(CommunityActivityDto item) => CommunityActivityInput.From(item);
+
+    private IEnumerable<string> Organizers =>
+        (Items ?? []).Select(a => a.Organizer).OfType<string>().Append(".NET Niger").Distinct();
+
+    protected override async Task OnEditorClosingAsync(bool saved)
+    {
+        if (imageField is null)
+            return;
+
+        if (saved)
+            imageField.Commit();
+        else
+            await imageField.DiscardAsync();
+    }
+}

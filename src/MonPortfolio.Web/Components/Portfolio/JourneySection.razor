@@ -1,0 +1,139 @@
+<section class="section section--alt" id="journey">
+    <div class="container">
+        <SectionHeading Index="02" Eyebrow="Parcours" Title="Expérience" Highlight="& formation"
+                        Subtitle="Du secteur public aux ERP puis à la fintech : un parcours bâti sur la qualité logicielle et le leadership technique." />
+
+        <div class="journey-grid">
+            <div class="journey__main">
+                <h3 class="column-title reveal"><Icon Name="briefcase" Size="18" /> Expérience professionnelle</h3>
+
+                @if (professional.Count == 0)
+                {
+                    <p class="empty-state">Le parcours professionnel sera bientôt publié.</p>
+                }
+
+                <ol class="timeline">
+                    @foreach (var experience in professional)
+                    {
+                        <li class="timeline__item reveal @(experience.IsCurrent ? "is-current" : null)">
+                            <span class="timeline__dot" aria-hidden="true"></span>
+                            <article class="timeline__card glow-card">
+                                <header class="timeline__header">
+                                    <div>
+                                        <h4>@experience.Title</h4>
+                                        <p class="timeline__org">
+                                            @experience.Organization
+                                            @if (experience.Location is not null)
+                                            {
+                                                <span class="muted"> · @experience.Location</span>
+                                            }
+                                        </p>
+                                    </div>
+                                    <div class="timeline__when">
+                                        <span class="mono">@DisplayFormat.Period(experience)</span>
+                                        <span class="muted">@DisplayFormat.Duration(experience, today)</span>
+                                    </div>
+                                </header>
+
+                                @if (experience.IsCurrent)
+                                {
+                                    <span class="pill pill--live"><span class="dot-live" aria-hidden="true"></span> En poste</span>
+                                }
+                                @if (experience.Description is not null)
+                                {
+                                    <p class="timeline__desc">@experience.Description</p>
+                                }
+                                @if (experience.Highlights.Count > 0)
+                                {
+                                    <ul class="bullets">
+                                        @foreach (var highlight in experience.Highlights)
+                                        {
+                                            <li>@highlight</li>
+                                        }
+                                    </ul>
+                                }
+                                @if (experience.Technologies.Count > 0)
+                                {
+                                    <ul class="chips" aria-label="Technologies">
+                                        @foreach (var technology in experience.Technologies)
+                                        {
+                                            <TechChip Name="@technology" />
+                                        }
+                                    </ul>
+                                }
+                                @if (experience.LinkUrl is not null)
+                                {
+                                    <a class="timeline__link" href="@experience.LinkUrl" target="_blank" rel="noopener noreferrer">
+                                        <Icon Name="link" Size="14" /> @LinkDisplay.Host(experience.LinkUrl) <Icon Name="arrow-up-right" Size="14" />
+                                    </a>
+                                }
+                            </article>
+                        </li>
+                    }
+                </ol>
+            </div>
+
+            <aside class="journey__side">
+                <h3 class="column-title reveal"><Icon Name="graduation" Size="18" /> Formation</h3>
+                <ol class="edu-list">
+                    @foreach (var diploma in education)
+                    {
+                        <li class="edu glow-card reveal">
+                            <span class="edu__year mono">@DisplayFormat.Period(diploma)</span>
+                            <div>
+                                <h4>@diploma.Title</h4>
+                                <p>@diploma.Organization@(diploma.Location is null ? null : $" · {diploma.Location}")</p>
+                                @if (diploma.LinkUrl is not null)
+                                {
+                                    <a class="edu__link" href="@diploma.LinkUrl" target="_blank" rel="noopener noreferrer">@LinkDisplay.Host(diploma.LinkUrl) <Icon Name="arrow-up-right" Size="13" /></a>
+                                }
+                            </div>
+                        </li>
+                    }
+                </ol>
+
+                @if (community.Count > 0)
+                {
+                    <h3 class="column-title reveal"><Icon Name="users" Size="18" /> Communauté</h3>
+                    <ol class="edu-list">
+                        @foreach (var item in community)
+                        {
+                            <li class="edu glow-card reveal">
+                                <span class="edu__year mono">@item.StartDate.Year</span>
+                                <div>
+                                    <h4>@item.Title</h4>
+                                    <p>@item.Organization</p>
+                                    @if (item.LinkUrl is not null)
+                                    {
+                                        <a class="edu__link" href="@item.LinkUrl" target="_blank" rel="noopener noreferrer">Voir la publication <Icon Name="arrow-up-right" Size="13" /></a>
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ol>
+                }
+
+                <div class="journey__note glow-card reveal">
+                    <Icon Name="target" Size="18" />
+                    <p>Encadrement technique, revues de code et bonnes pratiques : mon fil rouge depuis la première équipe coordonnée.</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<ExperienceDto> Experiences { get; set; } = [];
+
+    private readonly DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+    private List<ExperienceDto> professional = [];
+    private List<ExperienceDto> education = [];
+    private List<ExperienceDto> community = [];
+
+    protected override void OnParametersSet()
+    {
+        professional = Experiences.Where(e => e.Type == ExperienceType.Professional).ToList();
+        education = Experiences.Where(e => e.Type == ExperienceType.Education).ToList();
+        community = Experiences.Where(e => e.Type == ExperienceType.Community).ToList();
+    }
+}

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "MonPortfolio.Web",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/MonPortfolio.Web", "--launch-profile", "http"],
+      "port": 5097
+    }
+  ]
+}

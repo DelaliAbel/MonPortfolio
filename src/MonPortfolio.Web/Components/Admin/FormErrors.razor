@@ -1,0 +1,16 @@
+@if (Errors.Count > 0)
+{
+    <div class="alert alert--error" role="alert">
+        <Icon Name="alert" Size="18" />
+        <div>
+            @foreach (var error in Errors)
+            {
+                <p>@error</p>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public IReadOnlyList<string> Errors { get; set; } = [];
+}

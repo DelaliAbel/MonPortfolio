@@ -1,0 +1,38 @@
+@* Liens vers les profils publics, gérés depuis /admin/reseaux, avec le logo officiel de chaque réseau.
+   Variante « icons » : tuiles (hero, pied de page) ; « list » : cartes détaillées (contact). *@
+
+@if (Links.Count > 0)
+{
+    @if (Variant == SocialLinksVariant.List)
+    {
+        @foreach (var link in Links)
+        {
+            <a class="contact-item glow-card social-item" data-platform="@LinkDisplay.PlatformKey(link.Platform)"
+               href="@link.Url" target="_blank" rel="noopener noreferrer me">
+                <SocialLogo Platform="link.Platform" Size="24" Class="social-logo--card" />
+                <span><small>@link.DisplayName</small><strong>@LinkDisplay.ShortUrl(link.Url)</strong></span>
+                <Icon Name="arrow-up-right" Size="16" Class="social-item__arrow" />
+            </a>
+        }
+    }
+    else
+    {
+        <ul class="social-icons @Class" aria-label="Réseaux sociaux">
+            @foreach (var link in Links)
+            {
+                <li>
+                    <a class="social-btn" data-platform="@LinkDisplay.PlatformKey(link.Platform)" href="@link.Url"
+                       target="_blank" rel="noopener noreferrer me" aria-label="@link.DisplayName" title="@link.DisplayName">
+                        <SocialLogo Platform="link.Platform" />
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<SocialLinkDto> Links { get; set; } = [];
+    [Parameter] public SocialLinksVariant Variant { get; set; } = SocialLinksVariant.Icons;
+    [Parameter] public string? Class { get; set; }
+}

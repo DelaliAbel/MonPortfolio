@@ -1,0 +1,75 @@
+{
+  "Profile": {
+    "FirstName": "Délali Abel",
+    "LastName": "AGBÉDÉKPUI",
+    "Headline": "Développeur Full-Stack Senior",
+    "Roles": [ "Développeur Senior Java & .NET", "Microsoft Gold Ambassador", "Sécurité informatique" ],
+    "Tagline": "Je conçois des applications web, mobile et desktop robustes et sécurisées — du secteur public aux ERP et à la fintech — avec la rigueur d'un architecte et l'énergie d'un leader communautaire.",
+    "Availability": "Ouvert aux missions & collaborations",
+    "Location": "Niamey, Niger",
+    "Email": "delaliabel@gmail.com",
+    "Phone": "",
+    "CvUrl": "",
+    "PhotoUrl": "/images/profile.jpg",
+
+    "About": [
+      "Développeur Senior Java et .NET, Full-Stack, fort de plus de cinq ans d'expérience dans la conception d'applications web, mobile et desktop, du secteur public aux solutions ERP et à la fintech.",
+      "Titulaire d'une maîtrise en sécurité informatique et Microsoft Gold Ambassador, j'allie leadership technique, rigueur en sécurité applicative et engagement communautaire en tant que fondateur de la communauté .NET Niger."
+    ],
+
+    "Stats": [
+      { "Value": "5+", "Label": "ans d'expérience" },
+      { "Value": "5+", "Label": "développeurs coordonnés" },
+      { "Value": "Gold", "Label": "Microsoft Ambassador" },
+      { "Value": "M2", "Label": "Sécurité informatique" }
+    ],
+
+    "Expertises": [
+      { "Icon": "layers", "Title": "Architecture logicielle", "Description": "Clean Architecture, DDD, microservices, N-tiers, MVVM / MVC." },
+      { "Icon": "code", "Title": "Full-Stack .NET & Java", "Description": "ASP.NET Core, Blazor, WPF, .NET MAUI, Aspire, Spring Boot, Flutter." },
+      { "Icon": "cloud", "Title": "Cloud & DevOps", "Description": "Microsoft Azure, pipelines CI/CD, Git, Power Platform." },
+      { "Icon": "shield", "Title": "Sécurité applicative", "Description": "Maîtrise en sécurité informatique, fiabilité transactionnelle, revues de code." }
+    ],
+
+    "Languages": [
+      { "Name": "Français", "Level": 5 },
+      { "Name": "Zarma", "Level": 4 },
+      { "Name": "Anglais", "Level": 3 },
+      { "Name": "Haoussa", "Level": 3 }
+    ],
+
+    "Ambassador": {
+      "Title": "Microsoft Gold Ambassador",
+      "Description": "Une progression continue au sein du programme Microsoft Ambassador jusqu'au niveau Gold / Senior : un engagement reconnu pour le partage de connaissances et l'animation de la communauté tech.",
+      "Milestones": [
+        { "Level": "Alpha", "Date": "Janv. 2025", "Description": "Entrée dans le programme" },
+        { "Level": "Beta", "Date": "Juil. 2025", "Description": "Engagement confirmé" },
+        { "Level": "Gold / Senior", "Date": "Févr. 2026", "Description": "Plus haut niveau atteint" }
+      ]
+    },
+
+    "Community": {
+      "Name": ".NET Niger",
+      "Role": "Lead & Fondateur",
+      "Description": "Fondateur et animateur de la communauté .NET Niger : rassembler les développeurs, partager les bonnes pratiques et faire rayonner l'écosystème Microsoft au Niger.",
+      "Pillars": [ "Partage de connaissances", "Mentorat", "Écosystème .NET & Azure" ],
+      "Url": ""
+    },
+
+    "Certifications": {
+      "Providers": [ "Microsoft", "Udemy", "LinkedIn Learning" ],
+      "Items": [
+        { "Name": "C# Fundamentals", "Icon": "code" },
+        { "Name": "Architecte logiciel", "Icon": "layers" },
+        { "Name": "Microsoft Azure", "Icon": "cloud" },
+        { "Name": "DevOps", "Icon": "terminal" },
+        { "Name": "Spécialiste sécurité IT", "Icon": "shield" },
+        { "Name": "Spécialiste IA & ML", "Icon": "cpu" },
+        { "Name": "Développeur d'applications mobiles", "Icon": "smartphone" },
+        { "Name": "JavaScript", "Icon": "code" },
+        { "Name": "Figma", "Icon": "sparkles" },
+        { "Name": "Bootstrap", "Icon": "layout" }
+      ]
+    }
+  }
+}

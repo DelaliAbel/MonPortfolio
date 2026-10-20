@@ -1,0 +1,3 @@
+@* Toutes les pages de ce dossier exigent le rôle Admin et utilisent le layout d'administration. *@
+@layout AdminLayout
+@attribute [Authorize(Policy = Policies.AdminOnly)]

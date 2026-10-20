@@ -1,0 +1,19 @@
+﻿@inherits LayoutComponentBase
+@inject IOptionsSnapshot<ProfileOptions> ProfileOptions
+@inject ISocialLinkService SocialLinkService
+
+<a class="skip-link" href="#main">Aller au contenu</a>
+<SiteHeader Profile="ProfileOptions.Value" />
+
+<main id="main">
+    @Body
+</main>
+
+<SiteFooter Profile="ProfileOptions.Value" SocialLinks="socialLinks" />
+
+@code {
+    private IReadOnlyList<SocialLinkDto> socialLinks = [];
+
+    protected override async Task OnInitializedAsync() =>
+        socialLinks = await SocialLinkService.GetAllAsync();
+}

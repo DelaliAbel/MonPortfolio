@@ -1,0 +1,175 @@
+@page "/admin/messages"
+@rendermode AppRenderModes.InteractiveAdmin
+@inject IContactService ContactService
+@inject TimeProvider Clock
+
+<PageTitle>Messages — Administration</PageTitle>
+
+<AdminPageHeader Title="Messages" Subtitle="Demandes reçues via le formulaire de contact du portfolio." />
+
+@if (messages is null)
+{
+    <LoadingState />
+}
+else if (messages.Count == 0)
+{
+    <div class="empty-panel">
+        <Icon Name="inbox" Size="28" />
+        <p>Aucun message reçu pour l'instant.</p>
+    </div>
+}
+else
+{
+    <div class="tabs" role="tablist" aria-label="Filtrer les messages">
+        <button type="button" role="tab" class="tab @(unreadOnly ? null : "is-active")" aria-selected="@(!unreadOnly)" @onclick="() => unreadOnly = false">
+            Tous <span class="filter__count">@messages.Count</span>
+        </button>
+        <button type="button" role="tab" class="tab @(unreadOnly ? "is-active" : null)" aria-selected="@unreadOnly" @onclick="() => unreadOnly = true">
+            Non lus <span class="filter__count">@messages.Count(m => !m.IsRead)</span>
+        </button>
+    </div>
+
+    <div class="inbox @(selected is null ? null : "has-selection")">
+        <ul class="inbox__list" aria-label="Liste des messages">
+            @foreach (var message in Visible)
+            {
+                <li>
+                    <button type="button" class="inbox__item @(message.IsRead ? null : "is-unread") @(selected?.Id == message.Id ? "is-selected" : null)"
+                            @onclick="() => SelectAsync(message)">
+                        <span class="admin-user__avatar">@message.Name[0]</span>
+                        <span class="inbox__item-main">
+                            <span class="inbox__item-top">
+                                <strong>@message.Name</strong>
+                                <small class="muted">@DisplayFormat.Relative(message.ReceivedAtUtc, now)</small>
+                            </span>
+                            <span class="inbox__subject">@message.Subject</span>
+                            <small class="muted clamp-1">@message.Body</small>
+                        </span>
+                        @if (!message.IsRead)
+                        {
+                            <span class="dot-gold" aria-label="Non lu"></span>
+                        }
+                    </button>
+                </li>
+            }
+        </ul>
+
+        <article class="inbox__detail">
+            @if (selected is null)
+            {
+                <div class="empty-panel empty-panel--flat">
+                    <Icon Name="mail-open" Size="28" />
+                    <p>Sélectionnez un message pour le lire.</p>
+                </div>
+            }
+            else
+            {
+                <header class="inbox__detail-header">
+                    <button type="button" class="btn btn-ghost btn-sm inbox__back" @onclick="() => selected = null"><Icon Name="arrow-left" Size="14" /> Retour</button>
+                    <h2>@selected.Subject</h2>
+                    <p class="muted">
+                        <strong class="text-strong">@selected.Name</strong> &lt;<a href="@MailTo(selected.Email)">@selected.Email</a>&gt;
+                        · @DisplayFormat.DateTime(selected.ReceivedAtUtc)
+                    </p>
+                </header>
+                <div class="inbox__body">@selected.Body</div>
+                <footer class="inbox__actions">
+                    <a class="btn btn-gold btn-sm" href="@ReplyLink(selected)"><Icon Name="reply" Size="16" /> Répondre</a>
+                    <button type="button" class="btn btn-ghost btn-sm" @onclick="() => MarkUnreadAsync(selected)"><Icon Name="mail" Size="16" /> Marquer non lu</button>
+                    <button type="button" class="btn btn-ghost btn-sm btn-ghost--danger" @onclick="() => pendingDelete = selected"><Icon Name="trash" Size="16" /> Supprimer</button>
+                </footer>
+            }
+        </article>
+    </div>
+}
+
+<ConfirmDialog IsOpen="pendingDelete is not null" Busy="deleting"
+               Title="Supprimer ce message ?"
+               Message="@($"Le message de {pendingDelete?.Name} sera supprimé définitivement.")"
+               OnConfirm="DeleteAsync" OnCancel="() => pendingDelete = null" />
+
+<Toast @ref="toast" />
+
+@code {
+    private List<ContactMessageDto>? messages;
+    private ContactMessageDto? selected;
+    private ContactMessageDto? pendingDelete;
+    private bool unreadOnly;
+    private bool deleting;
+    private DateTime now;
+    private Toast? toast;
+
+    private IEnumerable<ContactMessageDto> Visible => (messages ?? []).Where(m => !unreadOnly || !m.IsRead || m.Id == selected?.Id);
+
+    protected override async Task OnInitializedAsync()
+    {
+        now = Clock.GetUtcNow().UtcDateTime;
+        messages = (await ContactService.GetAllAsync()).ToList();
+    }
+
+    private async Task SelectAsync(ContactMessageDto message)
+    {
+        selected = message;
+        if (message.IsRead)
+            return;
+
+        var result = await ContactService.MarkAsReadAsync(message.Id);
+        if (result.IsSuccess)
+            Replace(message with { IsRead = true });
+    }
+
+    private async Task MarkUnreadAsync(ContactMessageDto message)
+    {
+        var result = await ContactService.MarkAsUnreadAsync(message.Id);
+        if (result.IsSuccess)
+        {
+            Replace(message with { IsRead = false });
+            selected = null;
+            toast?.Show("Message marqué comme non lu.");
+        }
+    }
+
+    private async Task DeleteAsync()
+    {
+        if (pendingDelete is null)
+            return;
+
+        deleting = true;
+        try
+        {
+            var result = await ContactService.DeleteAsync(pendingDelete.Id);
+            if (result.IsSuccess)
+            {
+                messages?.RemoveAll(m => m.Id == pendingDelete.Id);
+                if (selected?.Id == pendingDelete.Id)
+                    selected = null;
+                toast?.Show("Message supprimé.");
+            }
+            else
+            {
+                toast?.Show(result.Error, success: false);
+            }
+        }
+        finally
+        {
+            pendingDelete = null;
+            deleting = false;
+        }
+    }
+
+    private void Replace(ContactMessageDto updated)
+    {
+        var index = messages!.FindIndex(m => m.Id == updated.Id);
+        if (index >= 0)
+            messages[index] = updated;
+        if (selected?.Id == updated.Id)
+            selected = updated;
+    }
+
+    // L'adresse vient d'un visiteur : elle est encodée pour qu'un « ? » ou « & » dans la partie locale
+    // ne puisse pas injecter d'en-têtes (cc, bcc, body…) dans le lien mailto.
+    private static string MailTo(string email) => $"mailto:{Uri.EscapeDataString(email)}";
+
+    private static string ReplyLink(ContactMessageDto message) =>
+        $"{MailTo(message.Email)}?subject={Uri.EscapeDataString("Re: " + message.Subject)}";
+}

@@ -1,0 +1,113 @@
+@page "/admin/reseaux"
+@rendermode AppRenderModes.InteractiveAdmin
+@inherits CrudPageBase<SocialLinkDto, SocialLinkInput>
+@inject ISocialLinkService SocialLinkService
+
+<PageTitle>Réseaux sociaux — Administration</PageTitle>
+
+<AdminPageHeader Title="Réseaux sociaux" Subtitle="Profils publics affichés dans le hero, la section contact et le pied de page.">
+    <Actions>
+        <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate"><Icon Name="plus" Size="16" /> Ajouter un lien</button>
+    </Actions>
+</AdminPageHeader>
+
+@if (Items is null)
+{
+    <LoadingState />
+}
+else if (Items.Count == 0)
+{
+    <div class="empty-panel">
+        <Icon Name="link" Size="28" />
+        <p>Aucun réseau pour l'instant. Ajoutez LinkedIn, GitHub, Microsoft Learn…</p>
+        <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate">Ajouter un premier lien</button>
+    </div>
+}
+else
+{
+    <ul class="social-admin-list">
+        @foreach (var link in Items)
+        {
+            <li class="panel social-admin-item">
+                <SocialLogo Platform="link.Platform" />
+                <div class="social-admin-item__main">
+                    <strong>@link.DisplayName</strong>
+                    <a class="muted mono clamp-1" href="@link.Url" target="_blank" rel="noopener noreferrer">@LinkDisplay.ShortUrl(link.Url)</a>
+                </div>
+                <span class="mono muted social-admin-item__order" title="Ordre d'affichage">#@link.DisplayOrder</span>
+                <div class="actions">
+                    <button type="button" class="icon-btn" @onclick="() => OpenEdit(link)" aria-label="Modifier @link.DisplayName"><Icon Name="pencil" Size="16" /></button>
+                    <button type="button" class="icon-btn icon-btn--danger" @onclick="() => AskDelete(link)" aria-label="Supprimer @link.DisplayName"><Icon Name="trash" Size="16" /></button>
+                </div>
+            </li>
+        }
+    </ul>
+}
+
+<Modal IsOpen="EditorOpen" Title="@(IsEditing ? "Modifier le lien" : "Nouveau lien")" OnClose="CloseEditorAsync">
+    <EditForm Model="Input" OnValidSubmit="SaveAsync" class="form">
+        <DataAnnotationsValidator />
+        <FormErrors Errors="SaveErrors" />
+
+        <div class="field">
+            <label for="sl-platform">Réseau</label>
+            <div class="platform-select">
+                <SocialLogo Platform="Input.Platform" />
+                <InputSelect id="sl-platform" @bind-Value="Input.Platform">
+                    @foreach (var platform in SocialPlatforms.All)
+                    {
+                        <option value="@platform">@SocialPlatforms.Label(platform)</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="sl-url">Adresse du profil</label>
+            <InputText id="sl-url" type="url" @bind-Value="Input.Url" placeholder="@SocialPlatforms.UrlExample(Input.Platform)" />
+            <ValidationMessage For="() => Input.Url" />
+        </div>
+
+        <div class="field">
+            <label for="sl-label">Libellé <span class="field__hint">@(Input.Platform == SocialPlatform.Other ? "obligatoire pour « Autre »" : "facultatif — remplace le nom du réseau")</span></label>
+            <InputText id="sl-label" @bind-Value="Input.Label" placeholder="@SocialPlatforms.Label(Input.Platform)" />
+            <ValidationMessage For="() => Input.Label" />
+        </div>
+
+        <div class="field">
+            <label for="sl-order">Ordre d'affichage</label>
+            <InputNumber id="sl-order" @bind-Value="Input.DisplayOrder" min="0" max="999" />
+            <ValidationMessage For="() => Input.DisplayOrder" />
+        </div>
+
+        <div class="modal__footer">
+            <button type="button" class="btn btn-ghost" @onclick="CloseEditorAsync">Annuler</button>
+            <button type="submit" class="btn btn-gold" disabled="@Saving">@(Saving ? "Enregistrement…" : "Enregistrer")</button>
+        </div>
+    </EditForm>
+</Modal>
+
+<ConfirmDialog IsOpen="PendingDelete is not null" Busy="Deleting"
+               Title="Supprimer ce lien ?"
+               Message="@($"Le lien « {PendingDelete?.DisplayName} » ne sera plus affiché sur le portfolio.")"
+               OnConfirm="ConfirmDeleteAsync" OnCancel="CancelDelete" />
+
+<Toast @ref="Toast" />
+
+@code {
+    protected override ICrudService<SocialLinkDto, SocialLinkInput> Service => SocialLinkService;
+    protected override CrudMessages Messages { get; } = new("Lien ajouté.", "Lien mis à jour.", "Lien supprimé.");
+    protected override Guid IdOf(SocialLinkDto item) => item.Id;
+    protected override SocialLinkInput ToInput(SocialLinkDto item) => SocialLinkInput.From(item);
+
+    /// <summary>Propose le premier réseau pas encore utilisé, placé en fin de liste.</summary>
+    protected override SocialLinkInput NewInput()
+    {
+        var used = Items?.Select(l => l.Platform).ToHashSet() ?? [];
+        return new()
+        {
+            Platform = SocialPlatforms.All.FirstOrDefault(p => !used.Contains(p) && p != SocialPlatform.Other, SocialPlatform.Other),
+            DisplayOrder = (Items?.Count ?? 0) + 1
+        };
+    }
+}

@@ -1,0 +1,107 @@
+@page "/admin"
+@inject IPortfolioService PortfolioService
+@inject TimeProvider Clock
+
+@* Tableau de bord en lecture seule : rendu statique, aucun circuit interactif nécessaire. *@
+
+<PageTitle>Tableau de bord — Administration</PageTitle>
+
+<AdminPageHeader Title="Tableau de bord" Subtitle="Vue d'ensemble du contenu publié et des messages reçus.">
+    <Actions>
+        <a class="btn btn-ghost btn-sm" href="/" target="_blank" rel="noopener"><Icon Name="eye" Size="16" /> Voir le portfolio</a>
+    </Actions>
+</AdminPageHeader>
+
+@if (stats is not null)
+{
+    <section class="stat-grid">
+        <a class="stat-card glow-card" href="/admin/projets">
+            <span class="card-icon"><Icon Name="folder" Size="20" /></span>
+            <span class="stat-card__value">@stats.Projects</span>
+            <span class="stat-card__label">Projets publiés</span>
+        </a>
+        <a class="stat-card glow-card" href="/admin/competences">
+            <span class="card-icon"><Icon Name="cpu" Size="20" /></span>
+            <span class="stat-card__value">@stats.Skills</span>
+            <span class="stat-card__label">Compétences</span>
+        </a>
+        <a class="stat-card glow-card" href="/admin/parcours">
+            <span class="card-icon"><Icon Name="briefcase" Size="20" /></span>
+            <span class="stat-card__value">@stats.Experiences</span>
+            <span class="stat-card__label">Étapes du parcours</span>
+        </a>
+        <a class="stat-card glow-card" href="/admin/activites">
+            <span class="card-icon"><Icon Name="sparkles" Size="20" /></span>
+            <span class="stat-card__value">@stats.Activities</span>
+            <span class="stat-card__label">Activités communautaires</span>
+        </a>
+        <a class="stat-card glow-card @(stats.SocialLinks == 0 ? "stat-card--alert" : null)" href="/admin/reseaux">
+            <span class="card-icon"><Icon Name="link" Size="20" /></span>
+            <span class="stat-card__value">@stats.SocialLinks</span>
+            <span class="stat-card__label">@(stats.SocialLinks == 0 ? "Réseaux à renseigner" : "Réseaux sociaux")</span>
+        </a>
+        <a class="stat-card glow-card @(stats.UnreadMessages > 0 ? "stat-card--alert" : null)" href="/admin/messages">
+            <span class="card-icon"><Icon Name="inbox" Size="20" /></span>
+            <span class="stat-card__value">@stats.UnreadMessages<small> / @stats.Messages</small></span>
+            <span class="stat-card__label">Messages non lus</span>
+        </a>
+    </section>
+
+    <section class="dashboard-grid">
+        <article class="panel">
+            <header class="panel__header">
+                <h2>Derniers messages</h2>
+                <a class="link-gold" href="/admin/messages">Tout voir <Icon Name="arrow-right" Size="14" /></a>
+            </header>
+            @if (stats.RecentMessages.Count == 0)
+            {
+                <p class="empty-state">Aucun message pour le moment.</p>
+            }
+            else
+            {
+                <ul class="recent-list">
+                    @foreach (var message in stats.RecentMessages)
+                    {
+                        <li class="@(message.IsRead ? null : "is-unread")">
+                            <span class="admin-user__avatar">@message.Name[0]</span>
+                            <div>
+                                <strong>@message.Subject</strong>
+                                <small class="muted">@message.Name · @DisplayFormat.Relative(message.ReceivedAtUtc, now)</small>
+                            </div>
+                            @if (!message.IsRead)
+                            {
+                                <span class="dot-gold" aria-label="Non lu"></span>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+        </article>
+
+        <article class="panel">
+            <header class="panel__header"><h2>Actions rapides</h2></header>
+            <div class="quick-actions">
+                <a class="quick-action" href="/admin/projets"><Icon Name="plus" Size="16" /> Ajouter un projet</a>
+                <a class="quick-action" href="/admin/competences"><Icon Name="plus" Size="16" /> Ajouter une compétence</a>
+                <a class="quick-action" href="/admin/parcours"><Icon Name="plus" Size="16" /> Ajouter une expérience</a>
+                <a class="quick-action" href="/admin/activites"><Icon Name="plus" Size="16" /> Ajouter une activité communautaire</a>
+                <a class="quick-action" href="/admin/reseaux"><Icon Name="plus" Size="16" /> Ajouter un réseau social</a>
+            </div>
+            <div class="hint">
+                <Icon Name="sparkles" Size="16" />
+                <p>Textes du profil, distinctions Ambassador, certifications et langues se modifient dans <code>profile.json</code> (rechargé à chaud, sans redéploiement).</p>
+            </div>
+        </article>
+    </section>
+}
+
+@code {
+    private DashboardStatsDto? stats;
+    private DateTime now;
+
+    protected override async Task OnInitializedAsync()
+    {
+        now = Clock.GetUtcNow().UtcDateTime;
+        stats = await PortfolioService.GetDashboardStatsAsync();
+    }
+}

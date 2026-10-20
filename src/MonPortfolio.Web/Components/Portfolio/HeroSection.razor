@@ -1,0 +1,90 @@
+<section class="hero" id="top">
+    <div class="hero__bg" aria-hidden="true">
+        <div class="hero__grid"></div>
+        <div class="hero__glow hero__glow--a"></div>
+        <div class="hero__glow hero__glow--b"></div>
+    </div>
+
+    <div class="container hero__inner">
+        <div class="hero__content">
+            <div class="reveal"><GoldBadge Large /></div>
+
+            <p class="hero__hello mono reveal"><span class="text-gold">&gt;_</span> Hello, World — je suis</p>
+
+            <h1 class="hero__title reveal">
+                @Profile.FirstName
+                <span class="text-gradient-gold">@Profile.LastName</span>
+            </h1>
+
+            <p class="hero__headline reveal">@Profile.Headline</p>
+
+            <ul class="hero__roles mono reveal" aria-label="Rôles">
+                @foreach (var role in Profile.Roles)
+                {
+                    <li>@role</li>
+                }
+            </ul>
+
+            <p class="hero__tagline reveal">@Profile.Tagline</p>
+
+            <div class="hero__actions reveal">
+                <a class="btn btn-gold" href="/#projects">Voir mes projets <Icon Name="arrow-right" Size="16" /></a>
+                <a class="btn btn-ghost" href="/#contact">Me contacter</a>
+                @if (!string.IsNullOrWhiteSpace(Profile.CvUrl))
+                {
+                    <a class="btn btn-link" href="@Profile.CvUrl" download><Icon Name="download" Size="16" /> Télécharger le CV</a>
+                }
+            </div>
+
+            @if (SocialLinks.Count > 0)
+            {
+                <div class="hero__social reveal">
+                    <span class="hero__social-label mono">Retrouvez-moi</span>
+                    <SocialLinks Links="SocialLinks" />
+                </div>
+            }
+
+            <dl class="hero__stats reveal">
+                @foreach (var stat in Profile.Stats)
+                {
+                    <div class="stat">
+                        <dt>@stat.Label</dt>
+                        <dd>@stat.Value</dd>
+                    </div>
+                }
+            </dl>
+        </div>
+
+        <div class="hero__visual reveal">
+            <div class="portrait">
+                <div class="portrait__ring" aria-hidden="true"></div>
+                <img src="@Profile.PhotoUrl" alt="Portrait de @Profile.FullName" width="360" height="360" fetchpriority="high" />
+            </div>
+
+            <div class="float-chip float-chip--a">
+                <span class="float-chip__icon"><Icon Name="award" Size="16" /></span>
+                <span><small>Microsoft</small><strong>Gold Ambassador</strong></span>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Profile.Availability))
+            {
+                <div class="float-chip float-chip--b mono"><span class="dot-live" aria-hidden="true"></span>@Profile.Availability</div>
+            }
+            <div class="float-chip float-chip--c mono">
+                <span class="float-chip__logos">
+                    <TechLogo Name=".NET" Size="18" />
+                    <TechLogo Name="Java" Size="18" />
+                    <TechLogo Name="Flutter" Size="18" />
+                    <TechLogo Name="Azure" Size="18" />
+                </span>
+                Full-Stack · Mobile · Cloud
+            </div>
+        </div>
+    </div>
+
+    <a class="scroll-cue" href="/#about" aria-label="Descendre vers la section À propos"><span></span></a>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public ProfileOptions Profile { get; set; } = default!;
+    [Parameter] public IReadOnlyList<SocialLinkDto> SocialLinks { get; set; } = [];
+}

@@ -1,0 +1,53 @@
+@* Carte d'activité communautaire : image facultative (sinon visuel généré : icône du type + date). *@
+<article class="activity-card glow-card reveal">
+    <div class="activity-card__cover">
+        @if (Activity.ImageUrl is not null)
+        {
+            <img src="@Activity.ImageUrl" alt="" loading="lazy" decoding="async" />
+        }
+        else
+        {
+            <div class="activity-card__placeholder" aria-hidden="true">
+                <span class="activity-card__kind-icon"><Icon Name="@LinkDisplay.ActivityIcon(Activity.Kind)" Size="30" Stroke="1.5" /></span>
+                <span class="activity-card__date-big mono">
+                    <strong>@Activity.Date.Day.ToString("00")</strong>
+                    <span>@DisplayFormat.MonthYear(Activity.Date)</span>
+                </span>
+            </div>
+        }
+        <span class="activity-card__kind"><Icon Name="@LinkDisplay.ActivityIcon(Activity.Kind)" Size="13" /> @Activity.KindLabel</span>
+    </div>
+
+    <div class="activity-card__body">
+        <p class="activity-card__meta mono">
+            <time datetime="@Activity.Date.ToString("yyyy-MM-dd")">@DisplayFormat.DayMonthYear(Activity.Date)</time>
+            @if (Activity.Location is not null)
+            {
+                <span>· @Activity.Location</span>
+            }
+        </p>
+        <h4>@Activity.Title</h4>
+        @if (Activity.Organizer is not null)
+        {
+            <p class="activity-card__organizer">@Activity.Organizer</p>
+        }
+        @if (Activity.Description is not null)
+        {
+            <p class="activity-card__desc">@Activity.Description</p>
+        }
+    </div>
+
+    @if (Activity.PublicationUrl is not null)
+    {
+        <footer class="activity-card__footer">
+            <a href="@Activity.PublicationUrl" target="_blank" rel="noopener noreferrer">
+                Voir la publication <Icon Name="arrow-up-right" Size="15" />
+            </a>
+            <span class="muted mono">@LinkDisplay.Host(Activity.PublicationUrl)</span>
+        </footer>
+    }
+</article>
+
+@code {
+    [Parameter, EditorRequired] public CommunityActivityDto Activity { get; set; } = default!;
+}

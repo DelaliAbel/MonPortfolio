@@ -1,0 +1,6 @@
+@* Chip de technologie : logo de marque s'il existe, sinon le texte seul (pas d'icône générique, pour rester sobre). *@
+<li class="chip chip--tech"><TechLogo Name="@Name" Size="14" ShowFallback="false" />@Name</li>
+
+@code {
+    [Parameter, EditorRequired] public string Name { get; set; } = string.Empty;
+}

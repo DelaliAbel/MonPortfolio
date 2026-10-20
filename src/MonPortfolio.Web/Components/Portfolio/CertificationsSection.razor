@@ -1,0 +1,32 @@
+<section class="section section--alt" id="certifications">
+    <div class="container">
+        <SectionHeading Index="06" Eyebrow="Certifications" Title="Apprendre," Highlight="toujours."
+                        Subtitle="Parcours certifiants suivis pour rester à la pointe : cloud, architecture, sécurité, IA." />
+
+        @if (Profile.Certifications.Providers.Count > 0)
+        {
+            <p class="providers reveal">
+                <span class="muted">Délivrées par</span>
+                @foreach (var provider in Profile.Certifications.Providers)
+                {
+                    <span class="provider mono">@provider</span>
+                }
+            </p>
+        }
+
+        <ul class="cert-grid">
+            @foreach (var certification in Profile.Certifications.Items)
+            {
+                <li class="cert glow-card reveal">
+                    <span class="card-icon"><Icon Name="@certification.Icon" Size="18" /></span>
+                    <span class="cert__name">@certification.Name</span>
+                    <Icon Name="check-circle" Size="18" Class="cert__check" />
+                </li>
+            }
+        </ul>
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public ProfileOptions Profile { get; set; } = default!;
+}

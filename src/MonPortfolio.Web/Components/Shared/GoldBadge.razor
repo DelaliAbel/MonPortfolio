@@ -1,0 +1,13 @@
+@* Badge « Microsoft Gold Ambassador » : bordure en dégradé doré animée + lueur. *@
+<span class="gold-badge @(Large ? "gold-badge--lg" : null)">
+    <span class="gold-badge__seal" aria-hidden="true">
+        <Icon Name="award" Size="@(Large ? 16 : 13)" Stroke="2.25" />
+    </span>
+    <span class="gold-badge__text">@Text</span>
+    <Icon Name="sparkles" Size="14" Class="gold-badge__spark" />
+</span>
+
+@code {
+    [Parameter] public string Text { get; set; } = "Microsoft Gold Ambassador";
+    [Parameter] public bool Large { get; set; }
+}

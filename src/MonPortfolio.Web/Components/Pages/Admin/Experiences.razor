@@ -1,0 +1,168 @@
+@page "/admin/parcours"
+@rendermode AppRenderModes.InteractiveAdmin
+@inherits CrudPageBase<ExperienceDto, ExperienceInput>
+@inject IExperienceService ExperienceService
+
+<PageTitle>Parcours — Administration</PageTitle>
+
+<AdminPageHeader Title="Parcours" Subtitle="Expériences professionnelles, formations et engagements communautaires.">
+    <Actions>
+        <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate"><Icon Name="plus" Size="16" /> Nouvelle étape</button>
+    </Actions>
+</AdminPageHeader>
+
+@if (Items is null)
+{
+    <LoadingState />
+}
+else
+{
+    <div class="tabs" role="tablist" aria-label="Filtrer par type">
+        <button type="button" role="tab" class="tab @(filter is null ? "is-active" : null)" aria-selected="@(filter is null)" @onclick="() => filter = null">
+            Tout <span class="filter__count">@Items.Count</span>
+        </button>
+        @foreach (var type in ExperienceTypes.All)
+        {
+            <button type="button" role="tab" class="tab @(filter == type ? "is-active" : null)" aria-selected="@(filter == type)" @onclick="() => filter = type">
+                @ExperienceTypes.Label(type) <span class="filter__count">@Items.Count(e => e.Type == type)</span>
+            </button>
+        }
+    </div>
+
+    @if (!Filtered.Any())
+    {
+        <div class="empty-panel">
+            <Icon Name="briefcase" Size="28" />
+            <p>Aucune étape dans cette catégorie.</p>
+        </div>
+    }
+
+    <ol class="admin-timeline">
+        @foreach (var experience in Filtered)
+        {
+            <li class="admin-timeline__item @(experience.IsCurrent ? "is-current" : null)">
+                <div class="admin-timeline__when mono">@DisplayFormat.Period(experience)</div>
+                <div class="admin-timeline__body">
+                    <div class="cell-title">
+                        <strong>@experience.Title</strong>
+                        <span class="chip">@experience.TypeLabel</span>
+                        @if (experience.IsCurrent)
+                        {
+                            <span class="pill pill--live"><span class="dot-live"></span> En cours</span>
+                        }
+                    </div>
+                    <small class="muted">@experience.Organization@(experience.Location is null ? null : $" · {experience.Location}")</small>
+                    @if (experience.Highlights.Count > 0)
+                    {
+                        <small class="muted">@experience.Highlights.Count réalisation(s) · @experience.Technologies.Count techno(s)</small>
+                    }
+                </div>
+                <div class="actions">
+                    <button type="button" class="icon-btn" @onclick="() => OpenEdit(experience)" aria-label="Modifier @experience.Title"><Icon Name="pencil" Size="16" /></button>
+                    <button type="button" class="icon-btn icon-btn--danger" @onclick="() => AskDelete(experience)" aria-label="Supprimer @experience.Title"><Icon Name="trash" Size="16" /></button>
+                </div>
+            </li>
+        }
+    </ol>
+}
+
+<Modal IsOpen="EditorOpen" Title="@(IsEditing ? "Modifier l'étape" : "Nouvelle étape du parcours")" OnClose="CloseEditorAsync" Wide>
+    <EditForm Model="Input" OnValidSubmit="SaveAsync" class="form">
+        <DataAnnotationsValidator />
+        <FormErrors Errors="SaveErrors" />
+
+        <div class="form-row">
+            <div class="field">
+                <label for="e-title">Intitulé</label>
+                <InputText id="e-title" @bind-Value="Input.Title" placeholder="Développeur Full-Stack" />
+                <ValidationMessage For="() => Input.Title" />
+            </div>
+            <div class="field">
+                <label for="e-type">Type</label>
+                <InputSelect id="e-type" @bind-Value="Input.Type">
+                    @foreach (var type in ExperienceTypes.All)
+                    {
+                        <option value="@type">@ExperienceTypes.Label(type)</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="field">
+                <label for="e-org">Organisation / établissement</label>
+                <InputText id="e-org" @bind-Value="Input.Organization" />
+                <ValidationMessage For="() => Input.Organization" />
+            </div>
+            <div class="field">
+                <label for="e-location">Lieu</label>
+                <InputText id="e-location" @bind-Value="Input.Location" placeholder="Niamey, Niger" />
+                <ValidationMessage For="() => Input.Location" />
+            </div>
+        </div>
+
+        <div class="form-row form-row--3">
+            <div class="field">
+                <label for="e-start">Début</label>
+                <InputDate id="e-start" @bind-Value="Input.StartDate" />
+            </div>
+            <div class="field">
+                <label for="e-end">Fin</label>
+                <InputDate id="e-end" @bind-Value="Input.EndDate" disabled="@Input.IsCurrent" />
+                <ValidationMessage For="() => Input.EndDate" />
+            </div>
+            <label class="checkbox checkbox--card">
+                <InputCheckbox @bind-Value="Input.IsCurrent" />
+                <span><strong>En cours</strong><small class="muted">Sans date de fin</small></span>
+            </label>
+        </div>
+
+        <div class="field">
+            <label for="e-desc">Description <span class="field__hint">optionnelle</span></label>
+            <InputTextArea id="e-desc" @bind-Value="Input.Description" rows="2" />
+            <ValidationMessage For="() => Input.Description" />
+        </div>
+
+        <div class="field">
+            <label for="e-highlights">Réalisations clés <span class="field__hint">une par ligne</span></label>
+            <InputTextArea id="e-highlights" @bind-Value="Input.Highlights" rows="4" />
+            <ValidationMessage For="() => Input.Highlights" />
+        </div>
+
+        <div class="field">
+            <label for="e-tech">Technologies <span class="field__hint">séparées par des virgules</span></label>
+            <InputText id="e-tech" @bind-Value="Input.Technologies" placeholder="C#, Blazor, Azure" />
+            <ValidationMessage For="() => Input.Technologies" />
+        </div>
+
+        <div class="field">
+            <label for="e-link">Lien <span class="field__hint">facultatif — site de l'organisation, publication, attestation…</span></label>
+            <InputText id="e-link" type="url" @bind-Value="Input.LinkUrl" placeholder="https://…" />
+            <ValidationMessage For="() => Input.LinkUrl" />
+        </div>
+
+        <div class="modal__footer">
+            <button type="button" class="btn btn-ghost" @onclick="CloseEditorAsync">Annuler</button>
+            <button type="submit" class="btn btn-gold" disabled="@Saving">@(Saving ? "Enregistrement…" : "Enregistrer")</button>
+        </div>
+    </EditForm>
+</Modal>
+
+<ConfirmDialog IsOpen="PendingDelete is not null" Busy="Deleting"
+               Title="Supprimer cette étape ?"
+               Message="@($"« {PendingDelete?.Title} — {PendingDelete?.Organization} » sera retirée du parcours.")"
+               OnConfirm="ConfirmDeleteAsync" OnCancel="CancelDelete" />
+
+<Toast @ref="Toast" />
+
+@code {
+    private ExperienceType? filter;
+
+    protected override ICrudService<ExperienceDto, ExperienceInput> Service => ExperienceService;
+    protected override CrudMessages Messages { get; } = new("Étape ajoutée.", "Étape mise à jour.", "Étape supprimée.");
+    protected override Guid IdOf(ExperienceDto item) => item.Id;
+    protected override ExperienceInput ToInput(ExperienceDto item) => ExperienceInput.From(item);
+    protected override ExperienceInput NewInput() => new() { Type = filter ?? ExperienceType.Professional };
+
+    private IEnumerable<ExperienceDto> Filtered => (Items ?? []).Where(e => filter is null || e.Type == filter);
+}

@@ -1,0 +1,26 @@
+<footer class="site-footer">
+    <div class="container site-footer__inner">
+        <div class="site-footer__brand">
+            <a class="brand" href="/#top">
+                <span class="brand__mark">@Profile.Initials</span>
+                <span class="brand__name">@Profile.FullName</span>
+            </a>
+            <p class="muted">@Profile.Headline · @Profile.Location</p>
+        </div>
+
+        <div class="site-footer__social">
+            <a class="social-btn" href="mailto:@Profile.Email" aria-label="E-mail" title="E-mail"><span class="social-logo" aria-hidden="true"><Icon Name="mail" Size="20" /></span></a>
+            <SocialLinks Links="SocialLinks" />
+        </div>
+    </div>
+
+    <div class="container site-footer__bottom">
+        <span>© @DateTime.Now.Year @Profile.FullName. Tous droits réservés.</span>
+        <span class="mono">Built with <span class="text-gold">.NET 10</span> · Blazor · Clean Architecture</span>
+    </div>
+</footer>
+
+@code {
+    [Parameter, EditorRequired] public ProfileOptions Profile { get; set; } = default!;
+    [Parameter] public IReadOnlyList<SocialLinkDto> SocialLinks { get; set; } = [];
+}

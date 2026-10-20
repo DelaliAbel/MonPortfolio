@@ -1,0 +1,116 @@
+<section class="section section--alt" id="projects">
+    <div class="container">
+        <SectionHeading Index="04" Eyebrow="Projets" Title="Des réalisations" Highlight="à fort impact."
+                        Subtitle="Fintech, ERP, secteur public, multiplateforme : une sélection de projets menés de la conception à la production." />
+
+        @if (Projects.Count == 0)
+        {
+            <p class="empty-state">Les projets seront bientôt publiés.</p>
+        }
+        else
+        {
+            <div class="filters reveal" role="toolbar" aria-label="Filtrer les projets par catégorie" data-project-filters>
+                <button type="button" class="filter is-active" data-filter="*" aria-pressed="true">
+                    Tous <span class="filter__count">@Projects.Count</span>
+                </button>
+                @foreach (var category in categories)
+                {
+                    <button type="button" class="filter" data-filter="@category.Name" aria-pressed="false">
+                        @category.Name <span class="filter__count">@category.Count</span>
+                    </button>
+                }
+            </div>
+
+            <div class="projects-grid">
+                @foreach (var (project, index) in Projects.Select((p, i) => (p, i)))
+                {
+                    <article class="project-card glow-card reveal @(project.IsFeatured ? "is-featured" : null)" data-category="@project.Category">
+                        <div class="project-card__cover" data-variant="@(index % 4)">
+                            @if (project.ImageUrl is not null)
+                            {
+                                <img src="@project.ImageUrl" alt="" loading="lazy" />
+                            }
+                            else if (CoverStack(project) is { Count: > 0 } stack)
+                            {
+                                <div class="project-card__stack" aria-hidden="true">
+                                    @foreach (var technology in stack)
+                                    {
+                                        <span class="stack-tile"><TechLogo Name="@technology" Size="34" ShowFallback="false" /></span>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="project-card__monogram mono" aria-hidden="true">@Monogram(project.Title)</span>
+                            }
+                            @if (project.IsFeatured)
+                            {
+                                <span class="ribbon"><Icon Name="star" Size="13" /> À la une</span>
+                            }
+                        </div>
+
+                        <div class="project-card__body">
+                            <p class="eyebrow-sm mono">@project.Category</p>
+                            <h3>@project.Title</h3>
+                            <p class="project-card__summary">@project.Summary</p>
+
+                            @if (project.Description is not null)
+                            {
+                                <details class="project-card__more">
+                                    <summary>En savoir plus</summary>
+                                    <p>@project.Description</p>
+                                </details>
+                            }
+
+                            <ul class="chips" aria-label="Technologies">
+                                @foreach (var technology in project.Technologies)
+                                {
+                                    <TechChip Name="@technology" />
+                                }
+                            </ul>
+                        </div>
+
+                        @if (project.RepositoryUrl is not null || project.LiveUrl is not null)
+                        {
+                            <footer class="project-card__links">
+                                @if (project.RepositoryUrl is not null)
+                                {
+                                    <a href="@project.RepositoryUrl" target="_blank" rel="noopener noreferrer"><Icon Name="github" Size="16" /> Code source</a>
+                                }
+                                @if (project.LiveUrl is not null)
+                                {
+                                    <a href="@project.LiveUrl" target="_blank" rel="noopener noreferrer"><Icon Name="external" Size="16" /> Démo</a>
+                                }
+                            </footer>
+                        }
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<ProjectDto> Projects { get; set; } = [];
+
+    private List<(string Name, int Count)> categories = [];
+
+    protected override void OnParametersSet() =>
+        categories = Projects.GroupBy(p => p.Category).Select(g => (g.Key, g.Count())).ToList();
+
+    /// <summary>Jusqu'à trois technologies au logo distinct, pour illustrer la couverture sans image.</summary>
+    private static List<string> CoverStack(ProjectDto project) =>
+        project.Technologies
+            .Select(t => (Name: t, Logo: TechLogos.Resolve(t).FirstOrDefault()))
+            .Where(t => t.Logo is not null)
+            .DistinctBy(t => t.Logo!.File)
+            .Take(3)
+            .Select(t => t.Name)
+            .ToList();
+
+    private static string Monogram(string title) =>
+        string.Concat(title.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Where(w => w.Length > 2 && char.IsLetterOrDigit(w[0]))
+            .Take(2)
+            .Select(w => char.ToUpperInvariant(w[0])));
+}

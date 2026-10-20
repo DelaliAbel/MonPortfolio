@@ -1,0 +1,23 @@
+<header class="section-heading reveal @(Center ? "section-heading--center" : null)">
+    <p class="eyebrow"><span class="eyebrow__index">@Index</span> @Eyebrow</p>
+    <h2 class="section-title">
+        @Title
+        @if (Highlight is not null)
+        {
+            @(" ")<span class="text-gold">@Highlight</span>
+        }
+    </h2>
+    @if (Subtitle is not null)
+    {
+        <p class="section-subtitle">@Subtitle</p>
+    }
+</header>
+
+@code {
+    [Parameter, EditorRequired] public string Index { get; set; } = "01";
+    [Parameter, EditorRequired] public string Eyebrow { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string? Highlight { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public bool Center { get; set; }
+}

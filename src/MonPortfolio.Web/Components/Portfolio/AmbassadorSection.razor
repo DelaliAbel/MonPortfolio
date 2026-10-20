@@ -1,0 +1,122 @@
+<section class="section" id="ambassador">
+    <div class="container">
+        <SectionHeading Index="05" Eyebrow="Distinction & communauté" Title="Microsoft" Highlight="Gold Ambassador"
+                        Subtitle="Partager, fédérer, élever le niveau : l'engagement communautaire au cœur de ma pratique." />
+
+        <div class="ambassador-grid">
+            <article class="ambassador-card reveal">
+                <div class="ambassador-card__emblem" aria-hidden="true">
+                    <svg viewBox="0 0 120 140" width="120" height="140">
+                        <defs>
+                            <linearGradient id="emblem-gold" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0" stop-color="#fde68a" />
+                                <stop offset=".45" stop-color="#fbbf24" />
+                                <stop offset="1" stop-color="#b45309" />
+                            </linearGradient>
+                            <linearGradient id="emblem-dark" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0" stop-color="#1e293b" />
+                                <stop offset="1" stop-color="#090d16" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M60 4 112 22v40c0 34-22 60-52 74C30 122 8 96 8 62V22Z" fill="url(#emblem-gold)" />
+                        <path d="M60 14 102 29v33c0 28-18 50-42 62C36 112 18 90 18 62V29Z" fill="url(#emblem-dark)" />
+                        <path d="m60 38 7.6 15.4 17 2.5-12.3 12 2.9 16.9L60 76.8l-15.2 8 2.9-16.9-12.3-12 17-2.5Z" fill="url(#emblem-gold)" />
+                        <text x="60" y="108" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" letter-spacing="3" fill="#fbbf24">GOLD</text>
+                    </svg>
+                </div>
+
+                <div class="ambassador-card__content">
+                    <GoldBadge />
+                    <h3>@Profile.Ambassador.Title</h3>
+                    <p>@Profile.Ambassador.Description</p>
+
+                    <ol class="milestones">
+                        @for (var i = 0; i < Profile.Ambassador.Milestones.Count; i++)
+                        {
+                            var milestone = Profile.Ambassador.Milestones[i];
+                            var isLast = i == Profile.Ambassador.Milestones.Count - 1;
+                            <li class="milestone @(isLast ? "is-gold" : null)">
+                                <span class="milestone__node">
+                                    @if (isLast)
+                                    {
+                                        <Icon Name="star" Size="14" Stroke="2" />
+                                    }
+                                    else
+                                    {
+                                        @(i + 1)
+                                    }
+                                </span>
+                                <strong>@milestone.Level</strong>
+                                <span class="mono">@milestone.Date</span>
+                                @if (milestone.Description is not null)
+                                {
+                                    <small>@milestone.Description</small>
+                                }
+                            </li>
+                        }
+                    </ol>
+                </div>
+            </article>
+
+            <article class="community-card glow-card reveal">
+                <span class="card-icon card-icon--lg"><Icon Name="users" Size="24" /></span>
+                <p class="eyebrow-sm mono">Communauté tech</p>
+                <h3>@Profile.Community.Name</h3>
+                <p class="community-card__role">@Profile.Community.Role</p>
+                <p>@Profile.Community.Description</p>
+                @if (Profile.Community.Pillars.Count > 0)
+                {
+                    <ul class="chips">
+                        @foreach (var pillar in Profile.Community.Pillars)
+                        {
+                            <li class="chip chip--gold">@pillar</li>
+                        }
+                    </ul>
+                }
+                @if (!string.IsNullOrWhiteSpace(Profile.Community.Url))
+                {
+                    <a class="btn btn-ghost btn-sm" href="@Profile.Community.Url" target="_blank" rel="noopener noreferrer">
+                        Rejoindre la communauté <Icon Name="arrow-up-right" Size="15" />
+                    </a>
+                }
+            </article>
+        </div>
+
+        @if (Activities.Count > 0)
+        {
+            <div class="activities">
+                <header class="activities__header reveal">
+                    <h3><Icon Name="sparkles" Size="18" /> Activités communautaires</h3>
+                    <span class="muted mono">@Activities.Count.ToString("00")</span>
+                </header>
+
+                <div class="activities-grid">
+                    @foreach (var activity in Activities.Take(VisibleCount))
+                    {
+                        <ActivityCard Activity="activity" />
+                    }
+                </div>
+
+                @if (Activities.Count > VisibleCount)
+                {
+                    <details class="activities__more">
+                        <summary class="btn btn-ghost btn-sm">Voir les @(Activities.Count - VisibleCount) autres activités</summary>
+                        <div class="activities-grid">
+                            @foreach (var activity in Activities.Skip(VisibleCount))
+                            {
+                                <ActivityCard Activity="activity" />
+                            }
+                        </div>
+                    </details>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private const int VisibleCount = 6;
+
+    [Parameter, EditorRequired] public ProfileOptions Profile { get; set; } = default!;
+    [Parameter] public IReadOnlyList<CommunityActivityDto> Activities { get; set; } = [];
+}

@@ -1,0 +1,52 @@
+@implements IDisposable
+
+@if (message is not null)
+{
+    <div class="toast @(success ? "toast--success" : "toast--error")" role="status" aria-live="polite">
+        <Icon Name="@(success ? "check-circle" : "alert")" Size="18" />
+        <span>@message</span>
+        <button type="button" class="icon-btn icon-btn--sm" @onclick="Hide" aria-label="Fermer la notification"><Icon Name="x" Size="14" /></button>
+    </div>
+}
+
+@code {
+    private string? message;
+    private bool success = true;
+    private CancellationTokenSource? hideTimer;
+
+    public void Show(string text, bool success = true)
+    {
+        message = text;
+        this.success = success;
+        hideTimer?.Cancel();
+        hideTimer = new CancellationTokenSource();
+        _ = HideLaterAsync(hideTimer.Token);
+        StateHasChanged();
+    }
+
+    private void Hide()
+    {
+        hideTimer?.Cancel();
+        message = null;
+    }
+
+    private async Task HideLaterAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(4), cancellationToken);
+            message = null;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (TaskCanceledException)
+        {
+            // Une nouvelle notification a remplacé celle-ci.
+        }
+    }
+
+    public void Dispose()
+    {
+        hideTimer?.Cancel();
+        hideTimer?.Dispose();
+    }
+}

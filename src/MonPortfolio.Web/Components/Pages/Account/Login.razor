@@ -1,0 +1,103 @@
+@page "/admin/login"
+@layout AuthLayout
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+@* Rendu statique (SSR) : la connexion doit écrire le cookie d'authentification dans la réponse HTTP,
+   ce qu'un composant interactif (circuit SignalR) ne peut pas faire. *@
+
+<PageTitle>Connexion — Administration</PageTitle>
+
+<div class="auth-card">
+    <a class="brand auth-card__brand" href="/">
+        <span class="brand__mark">DA</span>
+        <span class="brand__name">Portfolio<span class="text-gold">.</span>admin</span>
+    </a>
+
+    <h1>Espace administrateur</h1>
+    <p class="muted">Connectez-vous pour gérer projets, compétences, parcours et messages.</p>
+
+    @if (LoggedOut)
+    {
+        <div class="alert alert--success" role="status"><Icon Name="check-circle" Size="18" /> <p>Vous êtes bien déconnecté.</p></div>
+    }
+    @if (errorMessage is not null)
+    {
+        <div class="alert alert--error" role="alert"><Icon Name="alert" Size="18" /> <p>@errorMessage</p></div>
+    }
+
+    <EditForm Model="Input" FormName="login" OnValidSubmit="LoginAsync" class="form" novalidate>
+        <DataAnnotationsValidator />
+
+        <div class="field">
+            <label for="login-email">E-mail</label>
+            <InputText id="login-email" type="email" @bind-Value="Input!.Email" autocomplete="username" autofocus />
+            <ValidationMessage For="() => Input!.Email" />
+        </div>
+
+        <div class="field">
+            <label for="login-password">Mot de passe</label>
+            <InputText id="login-password" type="password" @bind-Value="Input!.Password" autocomplete="current-password" />
+            <ValidationMessage For="() => Input!.Password" />
+        </div>
+
+        <label class="checkbox">
+            <InputCheckbox @bind-Value="Input!.RememberMe" />
+            <span>Rester connecté</span>
+        </label>
+
+        <button type="submit" class="btn btn-gold btn-block"><Icon Name="lock" Size="16" /> Se connecter</button>
+    </EditForm>
+
+    <a class="auth-card__back" href="/"><Icon Name="arrow-left" Size="14" /> Retour au portfolio</a>
+</div>
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "login")]
+    private LoginInput? Input { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromQuery(Name = "loggedOut")]
+    private bool LoggedOut { get; set; }
+
+    private string? errorMessage;
+
+    protected override void OnInitialized()
+    {
+        Input ??= new LoginInput();
+
+        if (HttpMethods.IsGet(HttpContext.Request.Method) && HttpContext.User.IsInRole(Roles.Admin))
+            Navigation.NavigateTo(SafeReturnUrl);
+    }
+
+    private async Task LoginAsync()
+    {
+        var status = await AuthService.SignInAsync(Input!.Email, Input.Password, Input.RememberMe);
+
+        switch (status)
+        {
+            case SignInStatus.Succeeded:
+                Navigation.NavigateTo(SafeReturnUrl);
+                return;
+            case SignInStatus.LockedOut:
+                errorMessage = "Compte temporairement verrouillé après plusieurs échecs. Réessayez dans 15 minutes.";
+                break;
+            default:
+                errorMessage = "Identifiants invalides.";
+                break;
+        }
+
+        Input.Password = string.Empty;
+    }
+
+    /// <summary>Empêche les redirections ouvertes : seules les URL locales de l'admin sont suivies.</summary>
+    private string SafeReturnUrl =>
+        ReturnUrl is { } url && url.StartsWith("/admin", StringComparison.OrdinalIgnoreCase) && !url.StartsWith("//") && !url.Contains('\\')
+            ? url
+            : "/admin";
+}

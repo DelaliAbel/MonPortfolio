@@ -1,0 +1,93 @@
+@inherits LayoutComponentBase
+@inject IContactService ContactService
+@inject NavigationManager Navigation
+
+@* Layout statique (SSR) ré-rendu à chaque navigation : le compteur de messages non lus reste à jour,
+   et la déconnexion est un simple POST HTTP protégé par jeton antiforgery. Les pages, elles, sont interactives. *@
+
+<div class="admin-shell">
+    <input type="checkbox" id="admin-nav-toggle" class="admin-nav-toggle" aria-hidden="true" />
+
+    <aside class="admin-sidebar" aria-label="Navigation administration">
+        <a class="brand admin-sidebar__brand" href="/admin">
+            <span class="brand__mark">DA</span>
+            <span class="brand__name">Portfolio<span class="text-gold">.</span>admin</span>
+        </a>
+
+        <nav class="admin-nav">
+            <p class="admin-nav__label mono">Contenu</p>
+            <NavLink class="admin-nav__link" href="admin" Match="NavLinkMatch.All"><Icon Name="dashboard" /> Tableau de bord</NavLink>
+            <NavLink class="admin-nav__link" href="admin/projets"><Icon Name="folder" /> Projets</NavLink>
+            <NavLink class="admin-nav__link" href="admin/competences"><Icon Name="cpu" /> Compétences</NavLink>
+            <NavLink class="admin-nav__link" href="admin/parcours"><Icon Name="briefcase" /> Parcours</NavLink>
+            <NavLink class="admin-nav__link" href="admin/activites"><Icon Name="sparkles" /> Activités</NavLink>
+
+            <p class="admin-nav__label mono">Relation</p>
+            <NavLink class="admin-nav__link" href="admin/reseaux"><Icon Name="link" /> Réseaux sociaux</NavLink>
+            <NavLink class="admin-nav__link" href="admin/messages">
+                <Icon Name="inbox" /> Messages
+                @if (unread > 0)
+                {
+                    <span class="badge-count" aria-label="@unread non lus">@unread</span>
+                }
+            </NavLink>
+        </nav>
+
+        <div class="admin-sidebar__footer">
+            <a class="admin-nav__link" href="/" target="_blank" rel="noopener"><Icon Name="external" /> Voir le site</a>
+            <form method="post" action="/admin/logout">
+                <AntiforgeryToken />
+                <button type="submit" class="admin-nav__link admin-nav__logout"><Icon Name="log-out" /> Se déconnecter</button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <label for="admin-nav-toggle" class="icon-btn admin-topbar__menu" aria-label="Ouvrir le menu"><Icon Name="menu" /></label>
+            <span class="admin-topbar__crumb mono">~/admin<span class="text-gold">@Section</span></span>
+            <div class="admin-topbar__right">
+                <button type="button" class="icon-btn" data-theme-toggle aria-label="Basculer le thème clair / sombre">
+                    <Icon Name="sun" Class="theme-icon--light" />
+                    <Icon Name="moon" Class="theme-icon--dark" />
+                </button>
+                <AuthorizeView>
+                    <span class="admin-user">
+                        <span class="admin-user__avatar">@Initial(context.User.Identity?.Name)</span>
+                        <span class="admin-user__name">@context.User.Identity?.Name</span>
+                    </span>
+                </AuthorizeView>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            @Body
+        </main>
+    </div>
+    <label for="admin-nav-toggle" class="admin-scrim" aria-hidden="true"></label>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    Une erreur inattendue est survenue.
+    <a href="" class="reload">Recharger</a>
+    <span class="dismiss">✕</span>
+</div>
+
+@code {
+    private int unread;
+
+    private string Section
+    {
+        get
+        {
+            var path = Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0];
+            return path.Length > "admin".Length ? path["admin".Length..] : string.Empty;
+        }
+    }
+
+    protected override async Task OnInitializedAsync() =>
+        unread = await ContactService.CountUnreadAsync();
+
+    private static string Initial(string? name) =>
+        string.IsNullOrEmpty(name) ? "?" : char.ToUpperInvariant(name[0]).ToString();
+}

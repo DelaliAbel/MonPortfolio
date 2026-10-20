@@ -1,0 +1,22 @@
+<Modal IsOpen="IsOpen" Title="@Title" OnClose="OnCancel">
+    <div class="confirm">
+        <span class="confirm__icon"><Icon Name="trash" Size="22" /></span>
+        <p>@Message</p>
+    </div>
+    <div class="modal__footer">
+        <button type="button" class="btn btn-ghost" @onclick="OnCancel" disabled="@Busy">Annuler</button>
+        <button type="button" class="btn btn-danger" @onclick="OnConfirm" disabled="@Busy">
+            @(Busy ? "Suppression…" : ConfirmText)
+        </button>
+    </div>
+</Modal>
+
+@code {
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public string Title { get; set; } = "Confirmer la suppression";
+    [Parameter] public string Message { get; set; } = "Cette action est définitive.";
+    [Parameter] public string ConfirmText { get; set; } = "Supprimer";
+    [Parameter] public bool Busy { get; set; }
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+}

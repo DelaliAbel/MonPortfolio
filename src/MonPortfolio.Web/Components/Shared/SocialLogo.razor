@@ -1,0 +1,18 @@
+@* Logo officiel d'un réseau, sans recoloration ni filtre, posé sur une tuile blanche neutre
+   pour rester lisible quel que soit le thème (les logos GitHub, X ou Medium sont noirs). *@
+<span class="social-logo @Class" aria-hidden="true">
+    @if (LinkDisplay.PlatformLogo(Platform) is { } logo)
+    {
+        <img src="@Assets[logo]" alt="" width="@Size" height="@Size" decoding="async" />
+    }
+    else
+    {
+        <Icon Name="@LinkDisplay.PlatformIcon(Platform)" Size="@Size" />
+    }
+</span>
+
+@code {
+    [Parameter, EditorRequired] public SocialPlatform Platform { get; set; }
+    [Parameter] public int Size { get; set; } = 22;
+    [Parameter] public string? Class { get; set; }
+}

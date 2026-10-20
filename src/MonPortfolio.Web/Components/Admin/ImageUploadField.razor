@@ -1,0 +1,131 @@
+@implements IAsyncDisposable
+@inject IImageStorage Images
+
+@* Champ image : téléversement (contrôlé côté serveur), aperçu, retrait, ou URL externe.
+   Les fichiers téléversés pendant l'édition restent « en attente » : ils sont supprimés s'ils sont
+   remplacés, ou si l'édition est annulée (DiscardAsync) ; CommitAsync les valide après enregistrement. *@
+
+<div class="image-field @(uploading ? "is-uploading" : null)">
+    <div class="image-field__preview">
+        @if (!string.IsNullOrWhiteSpace(Value))
+        {
+            <img src="@Value" alt="Aperçu de l'image" />
+            <button type="button" class="icon-btn icon-btn--sm image-field__remove" @onclick="RemoveAsync" aria-label="Retirer l'image">
+                <Icon Name="x" Size="14" />
+            </button>
+        }
+        else
+        {
+            <div class="image-field__empty">
+                <Icon Name="image" Size="26" Stroke="1.5" />
+                <span>Aucune image</span>
+            </div>
+        }
+        @if (uploading)
+        {
+            <div class="image-field__overlay"><span class="spinner" aria-hidden="true"></span> Envoi…</div>
+        }
+    </div>
+
+    <div class="image-field__side">
+        <label class="btn btn-ghost btn-sm image-field__picker">
+            <Icon Name="upload" Size="16" /> @(string.IsNullOrWhiteSpace(Value) ? "Téléverser une image" : "Remplacer l'image")
+            <InputFile OnChange="UploadAsync" accept="@ImageRules.AcceptAttribute" class="image-field__input" disabled="@uploading" />
+        </label>
+        <small class="muted">@ImageRules.Description</small>
+
+        <details class="image-field__url" open="@IsExternal">
+            <summary>ou utiliser une URL</summary>
+            <input type="url" value="@(IsExternal ? Value : null)" placeholder="https://…" aria-label="URL de l'image"
+                   @onchange="OnUrlChangedAsync" />
+        </details>
+
+        @if (error is not null)
+        {
+            <p class="validation-message" role="alert">@error</p>
+        }
+    </div>
+</div>
+
+@code {
+    private readonly List<string> pendingUploads = [];
+    private bool uploading;
+    private string? error;
+
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter, EditorRequired] public ImageFolder Folder { get; set; }
+
+    private bool IsExternal => !string.IsNullOrWhiteSpace(Value) && !Value.StartsWith('/');
+
+    private async Task UploadAsync(InputFileChangeEventArgs e)
+    {
+        error = null;
+        if (e.File.Size > ImageRules.MaxBytes)
+        {
+            error = "L'image dépasse la taille maximale de 2 Mo.";
+            return;
+        }
+
+        uploading = true;
+        try
+        {
+            await using var stream = e.File.OpenReadStream(ImageRules.MaxBytes);
+            var result = await Images.SaveAsync(stream, Folder);
+            if (result.IsFailure)
+            {
+                error = result.Error;
+                return;
+            }
+
+            pendingUploads.Add(result.Value!);
+            await SetValueAsync(result.Value);
+        }
+        catch (IOException)
+        {
+            error = "Le fichier n'a pas pu être lu. Réessayez avec une image de moins de 2 Mo.";
+        }
+        finally
+        {
+            uploading = false;
+        }
+    }
+
+    private async Task RemoveAsync()
+    {
+        error = null;
+        await SetValueAsync(null);
+    }
+
+    private async Task OnUrlChangedAsync(ChangeEventArgs e)
+    {
+        error = null;
+        var url = e.Value?.ToString();
+        await SetValueAsync(string.IsNullOrWhiteSpace(url) ? null : url.Trim());
+    }
+
+    /// <summary>Change la valeur et supprime aussitôt l'ancien fichier s'il n'a jamais été enregistré.</summary>
+    private async Task SetValueAsync(string? value)
+    {
+        var previous = Value;
+        Value = value;
+        await ValueChanged.InvokeAsync(value);
+
+        if (previous is not null && previous != value && pendingUploads.Remove(previous))
+            await Images.DeleteAsync(previous);
+    }
+
+    /// <summary>L'entité a été enregistrée : l'image courante devient définitive.</summary>
+    public void Commit() => pendingUploads.Clear();
+
+    /// <summary>Édition abandonnée : on supprime tout ce qui a été téléversé entre-temps.</summary>
+    public async Task DiscardAsync()
+    {
+        foreach (var url in pendingUploads)
+            await Images.DeleteAsync(url);
+        pendingUploads.Clear();
+    }
+
+    // Filet de sécurité si la modale disparaît sans passer par Commit/Discard (navigation, déconnexion).
+    public ValueTask DisposeAsync() => new(DiscardAsync());
+}
