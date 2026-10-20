@@ -20,7 +20,13 @@ public sealed class Project : AuditableEntity
     public string? Description { get; private set; }
     public string Category { get; private set; } = string.Empty;
     public IReadOnlyList<string> Technologies { get; private set; } = [];
+
+    /// <summary>Capture d'écran (web ou desktop), présentée dans une fenêtre inclinée.</summary>
     public string? ImageUrl { get; private set; }
+
+    /// <summary>Capture mobile (portrait), présentée dans un cadre de téléphone.</summary>
+    public string? MobileImageUrl { get; private set; }
+
     public string? RepositoryUrl { get; private set; }
     public string? LiveUrl { get; private set; }
     public bool IsFeatured { get; private set; }
@@ -33,6 +39,7 @@ public sealed class Project : AuditableEntity
         string category,
         IEnumerable<string>? technologies,
         string? imageUrl,
+        string? mobileImageUrl,
         string? repositoryUrl,
         string? liveUrl,
         bool isFeatured,
@@ -40,7 +47,7 @@ public sealed class Project : AuditableEntity
         DateTime utcNow)
     {
         var project = new Project();
-        project.Apply(title, summary, description, category, technologies, imageUrl, repositoryUrl, liveUrl, isFeatured, displayOrder);
+        project.Apply(title, summary, description, category, technologies, imageUrl, mobileImageUrl, repositoryUrl, liveUrl, isFeatured, displayOrder);
         project.MarkCreated(utcNow);
         return project;
     }
@@ -52,13 +59,14 @@ public sealed class Project : AuditableEntity
         string category,
         IEnumerable<string>? technologies,
         string? imageUrl,
+        string? mobileImageUrl,
         string? repositoryUrl,
         string? liveUrl,
         bool isFeatured,
         int displayOrder,
         DateTime utcNow)
     {
-        Apply(title, summary, description, category, technologies, imageUrl, repositoryUrl, liveUrl, isFeatured, displayOrder);
+        Apply(title, summary, description, category, technologies, imageUrl, mobileImageUrl, repositoryUrl, liveUrl, isFeatured, displayOrder);
         MarkUpdated(utcNow);
     }
 
@@ -69,6 +77,7 @@ public sealed class Project : AuditableEntity
         string category,
         IEnumerable<string>? technologies,
         string? imageUrl,
+        string? mobileImageUrl,
         string? repositoryUrl,
         string? liveUrl,
         bool isFeatured,
@@ -79,7 +88,8 @@ public sealed class Project : AuditableEntity
         Description = Guard.Optional(description, "Description", DescriptionMaxLength);
         Category = Guard.Required(category, "Catégorie", CategoryMaxLength);
         Technologies = Guard.Tags(technologies, "Technologies", MaxTechnologies, TechnologyMaxLength);
-        ImageUrl = Guard.SafeUrl(imageUrl, "Image", UrlMaxLength);
+        ImageUrl = Guard.SafeUrl(imageUrl, "Capture écran", UrlMaxLength);
+        MobileImageUrl = Guard.SafeUrl(mobileImageUrl, "Capture mobile", UrlMaxLength);
         RepositoryUrl = Guard.SafeUrl(repositoryUrl, "Dépôt de code", UrlMaxLength);
         LiveUrl = Guard.SafeUrl(liveUrl, "Démo en ligne", UrlMaxLength);
         IsFeatured = isFeatured;

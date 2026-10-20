@@ -25,35 +25,45 @@
                 @foreach (var (project, index) in Projects.Select((p, i) => (p, i)))
                 {
                     <article class="project-card glow-card reveal @(project.IsFeatured ? "is-featured" : null)" data-category="@project.Category">
-                        @* Aperçu incliné façon capture d'application ; sans image, une fenêtre aux logos de la stack. *@
-                        <div class="project-card__cover" data-variant="@(index % 4)">
-                            <div class="project-shot">
-                                @if (project.ImageUrl is not null)
-                                {
-                                    <img src="@project.ImageUrl" alt="Aperçu de @project.Title" loading="lazy" decoding="async" />
-                                }
-                                else
-                                {
-                                    <span class="project-shot__bar" aria-hidden="true">
-                                        <span class="code-window__dots"><i></i><i></i><i></i></span>
-                                    </span>
-                                    <span class="project-shot__screen" aria-hidden="true">
-                                        @if (CoverStack(project) is { Count: > 0 } stack)
-                                        {
-                                            <span class="project-card__stack">
-                                                @foreach (var technology in stack)
-                                                {
-                                                    <span class="stack-tile"><TechLogo Name="@technology" Size="30" ShowFallback="false" /></span>
-                                                }
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="project-card__monogram mono">@Monogram(project.Title)</span>
-                                        }
-                                    </span>
-                                }
-                            </div>
+                        @* Aperçus inclinés : capture écran dans une fenêtre, capture mobile dans un téléphone (devant la
+                           fenêtre quand les deux existent) ; sans aucune capture, une fenêtre aux logos de la stack. *@
+                        <div class="project-card__cover @CoverModifier(project)" data-variant="@(index % 4)">
+                            @if (project.ImageUrl is not null || project.MobileImageUrl is null)
+                            {
+                                <div class="project-shot">
+                                    @if (project.ImageUrl is not null)
+                                    {
+                                        <img src="@project.ImageUrl" alt="Aperçu de @project.Title" loading="lazy" decoding="async" />
+                                    }
+                                    else
+                                    {
+                                        <span class="project-shot__bar" aria-hidden="true">
+                                            <span class="code-window__dots"><i></i><i></i><i></i></span>
+                                        </span>
+                                        <span class="project-shot__screen" aria-hidden="true">
+                                            @if (CoverStack(project) is { Count: > 0 } stack)
+                                            {
+                                                <span class="project-card__stack">
+                                                    @foreach (var technology in stack)
+                                                    {
+                                                        <span class="stack-tile"><TechLogo Name="@technology" Size="30" ShowFallback="false" /></span>
+                                                    }
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="project-card__monogram mono">@Monogram(project.Title)</span>
+                                            }
+                                        </span>
+                                    }
+                                </div>
+                            }
+                            @if (project.MobileImageUrl is not null)
+                            {
+                                <div class="project-phone">
+                                    <img src="@project.MobileImageUrl" alt="Aperçu mobile de @project.Title" loading="lazy" decoding="async" />
+                                </div>
+                            }
                             @if (project.IsFeatured)
                             {
                                 <span class="ribbon"><Icon Name="star" Size="13" /> À la une</span>
@@ -108,6 +118,13 @@
 
     protected override void OnParametersSet() =>
         categories = Projects.GroupBy(p => p.Category).Select(g => (g.Key, g.Count())).ToList();
+
+    private static string? CoverModifier(ProjectDto project) => (project.ImageUrl, project.MobileImageUrl) switch
+    {
+        (not null, not null) => "project-card__cover--combo",
+        (null, not null) => "project-card__cover--phone",
+        _ => null
+    };
 
     /// <summary>Jusqu'à trois technologies au logo distinct, pour illustrer la couverture sans image.</summary>
     private static List<string> CoverStack(ProjectDto project) =>

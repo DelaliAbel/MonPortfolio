@@ -129,9 +129,15 @@ else
         </div>
 
         <div class="field">
-            <span class="field__label">Image de couverture <span class="field__hint">facultative — capture d'écran paysage (16:10) conseillée ; sinon les logos de la stack</span></span>
-            <ImageUploadField @ref="imageField" @bind-Value="Input.ImageUrl" Folder="ImageFolder.Projects" />
+            <span class="field__label">Capture écran <span class="field__hint">facultative — web ou desktop, paysage 16:10 conseillé ; sans capture, les logos de la stack</span></span>
+            <ImageUploadField @ref="screenImageField" @bind-Value="Input.ImageUrl" Folder="ImageFolder.Projects" />
             <ValidationMessage For="() => Input.ImageUrl" />
+        </div>
+
+        <div class="field">
+            <span class="field__label">Capture mobile <span class="field__hint">facultative — portrait (ex. 1080 × 2340) ; avec une capture écran, le téléphone passe devant</span></span>
+            <ImageUploadField @ref="mobileImageField" @bind-Value="Input.MobileImageUrl" Folder="ImageFolder.Projects" Portrait />
+            <ValidationMessage For="() => Input.MobileImageUrl" />
         </div>
 
         <div class="form-row">
@@ -175,17 +181,18 @@ else
 
 @code {
     private string search = string.Empty;
-    private ImageUploadField? imageField;
+    private ImageUploadField? screenImageField;
+    private ImageUploadField? mobileImageField;
 
     protected override async Task OnEditorClosingAsync(bool saved)
     {
-        if (imageField is null)
-            return;
-
-        if (saved)
-            imageField.Commit();
-        else
-            await imageField.DiscardAsync();
+        foreach (var field in new[] { screenImageField, mobileImageField }.OfType<ImageUploadField>())
+        {
+            if (saved)
+                field.Commit();
+            else
+                await field.DiscardAsync();
+        }
     }
 
     protected override ICrudService<ProjectDto, ProjectInput> Service => ProjectService;

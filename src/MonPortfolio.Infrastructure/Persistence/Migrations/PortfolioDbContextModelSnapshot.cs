@@ -354,6 +354,10 @@ namespace MonPortfolio.Infrastructure.Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<string>("MobileImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<string>("RepositoryUrl")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");

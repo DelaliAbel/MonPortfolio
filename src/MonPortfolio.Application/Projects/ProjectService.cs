@@ -11,7 +11,7 @@ internal sealed class ProjectService(IProjectRepository repository, TimeProvider
 {
     protected override ProjectDto ToDto(Project project) => project.ToDto();
 
-    protected override string? ImageOf(Project project) => project.ImageUrl;
+    protected override IEnumerable<string?> ImagesOf(Project project) => [project.ImageUrl, project.MobileImageUrl];
 
     protected override Project CreateEntity(ProjectInput input, DateTime utcNow) =>
         Project.Create(
@@ -21,6 +21,7 @@ internal sealed class ProjectService(IProjectRepository repository, TimeProvider
             input.Category,
             TextList.SplitTags(input.Technologies),
             input.ImageUrl,
+            input.MobileImageUrl,
             input.RepositoryUrl,
             input.LiveUrl,
             input.IsFeatured,
@@ -35,6 +36,7 @@ internal sealed class ProjectService(IProjectRepository repository, TimeProvider
             input.Category,
             TextList.SplitTags(input.Technologies),
             input.ImageUrl,
+            input.MobileImageUrl,
             input.RepositoryUrl,
             input.LiveUrl,
             input.IsFeatured,
@@ -52,6 +54,7 @@ internal static class ProjectMappings
         project.Category,
         project.Technologies,
         project.ImageUrl,
+        project.MobileImageUrl,
         project.RepositoryUrl,
         project.LiveUrl,
         project.IsFeatured,

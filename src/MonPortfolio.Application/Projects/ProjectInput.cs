@@ -26,9 +26,13 @@ public sealed class ProjectInput
     [StringLength(600, ErrorMessage = "La liste des technologies est trop longue.")]
     public string? Technologies { get; set; }
 
-    [SafeUrl, Display(Name = "« Image »")]
+    [SafeUrl, Display(Name = "« Capture écran »")]
     [StringLength(Project.UrlMaxLength)]
     public string? ImageUrl { get; set; }
+
+    [SafeUrl, Display(Name = "« Capture mobile »")]
+    [StringLength(Project.UrlMaxLength)]
+    public string? MobileImageUrl { get; set; }
 
     [SafeUrl, Display(Name = "« Dépôt de code »")]
     [StringLength(Project.UrlMaxLength)]
@@ -51,6 +55,7 @@ public sealed class ProjectInput
         Category = dto.Category,
         Technologies = TextList.JoinTags(dto.Technologies),
         ImageUrl = dto.ImageUrl,
+        MobileImageUrl = dto.MobileImageUrl,
         RepositoryUrl = dto.RepositoryUrl,
         LiveUrl = dto.LiveUrl,
         IsFeatured = dto.IsFeatured,

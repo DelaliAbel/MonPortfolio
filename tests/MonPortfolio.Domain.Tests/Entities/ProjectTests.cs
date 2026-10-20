@@ -58,6 +58,7 @@ public class ProjectTests
 
     [Theory]
     [InlineData(nameof(Project.ImageUrl))]
+    [InlineData(nameof(Project.MobileImageUrl))]
     [InlineData(nameof(Project.RepositoryUrl))]
     [InlineData(nameof(Project.LiveUrl))]
     public void Every_url_field_rejects_unsafe_scheme(string field) =>
@@ -71,7 +72,7 @@ public class ProjectTests
 
         project.Update(
             "Nouveau titre", "Nouveau résumé", "Description", "Mobile", ["Flutter"],
-            "/images/app.png", "https://github.com/exemple/app", "https://app.example.com",
+            "/images/app.png", "/images/app-mobile.png", "https://github.com/exemple/app", "https://app.example.com",
             isFeatured: true, displayOrder: 3, Make.Later);
 
         Assert.Equal(id, project.Id);
@@ -81,6 +82,7 @@ public class ProjectTests
         Assert.Equal("Mobile", project.Category);
         Assert.Equal(["Flutter"], project.Technologies);
         Assert.Equal("/images/app.png", project.ImageUrl);
+        Assert.Equal("/images/app-mobile.png", project.MobileImageUrl);
         Assert.Equal("https://github.com/exemple/app", project.RepositoryUrl);
         Assert.Equal("https://app.example.com", project.LiveUrl);
         Assert.True(project.IsFeatured);
@@ -95,7 +97,7 @@ public class ProjectTests
         var project = Make.Project();
 
         Assert.Throws<DomainException>(() => project.Update(
-            "   ", "Résumé", null, "Web", null, null, null, null, false, 0, Make.Later));
+            "   ", "Résumé", null, "Web", null, null, null, null, null, false, 0, Make.Later));
     }
 
     private static Project CreateWith(string field, string? value) => field switch
@@ -105,6 +107,7 @@ public class ProjectTests
         nameof(Project.Description) => Make.Project(description: value),
         nameof(Project.Category) => Make.Project(category: value!),
         nameof(Project.ImageUrl) => Make.Project(imageUrl: value),
+        nameof(Project.MobileImageUrl) => Make.Project(mobileImageUrl: value),
         nameof(Project.RepositoryUrl) => Make.Project(repositoryUrl: value),
         nameof(Project.LiveUrl) => Make.Project(liveUrl: value),
         _ => throw new ArgumentOutOfRangeException(nameof(field), field, null)

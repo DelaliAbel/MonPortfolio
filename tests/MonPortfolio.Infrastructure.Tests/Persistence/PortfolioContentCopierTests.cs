@@ -42,7 +42,7 @@ public sealed class PortfolioContentCopierTests : IDisposable
 
     private void SeedSource()
     {
-        source.Projects.Add(Project.Create("Portfolio", "Vitrine Blazor", null, ".NET", ["Blazor"], null, null, null, true, 1, Now));
+        source.Projects.Add(Project.Create("Portfolio", "Vitrine Blazor", null, ".NET", ["Blazor"], null, null, null, null, true, 1, Now));
         source.Skills.Add(Skill.Create("C#", SkillCategory.Languages, 95, 0, Now));
         source.Experiences.Add(Experience.Create("Développeur", "Contoso", null, ExperienceType.Professional,
             new DateOnly(2024, 1, 1), null, null, ["Livraison"], ["C#"], "https://contoso.example.com", Now));

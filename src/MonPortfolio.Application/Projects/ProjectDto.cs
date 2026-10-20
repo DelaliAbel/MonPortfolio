@@ -8,6 +8,7 @@ public sealed record ProjectDto(
     string Category,
     IReadOnlyList<string> Technologies,
     string? ImageUrl,
+    string? MobileImageUrl,
     string? RepositoryUrl,
     string? LiveUrl,
     bool IsFeatured,

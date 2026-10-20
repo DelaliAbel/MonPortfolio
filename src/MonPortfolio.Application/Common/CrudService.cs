@@ -40,8 +40,8 @@ internal abstract class CrudService<TEntity, TDto, TInput>(
 
     protected abstract void UpdateEntity(TEntity entity, TInput input, DateTime utcNow);
 
-    /// <summary>Image associée à l'entité, s'il y en a une (null par défaut).</summary>
-    protected virtual string? ImageOf(TEntity entity) => null;
+    /// <summary>Images téléversées associées à l'entité (aucune par défaut) ; les valeurs nulles sont ignorées.</summary>
+    protected virtual IEnumerable<string?> ImagesOf(TEntity entity) => [];
 
     public async Task<IReadOnlyList<TDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
         (await repository.ListAsync(cancellationToken)).Select(ToDto).ToList();
@@ -77,7 +77,7 @@ internal abstract class CrudService<TEntity, TDto, TInput>(
         if (entity is null)
             return Result.NotFound(resourceName);
 
-        var previousImage = ImageOf(entity);
+        var previousImages = ImagesOf(entity).OfType<string>().ToList();
         try
         {
             UpdateEntity(entity, input, UtcNow);
@@ -88,8 +88,12 @@ internal abstract class CrudService<TEntity, TDto, TInput>(
             return Result.Failure(ex.Message);
         }
 
-        if (images is not null && !string.Equals(previousImage, ImageOf(entity), StringComparison.Ordinal))
-            await images.DeleteAsync(previousImage, cancellationToken);
+        if (images is not null)
+        {
+            var currentImages = ImagesOf(entity).OfType<string>().ToHashSet(StringComparer.Ordinal);
+            foreach (var previousImage in previousImages.Where(image => !currentImages.Contains(image)))
+                await images.DeleteAsync(previousImage, cancellationToken);
+        }
 
         return Result.Success();
     }
@@ -103,7 +107,10 @@ internal abstract class CrudService<TEntity, TDto, TInput>(
         await repository.DeleteAsync(entity, cancellationToken);
 
         if (images is not null)
-            await images.DeleteAsync(ImageOf(entity), cancellationToken);
+        {
+            foreach (var image in ImagesOf(entity).OfType<string>())
+                await images.DeleteAsync(image, cancellationToken);
+        }
 
         return Result.Success();
     }

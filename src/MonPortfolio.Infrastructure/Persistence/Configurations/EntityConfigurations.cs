@@ -17,6 +17,7 @@ internal sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.Description).HasMaxLength(Project.DescriptionMaxLength);
         builder.Property(p => p.Category).HasMaxLength(Project.CategoryMaxLength).IsRequired();
         builder.Property(p => p.ImageUrl).HasMaxLength(Project.UrlMaxLength);
+        builder.Property(p => p.MobileImageUrl).HasMaxLength(Project.UrlMaxLength);
         builder.Property(p => p.RepositoryUrl).HasMaxLength(Project.UrlMaxLength);
         builder.Property(p => p.LiveUrl).HasMaxLength(Project.UrlMaxLength);
         builder.PrimitiveCollection(p => p.Technologies); // colonne JSON

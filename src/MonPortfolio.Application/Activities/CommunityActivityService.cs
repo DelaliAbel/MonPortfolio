@@ -15,7 +15,7 @@ internal sealed class CommunityActivityService(
 {
     protected override CommunityActivityDto ToDto(CommunityActivity activity) => activity.ToDto();
 
-    protected override string? ImageOf(CommunityActivity activity) => activity.ImageUrl;
+    protected override IEnumerable<string?> ImagesOf(CommunityActivity activity) => [activity.ImageUrl];
 
     protected override CommunityActivity CreateEntity(CommunityActivityInput input, DateTime utcNow) =>
         CommunityActivity.Create(

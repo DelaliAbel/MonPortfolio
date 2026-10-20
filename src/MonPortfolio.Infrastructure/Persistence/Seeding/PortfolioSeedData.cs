@@ -163,41 +163,41 @@ internal static class PortfolioSeedData
             "Plateforme fintech en microservices et application mobile associée, conçues pour la sécurité et la fiabilité des transactions.",
             "Conception et évolution d'une plateforme de transfert d'argent découpée en microservices Spring Boot, avec une application mobile Flutter. Travail centré sur la sécurité applicative, la fiabilité transactionnelle et la qualité du code (revues, bonnes pratiques).",
             "Fintech", ["Java", "Spring Boot", "Microservices", "Flutter", "Dart"],
-            null, null, null, isFeatured: true, displayOrder: 1, now);
+            null, null, null, null, isFeatured: true, displayOrder: 1, now);
 
         yield return Project.Create(
             "Modules ERP métier",
             "Modules de gestion pour des systèmes de type ERP, livrés en continu grâce à des pipelines CI/CD.",
             "Développement de modules ERP au sein d'une équipe Agile (Jira), mise en place des pipelines CI/CD et mentorat des développeurs juniors.",
             "ERP", ["C#", "ASP.NET Core", "Blazor", "CI/CD", "Agile"],
-            null, null, null, isFeatured: true, displayOrder: 2, now);
+            null, null, null, null, isFeatured: true, displayOrder: 2, now);
 
         yield return Project.Create(
             "Suite applicative web, mobile & desktop",
             "Architecture et interfaces de solutions multiplateformes : Blazor pour le web, WPF pour le desktop, .NET MAUI pour le mobile.",
             "Définition de l'architecture logicielle (DDD, N-tiers, MVVM) et pilotage des interfaces utilisateurs avec une équipe de 5+ développeurs.",
             ".NET", ["Blazor", "WPF", ".NET MAUI", ".NET Aspire", "DDD", "MVVM"],
-            null, null, null, isFeatured: true, displayOrder: 3, now);
+            null, null, null, null, isFeatured: true, displayOrder: 3, now);
 
         yield return Project.Create(
             "Digitalisation du département RH",
             "Automatisation des processus RH grâce à Microsoft Power Platform.",
             null,
             "Low-code", ["Power Platform"],
-            null, null, null, isFeatured: false, displayOrder: 4, now);
+            null, null, null, null, isFeatured: false, displayOrder: 4, now);
 
         yield return Project.Create(
             "Traitement des enquêtes TIC",
             "Applications de traitement des enquêtes TIC développées avec la Direction des Statistiques du ministère.",
             null,
             "Secteur public", ["Bases de données", "Statistiques"],
-            null, null, null, isFeatured: false, displayOrder: 5, now);
+            null, null, null, null, isFeatured: false, displayOrder: 5, now);
 
         yield return Project.Create(
             "Portfolio Gold Ambassador",
             "Ce site : Clean Architecture en 4 couches, Blazor (.NET 10), EF Core et ASP.NET Core Identity.",
             "Vitrine rendue côté serveur (SSR) pour la performance et le référencement, espace d'administration interactif et sécurisé (Identity, verrouillage, limitation de débit, en-têtes CSP).",
             ".NET", [".NET 10", "Blazor", "EF Core", "Identity", "Clean Architecture"],
-            null, null, null, isFeatured: false, displayOrder: 6, now);
+            null, null, null, null, isFeatured: false, displayOrder: 6, now);
     }
 }

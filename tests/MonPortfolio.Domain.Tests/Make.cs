@@ -20,13 +20,14 @@ internal static class Make
         string category = "Web",
         IEnumerable<string>? technologies = null,
         string? imageUrl = null,
+        string? mobileImageUrl = null,
         string? repositoryUrl = null,
         string? liveUrl = null,
         bool isFeatured = false,
         int displayOrder = 0) =>
         global::MonPortfolio.Domain.Entities.Project.Create(
             title, summary, description, category, technologies,
-            imageUrl, repositoryUrl, liveUrl, isFeatured, displayOrder, Now);
+            imageUrl, mobileImageUrl, repositoryUrl, liveUrl, isFeatured, displayOrder, Now);
 
     public static Skill Skill(
         string name = "C#",
