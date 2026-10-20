@@ -12,6 +12,10 @@ de leurs détenteurs respectifs ; elles sont utilisées uniquement pour pointer 
   Source : « Skill Icons » de tandpfun (https://github.com/tandpfun/skill-icons),
   via le paquet npm @iconify-json/skill-icons 1.2.4 — licence MIT reproduite ci-dessous.
 
+- Adaptations : linkedin.svg reçoit un fond blanc derrière ses lettres découpées (logo officiel : « in » blanc
+  sur carré bleu) ; github-white.svg, x-white.svg et medium-white.svg sont les variantes blanches des logos
+  monochromes, prévues par les marques pour les fonds sombres.
+
 ------------------------------------------------------------------------------------------
 MIT License
 

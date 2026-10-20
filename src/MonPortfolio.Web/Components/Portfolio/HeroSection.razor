@@ -7,8 +7,6 @@
 
     <div class="container hero__inner">
         <div class="hero__content">
-            <div class="reveal"><GoldBadge Large /></div>
-
             <p class="hero__hello mono reveal"><span class="text-gold">&gt;_</span> Hello, World — je suis</p>
 
             <h1 class="hero__title reveal">
@@ -65,18 +63,11 @@
                 <span class="float-chip__icon"><Icon Name="award" Size="16" /></span>
                 <span><small>Microsoft</small><strong>Gold Ambassador</strong></span>
             </div>
-            @if (!string.IsNullOrWhiteSpace(Profile.Availability))
-            {
-                <div class="float-chip float-chip--b mono"><span class="dot-live" aria-hidden="true"></span>@Profile.Availability</div>
-            }
-            <div class="float-chip float-chip--c mono">
-                <span class="float-chip__logos">
-                    <TechLogo Name=".NET" Size="18" />
-                    <TechLogo Name="Java" Size="18" />
-                    <TechLogo Name="Flutter" Size="18" />
-                    <TechLogo Name="Azure" Size="18" />
-                </span>
-                Full-Stack · Mobile · Cloud
+            <div class="float-chip float-chip--stack" role="img" aria-label="Stack principale : .NET, Java, Flutter, Azure">
+                <TechLogo Name=".NET" Size="22" />
+                <TechLogo Name="Java" Size="22" />
+                <TechLogo Name="Flutter" Size="22" />
+                <TechLogo Name="Azure" Size="22" />
             </div>
         </div>
     </div>

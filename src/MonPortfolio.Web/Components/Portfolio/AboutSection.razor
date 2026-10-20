@@ -3,8 +3,7 @@
 
 <section class="section" id="about">
     <div class="container">
-        <SectionHeading Index="01" Eyebrow="À propos" Title="La rigueur d'un architecte," Highlight="l'énergie d'un leader."
-                        Subtitle="Développeur polyglotte, je relie exigences métier, sécurité et expérience utilisateur." />
+        <SectionHeading Index="01" Eyebrow="À propos" Title="La rigueur d'un architecte," Highlight="l'énergie d'un leader." />
 
         <div class="about-grid">
             <div class="about__text reveal">
@@ -13,30 +12,23 @@
                     <p>@paragraph</p>
                 }
 
-                <div class="about__meta">
-                    <span><Icon Name="map-pin" Size="16" /> @Profile.Location</span>
-                    <span><Icon Name="mail" Size="16" /> <a href="mailto:@Profile.Email">@Profile.Email</a></span>
-                </div>
-
                 @if (Profile.Languages.Count > 0)
                 {
-                    <div class="languages">
-                        <h3 class="card-label"><Icon Name="globe" Size="15" /> Langues</h3>
-                        <ul>
-                            @foreach (var language in Profile.Languages)
-                            {
-                                <li>
-                                    <span>@language.Name</span>
-                                    <span class="level-dots" role="img" aria-label="Niveau @language.Level sur 5">
-                                        @for (var i = 1; i <= 5; i++)
-                                        {
-                                            <i class="@(i <= language.Level ? "on" : null)"></i>
-                                        }
-                                    </span>
-                                </li>
-                            }
-                        </ul>
-                    </div>
+                    <ul class="languages" aria-label="Langues">
+                        <li class="languages__label"><Icon Name="globe" Size="15" /> Langues</li>
+                        @foreach (var language in Profile.Languages)
+                        {
+                            <li>
+                                <span>@language.Name</span>
+                                <span class="level-dots" role="img" aria-label="Niveau @language.Level sur 5">
+                                    @for (var i = 1; i <= 5; i++)
+                                    {
+                                        <i class="@(i <= language.Level ? "on" : null)"></i>
+                                    }
+                                </span>
+                            </li>
+                        }
+                    </ul>
                 }
             </div>
 
@@ -47,16 +39,11 @@
                     <span class="code-window__lang mono">C# 14</span>
                 </div>
                 <div class="code" translate="no">
-                    <span class="line"><span class="tk-kw">namespace</span> <span class="tk-ns">Portfolio</span>;</span>
-                    <span class="line"> </span>
                     <span class="line"><span class="tk-attr">[GoldAmbassador</span>(<span class="tk-prop">Since</span> = <span class="tk-num">2026</span>)<span class="tk-attr">]</span></span>
                     <span class="line"><span class="tk-kw">public sealed record</span> <span class="tk-type">Developer</span>(<span class="tk-kw">string</span> <span class="tk-param">Name</span>) : <span class="tk-type">IFullStack</span></span>
                     <span class="line">{</span>
                     <span class="line">    <span class="tk-kw">public string</span> <span class="tk-prop">Role</span> =&gt; <span class="tk-str">"Full-Stack Senior"</span>;</span>
-                    <span class="line">    <span class="tk-kw">public string</span> <span class="tk-prop">Base</span> =&gt; <span class="tk-str">"@Profile.Location"</span>;</span>
-                    <span class="line"> </span>
-                    <span class="line">    <span class="tk-kw">public string</span>[] <span class="tk-prop">Stack</span> =&gt;</span>
-                    <span class="line">        [<span class="tk-str">".NET"</span>, <span class="tk-str">"Blazor"</span>, <span class="tk-str">"Azure"</span>, <span class="tk-str">"Spring Boot"</span>];</span>
+                    <span class="line">    <span class="tk-kw">public string</span>[] <span class="tk-prop">Stack</span> =&gt; [<span class="tk-str">".NET"</span>, <span class="tk-str">"Java"</span>, <span class="tk-str">"Azure"</span>];</span>
                     <span class="line"> </span>
                     <span class="line">    <span class="tk-cm">// Sécurité by design, du domaine jusqu'au cloud.</span></span>
                     <span class="line">    <span class="tk-kw">public</span> <span class="tk-type">Task</span>&lt;<span class="tk-type">Product</span>&gt; <span class="tk-fn">ShipAsync</span>(<span class="tk-type">Idea</span> <span class="tk-param">idea</span>) =&gt;</span>
@@ -69,9 +56,8 @@
         <div class="expertise-grid">
             @foreach (var expertise in Profile.Expertises)
             {
-                <article class="card glow-card reveal">
-                    <span class="card-icon"><Icon Name="@expertise.Icon" Size="20" /></span>
-                    <h3>@expertise.Title</h3>
+                <article class="card expertise glow-card reveal">
+                    <h3><span class="card-icon"><Icon Name="@expertise.Icon" Size="18" /></span> @expertise.Title</h3>
                     <p>@expertise.Description</p>
                 </article>
             }

@@ -1,9 +1,17 @@
-@* Logo officiel d'un réseau, sans recoloration ni filtre, posé sur une tuile blanche neutre
-   pour rester lisible quel que soit le thème (les logos GitHub, X ou Medium sont noirs). *@
+@* Logo officiel d'un réseau, affiché seul : ni tuile, ni recoloration.
+   Les logos noirs (GitHub, X, Medium) basculent sur leur variante officielle blanche en thème sombre. *@
 <span class="social-logo @Class" aria-hidden="true">
     @if (LinkDisplay.PlatformLogo(Platform) is { } logo)
     {
-        <img src="@Assets[logo]" alt="" width="@Size" height="@Size" decoding="async" />
+        if (LinkDisplay.PlatformLogoOnDark(Platform) is { } logoOnDark)
+        {
+            <img src="@Assets[logoOnDark]" alt="" width="@Size" height="@Size" decoding="async" class="social-logo__on-dark" />
+            <img src="@Assets[logo]" alt="" width="@Size" height="@Size" decoding="async" class="social-logo__on-light" />
+        }
+        else
+        {
+            <img src="@Assets[logo]" alt="" width="@Size" height="@Size" decoding="async" />
+        }
     }
     else
     {
@@ -13,6 +21,6 @@
 
 @code {
     [Parameter, EditorRequired] public SocialPlatform Platform { get; set; }
-    [Parameter] public int Size { get; set; } = 22;
+    [Parameter] public int Size { get; set; } = 26;
     [Parameter] public string? Class { get; set; }
 }

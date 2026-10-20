@@ -33,6 +33,16 @@ public static class LinkDisplay
         _ => $"logos/social/{PlatformKey(platform)}.svg"
     };
 
+    /// <summary>
+    /// Variante officielle blanche des logos monochromes noirs (GitHub, X, Medium), affichée en thème sombre
+    /// où la version noire serait invisible. Null pour les logos déjà lisibles sur fond sombre.
+    /// </summary>
+    public static string? PlatformLogoOnDark(SocialPlatform platform) => platform switch
+    {
+        SocialPlatform.GitHub or SocialPlatform.X or SocialPlatform.Medium => $"logos/social/{PlatformKey(platform)}-white.svg",
+        _ => null
+    };
+
     public static string ActivityIcon(CommunityActivityKind kind) => kind switch
     {
         CommunityActivityKind.Talk => "mic",
