@@ -45,21 +45,6 @@
       "Role": "Lead & Founder",
       "Description": "Founder and organizer of the .NET Niger community: bringing developers together, sharing best practices and promoting the Microsoft ecosystem in Niger.",
       "Pillars": [ "Knowledge sharing", "Mentoring", ".NET & Azure ecosystem" ]
-    },
-
-    "Certifications": {
-      "Items": [
-        { "Name": "C# Fundamentals" },
-        { "Name": "Software architect" },
-        { "Name": "Microsoft Azure" },
-        { "Name": "DevOps" },
-        { "Name": "IT security specialist" },
-        { "Name": "AI & ML specialist" },
-        { "Name": "Mobile app developer" },
-        { "Name": "JavaScript" },
-        { "Name": "Figma" },
-        { "Name": "Bootstrap" }
-      ]
     }
   }
 }

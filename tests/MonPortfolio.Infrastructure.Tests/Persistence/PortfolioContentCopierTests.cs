@@ -48,6 +48,9 @@ public sealed class PortfolioContentCopierTests : IDisposable
             new DateOnly(2024, 1, 1), null, null, new(["Livraison"]), ["C#"], "https://contoso.example.com", Now));
         source.CommunityActivities.Add(CommunityActivity.Create("Meetup Blazor", CommunityActivityKind.Meetup,
             new DateOnly(2026, 3, 12), ".NET Niger", "Niamey", null, "https://www.linkedin.com/posts/x", null, Now));
+        source.Certifications.Add(Certification.Create(
+            new("Développeur Blazor", "Blazor developer"), CertificationKind.CompletionCertificate, "Udemy",
+            new DateOnly(2025, 5, 1), "UC-123", "https://www.udemy.com/certificate/UC-123", null, 0, Now));
         source.SocialLinks.Add(SocialLink.Create(SocialPlatform.LinkedIn, "https://www.linkedin.com/in/exemple", null, 1, Now));
         source.ContactMessages.Add(ContactMessage.Create("Jeanne", "jeanne@example.com", "Mission", "Bonjour, êtes-vous disponible ?", Now));
         source.SaveChanges();
@@ -62,13 +65,14 @@ public sealed class PortfolioContentCopierTests : IDisposable
 
         var report = await PortfolioContentCopier.CopyAsync(source, target, replace: false);
 
-        Assert.Equal(new ImportReport(1, 1, 1, 1, 1, 1), report);
+        Assert.Equal(new ImportReport(1, 1, 1, 1, 1, 1, 1), report);
         target.ChangeTracker.Clear();
         var copiedLink = await target.SocialLinks.SingleAsync();
         Assert.Equal(expectedLink.Id, copiedLink.Id);
         Assert.Equal(expectedLink.CreatedAtUtc, copiedLink.CreatedAtUtc);
         Assert.Equal("https://contoso.example.com", (await target.Experiences.SingleAsync()).LinkUrl);
         Assert.Equal(["Blazor"], (await target.Projects.SingleAsync()).Technologies);
+        Assert.Equal("Blazor developer", (await target.Certifications.SingleAsync()).Name.En);
     }
 
     [Fact]

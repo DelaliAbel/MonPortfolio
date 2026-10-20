@@ -12,6 +12,8 @@ public interface ISocialLinkRepository : IRepository<SocialLink>;
 
 public interface ICommunityActivityRepository : IRepository<CommunityActivity>;
 
+public interface ICertificationRepository : IRepository<Certification>;
+
 public interface IContactMessageRepository : IRepository<ContactMessage>
 {
     Task<int> CountUnreadAsync(CancellationToken cancellationToken = default);

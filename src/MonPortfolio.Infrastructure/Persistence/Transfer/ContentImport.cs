@@ -6,11 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace MonPortfolio.Infrastructure.Persistence.Transfer;
 
-public sealed record ImportReport(int Projects, int Skills, int Experiences, int Activities, int SocialLinks, int Messages)
+public sealed record ImportReport(
+    int Projects, int Skills, int Experiences, int Activities, int Certifications, int SocialLinks, int Messages)
 {
     public override string ToString() =>
         $"{Projects} projet(s), {Skills} compétence(s), {Experiences} étape(s) de parcours, " +
-        $"{Activities} activité(s), {SocialLinks} réseau(x), {Messages} message(s)";
+        $"{Activities} activité(s), {Certifications} certification(s), {SocialLinks} réseau(x), {Messages} message(s)";
 }
 
 /// <summary>
@@ -93,6 +94,7 @@ internal static class PortfolioContentCopier
         var skills = await source.Skills.AsNoTracking().ToListAsync(cancellationToken);
         var experiences = await source.Experiences.AsNoTracking().ToListAsync(cancellationToken);
         var activities = await source.CommunityActivities.AsNoTracking().ToListAsync(cancellationToken);
+        var certifications = await source.Certifications.AsNoTracking().ToListAsync(cancellationToken);
         var socialLinks = await source.SocialLinks.AsNoTracking().ToListAsync(cancellationToken);
         var messages = await source.ContactMessages.AsNoTracking().ToListAsync(cancellationToken);
 
@@ -112,6 +114,7 @@ internal static class PortfolioContentCopier
                 await target.Skills.ExecuteDeleteAsync(cancellationToken);
                 await target.Experiences.ExecuteDeleteAsync(cancellationToken);
                 await target.CommunityActivities.ExecuteDeleteAsync(cancellationToken);
+                await target.Certifications.ExecuteDeleteAsync(cancellationToken);
                 await target.SocialLinks.ExecuteDeleteAsync(cancellationToken);
                 await target.ContactMessages.ExecuteDeleteAsync(cancellationToken);
             }
@@ -120,6 +123,7 @@ internal static class PortfolioContentCopier
             target.Skills.AddRange(skills);
             target.Experiences.AddRange(experiences);
             target.CommunityActivities.AddRange(activities);
+            target.Certifications.AddRange(certifications);
             target.SocialLinks.AddRange(socialLinks);
             target.ContactMessages.AddRange(messages);
 
@@ -127,7 +131,8 @@ internal static class PortfolioContentCopier
             await transaction.CommitAsync(cancellationToken);
         });
 
-        return new ImportReport(projects.Count, skills.Count, experiences.Count, activities.Count, socialLinks.Count, messages.Count);
+        return new ImportReport(
+            projects.Count, skills.Count, experiences.Count, activities.Count, certifications.Count, socialLinks.Count, messages.Count);
     }
 
     private static async Task<bool> HasContentAsync(PortfolioDbContext db, CancellationToken cancellationToken) =>
@@ -135,6 +140,7 @@ internal static class PortfolioContentCopier
         || await db.Skills.AnyAsync(cancellationToken)
         || await db.Experiences.AnyAsync(cancellationToken)
         || await db.CommunityActivities.AnyAsync(cancellationToken)
+        || await db.Certifications.AnyAsync(cancellationToken)
         || await db.SocialLinks.AnyAsync(cancellationToken)
         || await db.ContactMessages.AnyAsync(cancellationToken);
 }

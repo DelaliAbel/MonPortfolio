@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MonPortfolio.Application.Activities;
+using MonPortfolio.Application.Certifications;
 using MonPortfolio.Application.Contact;
 using MonPortfolio.Application.Experiences;
 using MonPortfolio.Application.Portfolio;
@@ -21,6 +22,7 @@ public static class DependencyInjection
         services.AddScoped<ISkillService, SkillService>();
         services.AddScoped<IExperienceService, ExperienceService>();
         services.AddScoped<ICommunityActivityService, CommunityActivityService>();
+        services.AddScoped<ICertificationService, CertificationService>();
         services.AddScoped<ISocialLinkService, SocialLinkService>();
         services.AddScoped<IContactService, ContactService>();
         services.AddScoped<IPortfolioService, PortfolioService>();

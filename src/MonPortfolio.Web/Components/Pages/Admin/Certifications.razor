@@ -1,0 +1,177 @@
+@page "/admin/certifications"
+@rendermode AppRenderModes.InteractiveAdmin
+@inherits CrudPageBase<CertificationDto, CertificationInput>
+@inject ICertificationService CertificationService
+
+<PageTitle>Certifications — Administration</PageTitle>
+
+<AdminPageHeader Title="Certifications" Subtitle="Certifications et attestations de fin de formation : Microsoft, Udemy, LinkedIn Learning, freeCodeCamp, Pluralsight…">
+    <Actions>
+        <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate"><Icon Name="plus" Size="16" /> Nouvelle certification</button>
+    </Actions>
+</AdminPageHeader>
+
+@if (Items is null)
+{
+    <LoadingState />
+}
+else if (Items.Count == 0)
+{
+    <div class="empty-panel">
+        <Icon Name="award" Size="28" />
+        <p>Aucune certification pour l'instant. Ajoutez vos certifications Microsoft et vos attestations de formation.</p>
+        <button type="button" class="btn btn-gold btn-sm" @onclick="OpenCreate">Ajouter une première certification</button>
+    </div>
+}
+else
+{
+    <div class="activity-admin-grid">
+        @foreach (var certification in Items)
+        {
+            <article class="panel activity-admin-card">
+                <div class="activity-admin-card__thumb activity-admin-card__thumb--contain">
+                    @if (certification.ImageUrl is not null)
+                    {
+                        <img src="@certification.ImageUrl" alt="" loading="lazy" />
+                    }
+                    else
+                    {
+                        <Icon Name="award" Size="26" Stroke="1.5" />
+                    }
+                </div>
+                <div class="activity-admin-card__body">
+                    <p class="mono muted">
+                        @certification.KindLabel@(certification.IssuedOn is { } date ? $" · {DisplayFormat.MonthYear(date)}" : null)
+                    </p>
+                    <strong>@certification.Name</strong>
+                    @if (certification.Issuer is not null)
+                    {
+                        <small class="muted">@certification.Issuer</small>
+                    }
+                    else
+                    {
+                        <small class="activity-admin-card__warn"><Icon Name="alert" Size="13" /> Organisme à préciser</small>
+                    }
+                    @if (certification.CredentialUrl is not null)
+                    {
+                        <a class="link-gold" href="@certification.CredentialUrl" target="_blank" rel="noopener noreferrer">
+                            <Icon Name="link" Size="13" /> @LinkDisplay.Host(certification.CredentialUrl)
+                        </a>
+                    }
+                </div>
+                <div class="actions">
+                    <button type="button" class="icon-btn" @onclick="() => OpenEdit(certification)" aria-label="Modifier @certification.Name"><Icon Name="pencil" Size="16" /></button>
+                    <button type="button" class="icon-btn icon-btn--danger" @onclick="() => AskDelete(certification)" aria-label="Supprimer @certification.Name"><Icon Name="trash" Size="16" /></button>
+                </div>
+            </article>
+        }
+    </div>
+}
+
+<Modal IsOpen="EditorOpen" Title="@(IsEditing ? "Modifier la certification" : "Nouvelle certification")" OnClose="CloseEditorAsync" Wide>
+    <EditForm Model="Input" OnValidSubmit="SaveAsync" class="form">
+        <DataAnnotationsValidator />
+        <FormErrors Errors="SaveErrors" />
+
+        <BilingualField Id="c-name" Label="Intitulé" Hint="l'anglais n'est utile que si l'intitulé se traduit">
+            <French>
+                <InputText id="c-name" @bind-Value="Input.Name" placeholder="Azure Fundamentals (AZ-900)" />
+                <ValidationMessage For="() => Input.Name" />
+            </French>
+            <English>
+                <InputText id="c-name-en" @bind-Value="Input.NameEn" placeholder="Software architect" />
+                <ValidationMessage For="() => Input.NameEn" />
+            </English>
+        </BilingualField>
+
+        <div class="form-row form-row--3">
+            <div class="field">
+                <label for="c-kind">Type</label>
+                <InputSelect id="c-kind" @bind-Value="Input.Kind">
+                    @foreach (var kind in CertificationKinds.All)
+                    {
+                        <option value="@kind">@CertificationKinds.Label(kind)</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="field">
+                <label for="c-issuer">Organisme</label>
+                <InputText id="c-issuer" @bind-Value="Input.Issuer" list="certification-issuers" placeholder="Microsoft, Udemy…" />
+                <datalist id="certification-issuers">
+                    @foreach (var issuer in Issuers)
+                    {
+                        <option value="@issuer"></option>
+                    }
+                </datalist>
+                <ValidationMessage For="() => Input.Issuer" />
+            </div>
+            <div class="field">
+                <label for="c-date">Date d'obtention <span class="field__hint">facultative</span></label>
+                <InputDate id="c-date" @bind-Value="Input.IssuedOn" />
+                <ValidationMessage For="() => Input.IssuedOn" />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="field">
+                <label for="c-url">Lien du certificat <span class="field__hint">page de vérification : Microsoft Learn, Credly, Udemy…</span></label>
+                <InputText id="c-url" type="url" @bind-Value="Input.CredentialUrl" placeholder="https://learn.microsoft.com/…" />
+                <ValidationMessage For="() => Input.CredentialUrl" />
+            </div>
+            <div class="field">
+                <label for="c-id">Identifiant <span class="field__hint">facultatif, tel qu'inscrit sur le certificat</span></label>
+                <InputText id="c-id" @bind-Value="Input.CredentialId" placeholder="UC-1a2b3c4d" />
+                <ValidationMessage For="() => Input.CredentialId" />
+            </div>
+        </div>
+
+        <div class="field">
+            <span class="field__label">Image <span class="field__hint">facultative — badge ou capture du certificat ; sinon le logo de la techno</span></span>
+            <ImageUploadField @ref="imageField" @bind-Value="Input.ImageUrl" Folder="ImageFolder.Certifications" />
+            <ValidationMessage For="() => Input.ImageUrl" />
+        </div>
+
+        <div class="field">
+            <label for="c-order">Ordre d'affichage <span class="field__hint">0 en premier ; à ordre égal, les plus récentes d'abord</span></label>
+            <InputNumber id="c-order" @bind-Value="Input.DisplayOrder" min="0" max="999" />
+            <ValidationMessage For="() => Input.DisplayOrder" />
+        </div>
+
+        <div class="modal__footer">
+            <button type="button" class="btn btn-ghost" @onclick="CloseEditorAsync">Annuler</button>
+            <button type="submit" class="btn btn-gold" disabled="@Saving">@(Saving ? "Enregistrement…" : "Enregistrer")</button>
+        </div>
+    </EditForm>
+</Modal>
+
+<ConfirmDialog IsOpen="PendingDelete is not null" Busy="Deleting"
+               Title="Supprimer cette certification ?"
+               Message="@($"« {PendingDelete?.Name} » et son image seront supprimées définitivement.")"
+               OnConfirm="ConfirmDeleteAsync" OnCancel="CancelDelete" />
+
+<Toast @ref="Toast" />
+
+@code {
+    private ImageUploadField? imageField;
+
+    protected override ICrudService<CertificationDto, CertificationInput> Service => CertificationService;
+    protected override CrudMessages Messages { get; } = new("Certification ajoutée.", "Certification mise à jour.", "Certification supprimée.");
+    protected override Guid IdOf(CertificationDto item) => item.Id;
+    protected override CertificationInput ToInput(CertificationDto item) => CertificationInput.From(item);
+    protected override CertificationInput NewInput() => new() { DisplayOrder = Items?.Count ?? 0 };
+
+    /// <summary>Organismes déjà saisis, puis les plus courants.</summary>
+    private IEnumerable<string> Issuers =>
+        (Items ?? []).Select(c => c.Issuer).OfType<string>().Concat(CertificationKinds.KnownIssuers).Distinct(StringComparer.OrdinalIgnoreCase);
+
+    protected override async Task OnEditorClosingAsync(bool saved)
+    {
+        if (imageField is null)
+            return;
+
+        if (saved)
+            imageField.Commit();
+        else
+            await imageField.DiscardAsync();
+    }
+}

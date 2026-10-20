@@ -13,6 +13,7 @@ public sealed class PortfolioDbContext(DbContextOptions<PortfolioDbContext> opti
     public DbSet<Skill> Skills => Set<Skill>();
     public DbSet<Experience> Experiences => Set<Experience>();
     public DbSet<CommunityActivity> CommunityActivities => Set<CommunityActivity>();
+    public DbSet<Certification> Certifications => Set<Certification>();
     public DbSet<SocialLink> SocialLinks => Set<SocialLink>();
     public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
 

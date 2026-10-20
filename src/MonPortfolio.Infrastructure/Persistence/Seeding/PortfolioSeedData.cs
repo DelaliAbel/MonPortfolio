@@ -35,6 +35,12 @@ internal static class PortfolioSeedData
             logger.LogInformation("Projets initiaux importés depuis le CV.");
         }
 
+        if (!await db.Certifications.AnyAsync(cancellationToken))
+        {
+            db.Certifications.AddRange(Certifications(now));
+            logger.LogInformation("Certifications initiales importées depuis le CV.");
+        }
+
         await db.SaveChangesAsync(cancellationToken);
     }
 
@@ -256,6 +262,30 @@ internal static class PortfolioSeedData
         ];
 
         return skills.Select((s, index) => Skill.Create(s.Name, s.Category, s.Level, index, now));
+    }
+
+    /// <summary>
+    /// Intitulés du CV. Le CV ne précise ni l'organisme de chaque titre, ni sa date : ils se complètent,
+    /// avec le lien de vérification et l'image, dans /admin/certifications.
+    /// </summary>
+    private static IEnumerable<Certification> Certifications(DateTime now)
+    {
+        LocalizedText[] names =
+        [
+            "C# Fundamentals",
+            new("Architecte logiciel", "Software architect"),
+            "Microsoft Azure",
+            "DevOps",
+            new("Spécialiste sécurité IT", "IT security specialist"),
+            new("Spécialiste IA & ML", "AI & ML specialist"),
+            new("Développeur d'applications mobiles", "Mobile app developer"),
+            "JavaScript",
+            "Figma",
+            "Bootstrap"
+        ];
+
+        return names.Select((name, index) =>
+            Certification.Create(name, CertificationKind.Certification, null, null, null, null, null, index, now));
     }
 
     private static IEnumerable<Project> Projects(DateTime now)

@@ -1,4 +1,5 @@
 using MonPortfolio.Application.Activities;
+using MonPortfolio.Application.Certifications;
 using MonPortfolio.Application.Contact;
 using MonPortfolio.Application.Experiences;
 using MonPortfolio.Application.Projects;
@@ -14,9 +15,10 @@ public sealed record PortfolioDto(
     IReadOnlyList<SkillGroupDto> SkillGroups,
     IReadOnlyList<ExperienceDto> Experiences,
     IReadOnlyList<CommunityActivityDto> Activities,
+    IReadOnlyList<CertificationDto> Certifications,
     IReadOnlyList<SocialLinkDto> SocialLinks)
 {
-    public static PortfolioDto Empty { get; } = new([], [], [], [], []);
+    public static PortfolioDto Empty { get; } = new([], [], [], [], [], []);
 }
 
 public sealed record DashboardStatsDto(
@@ -24,6 +26,7 @@ public sealed record DashboardStatsDto(
     int Skills,
     int Experiences,
     int Activities,
+    int Certifications,
     int SocialLinks,
     int Messages,
     int UnreadMessages,
@@ -41,6 +44,7 @@ internal sealed class PortfolioService(
     ISkillRepository skills,
     IExperienceRepository experiences,
     ICommunityActivityRepository activities,
+    ICertificationRepository certifications,
     ISocialLinkRepository socialLinks,
     IContactMessageRepository messages) : IPortfolioService
 {
@@ -51,8 +55,9 @@ internal sealed class PortfolioService(
         var skillsTask = skills.ListAsync(cancellationToken);
         var experiencesTask = experiences.ListAsync(cancellationToken);
         var activitiesTask = activities.ListAsync(cancellationToken);
+        var certificationsTask = certifications.ListAsync(cancellationToken);
         var socialLinksTask = socialLinks.ListAsync(cancellationToken);
-        await Task.WhenAll(projectsTask, skillsTask, experiencesTask, activitiesTask, socialLinksTask);
+        await Task.WhenAll(projectsTask, skillsTask, experiencesTask, activitiesTask, certificationsTask, socialLinksTask);
 
         var skillGroups = (await skillsTask)
             .Select(s => s.ToDto())
@@ -66,6 +71,7 @@ internal sealed class PortfolioService(
             skillGroups,
             (await experiencesTask).Select(e => e.ToDto()).ToList(),
             (await activitiesTask).Select(a => a.ToDto()).ToList(),
+            (await certificationsTask).Select(c => c.ToDto()).ToList(),
             (await socialLinksTask).Select(l => l.ToDto()).ToList());
     }
 
@@ -75,17 +81,21 @@ internal sealed class PortfolioService(
         var skillCount = skills.CountAsync(cancellationToken);
         var experienceCount = experiences.CountAsync(cancellationToken);
         var activityCount = activities.CountAsync(cancellationToken);
+        var certificationCount = certifications.CountAsync(cancellationToken);
         var socialLinkCount = socialLinks.CountAsync(cancellationToken);
         var messageCount = messages.CountAsync(cancellationToken);
         var unreadCount = messages.CountUnreadAsync(cancellationToken);
         var recent = messages.ListRecentAsync(5, cancellationToken);
-        await Task.WhenAll(projectCount, skillCount, experienceCount, activityCount, socialLinkCount, messageCount, unreadCount, recent);
+        await Task.WhenAll(
+            projectCount, skillCount, experienceCount, activityCount, certificationCount,
+            socialLinkCount, messageCount, unreadCount, recent);
 
         return new DashboardStatsDto(
             await projectCount,
             await skillCount,
             await experienceCount,
             await activityCount,
+            await certificationCount,
             await socialLinkCount,
             await messageCount,
             await unreadCount,

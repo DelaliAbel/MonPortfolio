@@ -2887,16 +2887,79 @@ code {
     background: var(--surface);
 }
 
+/* Visuel : badge ou certificat (affiché en entier), logo de la techno ou médaille */
+.cert__media {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    flex: none;
+    overflow: hidden;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+    background: rgba(15, 23, 42, 0.78);
+    color: var(--gold-400);
+}
+
+.cert__media a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.cert__media img {
+    width: 100%;
+    height: 100%;
+    padding: 0.25rem;
+    object-fit: contain;
+    transition: transform 0.4s var(--ease);
+}
+
+.cert__media a:hover img,
+.cert__media a:focus-visible img {
+    transform: scale(1.08);
+}
+
+.cert__body {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.cert__kind {
+    color: var(--gold-400);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 .cert__name {
     color: var(--text-strong);
     font-size: 0.93rem;
     font-weight: 500;
 }
 
-.cert__check {
-    margin-left: auto;
+.cert__meta {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.cert__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    justify-self: start;
     color: var(--gold-400);
-    opacity: 0.7;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.cert__link:hover {
+    text-decoration: underline;
+}
+
+[data-theme="light"] .cert__media {
+    background: #fff;
 }
 
 @media (min-width: 560px) {
@@ -3592,9 +3655,9 @@ code {
     box-shadow: var(--gold-glow);
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1400px) {
     .stat-grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(7, minmax(0, 1fr));
     }
 }
 
@@ -3675,6 +3738,12 @@ code {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* Badges et certificats : affichés en entier */
+.activity-admin-card__thumb--contain img {
+    padding: 0.3rem;
+    object-fit: contain;
 }
 
 .activity-admin-card__body {

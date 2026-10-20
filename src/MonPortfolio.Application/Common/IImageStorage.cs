@@ -4,7 +4,8 @@ namespace MonPortfolio.Application.Common;
 public enum ImageFolder
 {
     Projects,
-    Activities
+    Activities,
+    Certifications
 }
 
 public static class ImageRules

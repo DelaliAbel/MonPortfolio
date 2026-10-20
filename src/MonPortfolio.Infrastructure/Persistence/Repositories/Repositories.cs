@@ -85,6 +85,14 @@ internal sealed class CommunityActivityRepository(IDbContextFactory<PortfolioDbC
         query.OrderByDescending(a => a.Date).ThenBy(a => a.Title);
 }
 
+internal sealed class CertificationRepository(IDbContextFactory<PortfolioDbContext> factory)
+    : EfRepository<Certification>(factory), ICertificationRepository
+{
+    // Ordre choisi d'abord, puis les plus récentes ; les titres sans date passent après.
+    protected override IOrderedQueryable<Certification> Order(IQueryable<Certification> query) =>
+        query.OrderBy(c => c.DisplayOrder).ThenBy(c => c.IssuedOn == null).ThenByDescending(c => c.IssuedOn).ThenBy(c => c.CreatedAtUtc);
+}
+
 internal sealed class SocialLinkRepository(IDbContextFactory<PortfolioDbContext> factory)
     : EfRepository<SocialLink>(factory), ISocialLinkRepository
 {

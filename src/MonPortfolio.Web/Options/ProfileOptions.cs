@@ -3,7 +3,7 @@ namespace MonPortfolio.Web.Options;
 /// <summary>
 /// Contenu éditorial de la vitrine (profil.json) : textes, liens, distinctions.
 /// Rechargé à chaud — modifier le fichier suffit, sans recompiler.
-/// Les contenus volumineux (projets, compétences, parcours, activités, réseaux sociaux) sont gérés en base via /admin.
+/// Les contenus volumineux (projets, compétences, parcours, activités, certifications, réseaux sociaux) sont gérés en base via /admin.
 /// </summary>
 public sealed class ProfileOptions
 {
@@ -26,7 +26,6 @@ public sealed class ProfileOptions
     public List<LanguageItem> Languages { get; set; } = [];
     public AmbassadorInfo Ambassador { get; set; } = new();
     public CommunityInfo Community { get; set; } = new();
-    public CertificationInfo Certifications { get; set; } = new();
 
     public string FullName => $"{FirstName} {LastName}".Trim();
 
@@ -77,16 +76,4 @@ public sealed class CommunityInfo
     public string Description { get; set; } = string.Empty;
     public List<string> Pillars { get; set; } = [];
     public string? Url { get; set; }
-}
-
-public sealed class CertificationInfo
-{
-    public List<string> Providers { get; set; } = [];
-    public List<CertificationItem> Items { get; set; } = [];
-}
-
-public sealed class CertificationItem
-{
-    public string Name { get; set; } = string.Empty;
-    public string Icon { get; set; } = "award";
 }

@@ -1,32 +1,109 @@
+@* Certifications et attestations gérées dans /admin/certifications. Visuel : l'image (badge, certificat) si elle existe,
+   sinon le logo de la techno reconnu dans l'intitulé, sinon une médaille. *@
 <section class="section section--alt" id="certifications">
     <div class="container">
         <SectionHeading Index="06" Eyebrow="@L["Certifications"]" Title="@L["Apprendre,"]" Highlight="@L["toujours."]"
                         Subtitle="@L["Parcours certifiants suivis pour rester à la pointe : cloud, architecture, sécurité, IA."]" />
 
-        @if (Profile.Certifications.Providers.Count > 0)
+        @if (Certifications.Count == 0)
         {
-            <p class="providers reveal">
-                <span class="muted">@L["Délivrées par"]</span>
-                @foreach (var provider in Profile.Certifications.Providers)
-                {
-                    <span class="provider mono">@provider</span>
-                }
-            </p>
+            <p class="empty-state">@L["Les certifications seront bientôt publiées."]</p>
         }
-
-        <ul class="cert-grid">
-            @foreach (var certification in Profile.Certifications.Items)
+        else
+        {
+            @if (issuers.Count > 0)
             {
-                <li class="cert glow-card reveal">
-                    <span class="card-icon"><Icon Name="@certification.Icon" Size="18" /></span>
-                    <span class="cert__name">@certification.Name</span>
-                    <Icon Name="check-circle" Size="18" Class="cert__check" />
-                </li>
+                <p class="providers reveal">
+                    <span class="muted">@L["Délivrées par"]</span>
+                    @foreach (var issuer in issuers)
+                    {
+                        <span class="provider mono">@issuer</span>
+                    }
+                </p>
             }
-        </ul>
+
+            <ul class="cert-grid">
+                @foreach (var certification in Certifications.Take(visible))
+                {
+                    @Card(certification)
+                }
+            </ul>
+
+            @if (Certifications.Count > visible)
+            {
+                <details class="activities__more">
+                    <summary class="btn btn-ghost btn-sm">@L["Voir les {0} autres certifications", Certifications.Count - visible]</summary>
+                    <ul class="cert-grid">
+                        @foreach (var certification in Certifications.Skip(visible))
+                        {
+                            @Card(certification)
+                        }
+                    </ul>
+                </details>
+            }
+        }
     </div>
 </section>
 
 @code {
-    [Parameter, EditorRequired] public ProfileOptions Profile { get; set; } = default!;
+    /// <summary>Quatre rangées de trois ; on ne replie le reste que s'il en vaut la peine (au moins 3 titres).</summary>
+    private const int VisibleCount = 12;
+
+    [Parameter, EditorRequired] public IReadOnlyList<CertificationDto> Certifications { get; set; } = [];
+
+    private List<string> issuers = [];
+    private int visible;
+
+    protected override void OnParametersSet()
+    {
+        issuers = Certifications.Select(c => c.Issuer).OfType<string>().Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        visible = Certifications.Count - VisibleCount >= 3 ? VisibleCount : Certifications.Count;
+    }
+
+    private RenderFragment Card(CertificationDto certification) => __builder =>
+    {
+        <li class="cert glow-card reveal">
+            <span class="cert__media">
+                @if (certification.ImageUrl is not null)
+                {
+                    <a href="@certification.ImageUrl" target="_blank" rel="noopener noreferrer" aria-label="@L["Agrandir l'image de {0}", certification.Name]">
+                        <img src="@certification.ImageUrl" alt="" loading="lazy" decoding="async" />
+                    </a>
+                }
+                else if (TechLogos.Resolve(certification.Name.Fr).Count > 0)
+                {
+                    <TechLogo Name="@certification.Name.Fr" Size="26" ShowFallback="false" />
+                }
+                else
+                {
+                    <Icon Name="award" Size="22" />
+                }
+            </span>
+            <span class="cert__body">
+                @if (certification.Kind != CertificationKind.Certification)
+                {
+                    <span class="cert__kind mono">@certification.KindLabel</span>
+                }
+                <span class="cert__name">@certification.Name</span>
+                @if (Meta(certification) is { Length: > 0 } meta)
+                {
+                    <span class="cert__meta">@meta</span>
+                }
+                @if (certification.CredentialUrl is not null)
+                {
+                    <a class="cert__link" href="@certification.CredentialUrl" target="_blank" rel="noopener noreferrer">
+                        @L["Voir le certificat"] <Icon Name="arrow-up-right" Size="13" />
+                    </a>
+                }
+            </span>
+        </li>
+    };
+
+    /// <summary>« Microsoft · Mars 2026 » : organisme et date, chacun facultatif.</summary>
+    private static string Meta(CertificationDto certification) =>
+        string.Join(" · ", new[]
+        {
+            certification.Issuer,
+            certification.IssuedOn is { } date ? DisplayFormat.MonthYear(date) : null
+        }.OfType<string>());
 }

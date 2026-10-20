@@ -99,6 +99,10 @@
   <data name="toujours." xml:space="preserve"><value>learning.</value></data>
   <data name="Parcours certifiants suivis pour rester à la pointe : cloud, architecture, sécurité, IA." xml:space="preserve"><value>Certification paths completed to stay at the cutting edge: cloud, architecture, security, AI.</value></data>
   <data name="Délivrées par" xml:space="preserve"><value>Issued by</value></data>
+  <data name="Les certifications seront bientôt publiées." xml:space="preserve"><value>Certifications will be published soon.</value></data>
+  <data name="Voir les {0} autres certifications" xml:space="preserve"><value>See {0} more certifications</value></data>
+  <data name="Agrandir l'image de {0}" xml:space="preserve"><value>Enlarge the image of {0}</value></data>
+  <data name="Voir le certificat" xml:space="preserve"><value>View certificate</value></data>
 
   <!-- Contact -->
   <data name="Construisons quelque chose" xml:space="preserve"><value>Let's build something</value></data>

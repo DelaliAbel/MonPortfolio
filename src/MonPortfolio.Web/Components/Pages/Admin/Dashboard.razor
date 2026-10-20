@@ -35,6 +35,11 @@
             <span class="stat-card__value">@stats.Activities</span>
             <span class="stat-card__label">Activités communautaires</span>
         </a>
+        <a class="stat-card glow-card" href="/admin/certifications">
+            <span class="card-icon"><Icon Name="award" Size="20" /></span>
+            <span class="stat-card__value">@stats.Certifications</span>
+            <span class="stat-card__label">Certifications</span>
+        </a>
         <a class="stat-card glow-card @(stats.SocialLinks == 0 ? "stat-card--alert" : null)" href="/admin/reseaux">
             <span class="card-icon"><Icon Name="link" Size="20" /></span>
             <span class="stat-card__value">@stats.SocialLinks</span>
@@ -85,11 +90,12 @@
                 <a class="quick-action" href="/admin/competences"><Icon Name="plus" Size="16" /> Ajouter une compétence</a>
                 <a class="quick-action" href="/admin/parcours"><Icon Name="plus" Size="16" /> Ajouter une expérience</a>
                 <a class="quick-action" href="/admin/activites"><Icon Name="plus" Size="16" /> Ajouter une activité communautaire</a>
+                <a class="quick-action" href="/admin/certifications"><Icon Name="plus" Size="16" /> Ajouter une certification</a>
                 <a class="quick-action" href="/admin/reseaux"><Icon Name="plus" Size="16" /> Ajouter un réseau social</a>
             </div>
             <div class="hint">
                 <Icon Name="sparkles" Size="16" />
-                <p>Textes du profil, distinctions Ambassador, certifications et langues se modifient dans <code>profile.json</code> (rechargé à chaud, sans redéploiement).</p>
+                <p>Textes du profil, distinctions Ambassador et langues se modifient dans <code>profile.json</code> et <code>profile.en.json</code> (rechargés à chaud, sans redéploiement).</p>
             </div>
         </article>
     </section>

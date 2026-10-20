@@ -38,7 +38,7 @@ Le Domain n'a aucune dépendance. L'Application n'utilise que `Microsoft.Extensi
 | Admin en **Interactive Server** sans prérendu | CRUD fluide, aucun double chargement |
 | `IDbContextFactory` + un contexte par opération | Recommandé avec Blazor Server : pas de DbContext partagé par un circuit |
 | Connexion et déconnexion par **requêtes HTTP** | Le cookie d'authentification ne peut être écrit que dans une réponse HTTP |
-| Contenu éditorial dans `profile.json` | Textes, distinctions, certifications, langues : modifiables sans recompiler (rechargés à chaud) |
+| Contenu éditorial dans `profile.json` | Textes, distinctions, langues : modifiables sans recompiler (rechargés à chaud) |
 
 ## Sécurité
 
@@ -68,10 +68,11 @@ Les secrets ne sont jamais dans le dépôt. En production, ils passent par des v
 | Compétences | Stack par catégorie, avec un niveau de maîtrise |
 | Parcours | Expériences, formations et engagements, avec un lien externe facultatif |
 | Activités | Conférences, meetups, ateliers, articles : lien vers la publication et image de la carte (facultative) |
+| Certifications | Certifications et attestations de fin de formation (Microsoft, Udemy, LinkedIn Learning, freeCodeCamp, Pluralsight…) : organisme, date, identifiant, lien de vérification et image (badge ou certificat) facultatifs |
 | Réseaux sociaux | LinkedIn, GitHub, Microsoft Learn, Facebook, X, YouTube… affichés dans le hero, la section contact et le pied de page |
 | Messages | Demandes reçues via le formulaire de contact |
 
-Les images sont stockées dans `App_Data/uploads` (hors de `wwwroot`) et servies sous `/uploads`. Seuls les fichiers JPG, PNG et WebP de 2 Mo au plus sont acceptés : le type est vérifié sur le contenu réel du fichier, et le nom est généré par l'application. Une image remplacée ou supprimée est effacée du disque. **Sauvegardez la base SQL Server et le dossier `App_Data/uploads`** : ensemble, ils contiennent tout le contenu.
+Les images (projets, activités, certifications) sont stockées dans `App_Data/uploads` (hors de `wwwroot`) et servies sous `/uploads`. Seuls les fichiers JPG, PNG et WebP de 2 Mo au plus sont acceptés : le type est vérifié sur le contenu réel du fichier, et le nom est généré par l'application. Une image remplacée ou supprimée est effacée du disque. **Sauvegardez la base SQL Server et le dossier `App_Data/uploads`** : ensemble, ils contiennent tout le contenu.
 
 ## Français / anglais
 
@@ -79,8 +80,8 @@ La vitrine existe en deux langues, chacune à sa propre adresse : `/` en frança
 
 | Contenu | Où le traduire |
 |---|---|
-| Projets, parcours, activités, compétences | Dans `/admin` : chaque texte a un champ **FR** (obligatoire) et un champ **EN** (facultatif). Le badge « EN à traduire » signale les éléments incomplets. |
-| Profil (accroche, présentation, expertises, langues, distinctions, certifications) | `src/MonPortfolio.Web/profile.en.json`. Il complète `profile.json` clé par clé : gardez les mêmes listes, dans le même ordre. |
+| Projets, parcours, activités, certifications, compétences | Dans `/admin` : chaque texte a un champ **FR** (obligatoire) et un champ **EN** (facultatif). Le badge « EN à traduire » signale les éléments incomplets. |
+| Profil (accroche, présentation, expertises, langues, distinctions) | `src/MonPortfolio.Web/profile.en.json`. Il complète `profile.json` clé par clé : gardez les mêmes listes, dans le même ordre. |
 | Textes de l'interface (titres, boutons, formulaire) | `src/MonPortfolio.Web/Resources/SharedResource.en.resx`. La clé est le texte français du composant. |
 
 Une traduction absente n'est jamais un trou : la version anglaise affiche le texte français. Au démarrage, les textes du contenu initial (issu du CV) encore identiques à l'original reçoivent automatiquement leur traduction anglaise. Un texte modifié depuis `/admin` n'est jamais touché.

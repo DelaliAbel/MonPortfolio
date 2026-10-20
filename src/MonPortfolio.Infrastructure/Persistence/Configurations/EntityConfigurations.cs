@@ -98,6 +98,25 @@ internal sealed class CommunityActivityConfiguration : IEntityTypeConfiguration<
     }
 }
 
+internal sealed class CertificationConfiguration : IEntityTypeConfiguration<Certification>
+{
+    public void Configure(EntityTypeBuilder<Certification> builder)
+    {
+        builder.ToTable("Certifications");
+        builder.HasKey(c => c.Id);
+        builder.Property(c => c.Id).ValueGeneratedNever();
+
+        builder.Property(c => c.Name).HasConversion(LocalizedConverters.Text).IsRequired();
+        builder.Property(c => c.Kind).IsRequired();
+        builder.Property(c => c.Issuer).HasMaxLength(Certification.IssuerMaxLength);
+        builder.Property(c => c.CredentialId).HasMaxLength(Certification.CredentialIdMaxLength);
+        builder.Property(c => c.CredentialUrl).HasMaxLength(Certification.UrlMaxLength);
+        builder.Property(c => c.ImageUrl).HasMaxLength(Certification.UrlMaxLength);
+
+        builder.HasIndex(c => c.DisplayOrder);
+    }
+}
+
 internal sealed class ContactMessageConfiguration : IEntityTypeConfiguration<ContactMessage>
 {
     public void Configure(EntityTypeBuilder<ContactMessage> builder)

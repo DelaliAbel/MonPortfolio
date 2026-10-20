@@ -60,6 +60,8 @@ internal sealed class InMemorySocialLinkRepository : InMemoryRepository<SocialLi
 
 internal sealed class InMemoryCommunityActivityRepository : InMemoryRepository<CommunityActivity>, ICommunityActivityRepository;
 
+internal sealed class InMemoryCertificationRepository : InMemoryRepository<Certification>, ICertificationRepository;
+
 internal sealed class InMemoryContactMessageRepository : InMemoryRepository<ContactMessage>, IContactMessageRepository
 {
     public Task<int> CountUnreadAsync(CancellationToken cancellationToken = default) =>

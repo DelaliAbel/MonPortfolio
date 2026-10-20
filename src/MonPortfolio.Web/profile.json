@@ -53,22 +53,6 @@
       "Description": "Fondateur et animateur de la communauté .NET Niger : rassembler les développeurs, partager les bonnes pratiques et faire rayonner l'écosystème Microsoft au Niger.",
       "Pillars": [ "Partage de connaissances", "Mentorat", "Écosystème .NET & Azure" ],
       "Url": ""
-    },
-
-    "Certifications": {
-      "Providers": [ "Microsoft", "Udemy", "LinkedIn Learning" ],
-      "Items": [
-        { "Name": "C# Fundamentals", "Icon": "code" },
-        { "Name": "Architecte logiciel", "Icon": "layers" },
-        { "Name": "Microsoft Azure", "Icon": "cloud" },
-        { "Name": "DevOps", "Icon": "terminal" },
-        { "Name": "Spécialiste sécurité IT", "Icon": "shield" },
-        { "Name": "Spécialiste IA & ML", "Icon": "cpu" },
-        { "Name": "Développeur d'applications mobiles", "Icon": "smartphone" },
-        { "Name": "JavaScript", "Icon": "code" },
-        { "Name": "Figma", "Icon": "sparkles" },
-        { "Name": "Bootstrap", "Icon": "layout" }
-      ]
     }
   }
 }
