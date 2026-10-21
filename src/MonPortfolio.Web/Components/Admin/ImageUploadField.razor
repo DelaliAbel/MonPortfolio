@@ -5,7 +5,7 @@
    Les fichiers téléversés pendant l'édition restent « en attente » : ils sont supprimés s'ils sont
    remplacés, ou si l'édition est annulée (DiscardAsync) ; CommitAsync les valide après enregistrement. *@
 
-<div class="image-field @(Portrait ? "image-field--portrait" : null) @(uploading ? "is-uploading" : null)">
+<div class="image-field @(Portrait ? "image-field--portrait" : null) @(Square ? "image-field--square" : null) @(uploading ? "is-uploading" : null)">
     <div class="image-field__preview">
         @if (!string.IsNullOrWhiteSpace(Value))
         {
@@ -58,6 +58,9 @@
 
     /// <summary>Aperçu au format portrait, pour une capture mobile.</summary>
     [Parameter] public bool Portrait { get; set; }
+
+    /// <summary>Aperçu carré, pour une photo de profil.</summary>
+    [Parameter] public bool Square { get; set; }
 
     private bool IsExternal => !string.IsNullOrWhiteSpace(Value) && !Value.StartsWith('/');
 

@@ -14,6 +14,9 @@ public interface ICommunityActivityRepository : IRepository<CommunityActivity>;
 
 public interface ICertificationRepository : IRepository<Certification>;
 
+/// <summary>Une seule ligne de réglages ; <see cref="IRepository{TEntity}.ListAsync"/> en renvoie au plus une.</summary>
+public interface IProfileSettingsRepository : IRepository<ProfileSettings>;
+
 public interface IContactMessageRepository : IRepository<ContactMessage>
 {
     Task<int> CountUnreadAsync(CancellationToken cancellationToken = default);

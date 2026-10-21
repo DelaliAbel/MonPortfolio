@@ -1,0 +1,137 @@
+@page "/admin/profil"
+@using MonPortfolio.Domain.Entities
+@rendermode AppRenderModes.InteractiveAdmin
+@inject IProfileSettingsService SettingsService
+@inject IOptionsMonitor<ProfileOptions> ProfileOptions
+
+<PageTitle>Profil — Administration</PageTitle>
+
+<AdminPageHeader Title="Profil" Subtitle="Photo du hero et logos des technologies posés sur la photo. Les textes du profil se modifient dans profile.json et profile.en.json." />
+
+@if (input is null)
+{
+    <LoadingState />
+}
+else
+{
+    <div class="profile-admin">
+        <section class="panel">
+            <EditForm Model="input" OnValidSubmit="SaveAsync" class="form">
+                <DataAnnotationsValidator />
+                <FormErrors Errors="errors" />
+
+                <div class="field">
+                    <span class="field__label">
+                        Photo de profil
+                        <span class="field__hint">carrée, 720 × 720 px ou plus ; sans photo : @DefaultPhoto</span>
+                    </span>
+                    <ImageUploadField @ref="photoField" @bind-Value="input.PhotoUrl" Folder="ImageFolder.Profile" Square />
+                    <ValidationMessage For="() => input.PhotoUrl" />
+                </div>
+
+                <div class="field">
+                    <label for="p-stack">
+                        Stack sur la photo
+                        <span class="field__hint">jusqu'à @ProfileSettings.MaxHeroStack technologies, séparées par des virgules ; vide : pastille masquée</span>
+                    </label>
+                    <LiveInputText id="p-stack" @bind-Value="input.HeroStack" placeholder=".NET, Java, Flutter, Azure" />
+                    <ValidationMessage For="() => input.HeroStack" />
+                    @if (Stack.Count > 0)
+                    {
+                        <ul class="chips stack-preview" aria-label="Technologies saisies">
+                            @foreach (var technology in Stack)
+                            {
+                                var hasLogo = HasLogo(technology);
+                                <li class="chip chip--tech @(hasLogo ? null : "chip--missing")" title="@(hasLogo ? null : "Aucun logo reconnu : non affichée sur la photo")">
+                                    <TechLogo Name="@technology" Size="14" ShowFallback="false" />@technology
+                                </li>
+                            }
+                        </ul>
+                    }
+                    @if (Stack.Count > ProfileSettings.MaxHeroStack)
+                    {
+                        <p class="validation-message">Au plus @ProfileSettings.MaxHeroStack technologies : la pastille doit rester lisible sur mobile.</p>
+                    }
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-ghost" @onclick="ResetAsync" disabled="@saving">Annuler les modifications</button>
+                    <button type="submit" class="btn btn-gold" disabled="@saving">@(saving ? "Enregistrement…" : "Enregistrer")</button>
+                </div>
+            </EditForm>
+        </section>
+
+        <aside class="panel">
+            <p class="field__label">Aperçu</p>
+            <div class="profile-preview" aria-hidden="true">
+                <div class="profile-preview__photo">
+                    <img src="@(string.IsNullOrWhiteSpace(input.PhotoUrl) ? DefaultPhoto : input.PhotoUrl)" alt="" />
+                </div>
+                @if (Stack.Any(HasLogo))
+                {
+                    <div class="profile-preview__stack">
+                        @foreach (var technology in Stack.Where(HasLogo).Take(ProfileSettings.MaxHeroStack))
+                        {
+                            <TechLogo Name="@technology" Size="22" ShowFallback="false" />
+                        }
+                    </div>
+                }
+            </div>
+        </aside>
+    </div>
+}
+
+<Toast @ref="toast" />
+
+@code {
+    private ProfileSettingsInput? input;
+    private IReadOnlyList<string> errors = [];
+    private bool saving;
+    private ImageUploadField? photoField;
+    private Toast? toast;
+
+    private string DefaultPhoto => ProfileOptions.CurrentValue.PhotoUrl;
+
+    private IReadOnlyList<string> Stack => TextList.SplitTags(input?.HeroStack);
+
+    private static bool HasLogo(string technology) => TechLogos.Resolve(technology).Count > 0;
+
+    protected override async Task OnInitializedAsync() =>
+        input = ProfileSettingsInput.From(await SettingsService.GetAsync());
+
+    private async Task SaveAsync()
+    {
+        if (saving || input is null)
+            return;
+
+        saving = true;
+        errors = [];
+        try
+        {
+            var result = await SettingsService.UpdateAsync(input);
+            if (result.IsFailure)
+            {
+                errors = result.Errors;
+                return;
+            }
+
+            photoField?.Commit();
+            input = ProfileSettingsInput.From(await SettingsService.GetAsync());
+            toast?.Show("Profil mis à jour.");
+        }
+        finally
+        {
+            saving = false;
+        }
+    }
+
+    /// <summary>Revient aux réglages enregistrés ; une photo téléversée entre-temps est supprimée.</summary>
+    private async Task ResetAsync()
+    {
+        if (photoField is not null)
+            await photoField.DiscardAsync();
+
+        errors = [];
+        input = ProfileSettingsInput.From(await SettingsService.GetAsync());
+    }
+}

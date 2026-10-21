@@ -5,6 +5,7 @@ using MonPortfolio.Application.Certifications;
 using MonPortfolio.Application.Contact;
 using MonPortfolio.Application.Experiences;
 using MonPortfolio.Application.Portfolio;
+using MonPortfolio.Application.Profile;
 using MonPortfolio.Application.Projects;
 using MonPortfolio.Application.Skills;
 using MonPortfolio.Application.SocialLinks;
@@ -23,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IExperienceService, ExperienceService>();
         services.AddScoped<ICommunityActivityService, CommunityActivityService>();
         services.AddScoped<ICertificationService, CertificationService>();
+        services.AddScoped<IProfileSettingsService, ProfileSettingsService>();
         services.AddScoped<ISocialLinkService, SocialLinkService>();
         services.AddScoped<IContactService, ContactService>();
         services.AddScoped<IPortfolioService, PortfolioService>();

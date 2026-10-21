@@ -65,6 +65,7 @@ public static class DependencyInjection
         services.AddSingleton<IExperienceRepository, ExperienceRepository>();
         services.AddSingleton<ICommunityActivityRepository, CommunityActivityRepository>();
         services.AddSingleton<ICertificationRepository, CertificationRepository>();
+        services.AddSingleton<IProfileSettingsRepository, ProfileSettingsRepository>();
         services.AddSingleton<ISocialLinkRepository, SocialLinkRepository>();
         services.AddSingleton<IContactMessageRepository, ContactMessageRepository>();
     }

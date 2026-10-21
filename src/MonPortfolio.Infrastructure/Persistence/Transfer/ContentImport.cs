@@ -95,6 +95,7 @@ internal static class PortfolioContentCopier
         var experiences = await source.Experiences.AsNoTracking().ToListAsync(cancellationToken);
         var activities = await source.CommunityActivities.AsNoTracking().ToListAsync(cancellationToken);
         var certifications = await source.Certifications.AsNoTracking().ToListAsync(cancellationToken);
+        var profileSettings = await source.ProfileSettings.AsNoTracking().ToListAsync(cancellationToken);
         var socialLinks = await source.SocialLinks.AsNoTracking().ToListAsync(cancellationToken);
         var messages = await source.ContactMessages.AsNoTracking().ToListAsync(cancellationToken);
 
@@ -115,6 +116,7 @@ internal static class PortfolioContentCopier
                 await target.Experiences.ExecuteDeleteAsync(cancellationToken);
                 await target.CommunityActivities.ExecuteDeleteAsync(cancellationToken);
                 await target.Certifications.ExecuteDeleteAsync(cancellationToken);
+                await target.ProfileSettings.ExecuteDeleteAsync(cancellationToken);
                 await target.SocialLinks.ExecuteDeleteAsync(cancellationToken);
                 await target.ContactMessages.ExecuteDeleteAsync(cancellationToken);
             }
@@ -124,6 +126,7 @@ internal static class PortfolioContentCopier
             target.Experiences.AddRange(experiences);
             target.CommunityActivities.AddRange(activities);
             target.Certifications.AddRange(certifications);
+            target.ProfileSettings.AddRange(profileSettings);
             target.SocialLinks.AddRange(socialLinks);
             target.ContactMessages.AddRange(messages);
 

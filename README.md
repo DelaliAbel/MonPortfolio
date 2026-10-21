@@ -64,6 +64,7 @@ Les secrets ne sont jamais dans le dépôt. En production, ils passent par des v
 
 | Écran | Contenu |
 |---|---|
+| Profil | Photo du hero (téléversée, carrée) et technologies dont le logo est posé sur la photo (6 au plus). Enregistrées en base : un redéploiement ne les écrase pas. |
 | Projets | Réalisations, avec une image de couverture téléversée ou les logos de la stack |
 | Compétences | Stack par catégorie, avec un niveau de maîtrise |
 | Parcours | Expériences, formations et engagements, avec un lien externe facultatif |
@@ -72,7 +73,7 @@ Les secrets ne sont jamais dans le dépôt. En production, ils passent par des v
 | Réseaux sociaux | LinkedIn, GitHub, Microsoft Learn, Facebook, X, YouTube… affichés dans le hero, la section contact et le pied de page |
 | Messages | Demandes reçues via le formulaire de contact |
 
-Les images (projets, activités, certifications) sont stockées dans `App_Data/uploads` (hors de `wwwroot`) et servies sous `/uploads`. Seuls les fichiers JPG, PNG et WebP de 2 Mo au plus sont acceptés : le type est vérifié sur le contenu réel du fichier, et le nom est généré par l'application. Une image remplacée ou supprimée est effacée du disque. **Sauvegardez la base SQL Server et le dossier `App_Data/uploads`** : ensemble, ils contiennent tout le contenu.
+Les images (photo de profil, projets, activités, certifications) sont stockées dans `App_Data/uploads` (hors de `wwwroot`) et servies sous `/uploads`. Seuls les fichiers JPG, PNG et WebP de 2 Mo au plus sont acceptés : le type est vérifié sur le contenu réel du fichier, et le nom est généré par l'application. Une image remplacée ou supprimée est effacée du disque. **Sauvegardez la base SQL Server et le dossier `App_Data/uploads`** : ensemble, ils contiennent tout le contenu.
 
 ## Français / anglais
 

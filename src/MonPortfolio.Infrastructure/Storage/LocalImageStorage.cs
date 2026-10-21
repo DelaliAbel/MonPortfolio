@@ -103,6 +103,7 @@ internal sealed partial class LocalImageStorage(IOptions<ImageStorageOptions> op
         ImageFolder.Projects => "projects",
         ImageFolder.Activities => "activities",
         ImageFolder.Certifications => "certifications",
+        ImageFolder.Profile => "profile",
         _ => throw new ArgumentOutOfRangeException(nameof(folder))
     };
 
@@ -117,6 +118,6 @@ internal sealed partial class LocalImageStorage(IOptions<ImageStorageOptions> op
         return null;
     }
 
-    [GeneratedRegex(@"^(projects|activities|certifications)/[0-9a-f]{32}\.(jpg|png|webp)$")]
+    [GeneratedRegex(@"^(projects|activities|certifications|profile)/[0-9a-f]{32}\.(jpg|png|webp)$")]
     private static partial Regex ManagedFile();
 }

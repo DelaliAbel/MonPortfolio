@@ -21,10 +21,10 @@
     <meta property="og:url" content="@Absolute(SiteLanguage.Home)" />
     <meta property="og:title" content="@Profile.FullName — @Profile.Headline" />
     <meta property="og:description" content="@Profile.Tagline" />
-    <meta property="og:image" content="@Absolute(Profile.PhotoUrl)" />
+    <meta property="og:image" content="@Absolute(portfolio.Settings.PhotoUrl ?? Profile.PhotoUrl)" />
 </HeadContent>
 
-<HeroSection Profile="Profile" SocialLinks="portfolio.SocialLinks" />
+<HeroSection Profile="Profile" SocialLinks="portfolio.SocialLinks" Settings="portfolio.Settings" />
 <AboutSection Profile="Profile" />
 <JourneySection Experiences="portfolio.Experiences" />
 <SkillsSection Groups="portfolio.SkillGroups" />

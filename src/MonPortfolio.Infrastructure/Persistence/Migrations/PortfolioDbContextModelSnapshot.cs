@@ -366,6 +366,30 @@ namespace MonPortfolio.Infrastructure.Persistence.Migrations
                     b.ToTable("Experiences", (string)null);
                 });
 
+            modelBuilder.Entity("MonPortfolio.Domain.Entities.ProfileSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.PrimitiveCollection<string>("HeroStack")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProfileSettings", (string)null);
+                });
+
             modelBuilder.Entity("MonPortfolio.Domain.Entities.Project", b =>
                 {
                     b.Property<Guid>("Id")

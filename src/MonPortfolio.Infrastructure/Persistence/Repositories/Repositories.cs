@@ -93,6 +93,13 @@ internal sealed class CertificationRepository(IDbContextFactory<PortfolioDbConte
         query.OrderBy(c => c.DisplayOrder).ThenBy(c => c.IssuedOn == null).ThenByDescending(c => c.IssuedOn).ThenBy(c => c.CreatedAtUtc);
 }
 
+internal sealed class ProfileSettingsRepository(IDbContextFactory<PortfolioDbContext> factory)
+    : EfRepository<ProfileSettings>(factory), IProfileSettingsRepository
+{
+    protected override IOrderedQueryable<ProfileSettings> Order(IQueryable<ProfileSettings> query) =>
+        query.OrderBy(s => s.CreatedAtUtc);
+}
+
 internal sealed class SocialLinkRepository(IDbContextFactory<PortfolioDbContext> factory)
     : EfRepository<SocialLink>(factory), ISocialLinkRepository
 {

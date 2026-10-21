@@ -2,6 +2,7 @@ using MonPortfolio.Application.Activities;
 using MonPortfolio.Application.Certifications;
 using MonPortfolio.Application.Contact;
 using MonPortfolio.Application.Experiences;
+using MonPortfolio.Application.Profile;
 using MonPortfolio.Application.Projects;
 using MonPortfolio.Application.Skills;
 using MonPortfolio.Application.SocialLinks;
@@ -16,9 +17,10 @@ public sealed record PortfolioDto(
     IReadOnlyList<ExperienceDto> Experiences,
     IReadOnlyList<CommunityActivityDto> Activities,
     IReadOnlyList<CertificationDto> Certifications,
-    IReadOnlyList<SocialLinkDto> SocialLinks)
+    IReadOnlyList<SocialLinkDto> SocialLinks,
+    ProfileSettingsDto Settings)
 {
-    public static PortfolioDto Empty { get; } = new([], [], [], [], [], []);
+    public static PortfolioDto Empty { get; } = new([], [], [], [], [], [], ProfileSettingsDto.Default);
 }
 
 public sealed record DashboardStatsDto(
@@ -46,6 +48,7 @@ internal sealed class PortfolioService(
     ICommunityActivityRepository activities,
     ICertificationRepository certifications,
     ISocialLinkRepository socialLinks,
+    IProfileSettingsRepository settings,
     IContactMessageRepository messages) : IPortfolioService
 {
     public async Task<PortfolioDto> GetPublicPortfolioAsync(CancellationToken cancellationToken = default)
@@ -57,7 +60,8 @@ internal sealed class PortfolioService(
         var activitiesTask = activities.ListAsync(cancellationToken);
         var certificationsTask = certifications.ListAsync(cancellationToken);
         var socialLinksTask = socialLinks.ListAsync(cancellationToken);
-        await Task.WhenAll(projectsTask, skillsTask, experiencesTask, activitiesTask, certificationsTask, socialLinksTask);
+        var settingsTask = settings.ListAsync(cancellationToken);
+        await Task.WhenAll(projectsTask, skillsTask, experiencesTask, activitiesTask, certificationsTask, socialLinksTask, settingsTask);
 
         var skillGroups = (await skillsTask)
             .Select(s => s.ToDto())
@@ -72,7 +76,8 @@ internal sealed class PortfolioService(
             (await experiencesTask).Select(e => e.ToDto()).ToList(),
             (await activitiesTask).Select(a => a.ToDto()).ToList(),
             (await certificationsTask).Select(c => c.ToDto()).ToList(),
-            (await socialLinksTask).Select(l => l.ToDto()).ToList());
+            (await socialLinksTask).Select(l => l.ToDto()).ToList(),
+            (await settingsTask).FirstOrDefault()?.ToDto() ?? ProfileSettingsDto.Default);
     }
 
     public async Task<DashboardStatsDto> GetDashboardStatsAsync(CancellationToken cancellationToken = default)

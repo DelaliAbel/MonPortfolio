@@ -117,6 +117,19 @@ internal sealed class CertificationConfiguration : IEntityTypeConfiguration<Cert
     }
 }
 
+internal sealed class ProfileSettingsConfiguration : IEntityTypeConfiguration<ProfileSettings>
+{
+    public void Configure(EntityTypeBuilder<ProfileSettings> builder)
+    {
+        builder.ToTable("ProfileSettings");
+        builder.HasKey(s => s.Id);
+        builder.Property(s => s.Id).ValueGeneratedNever();
+
+        builder.Property(s => s.PhotoUrl).HasMaxLength(ProfileSettings.UrlMaxLength);
+        builder.PrimitiveCollection(s => s.HeroStack); // colonne JSON
+    }
+}
+
 internal sealed class ContactMessageConfiguration : IEntityTypeConfiguration<ContactMessage>
 {
     public void Configure(EntityTypeBuilder<ContactMessage> builder)

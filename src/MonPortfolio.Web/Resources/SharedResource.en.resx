@@ -42,7 +42,7 @@
   <data name="Télécharger le CV" xml:space="preserve"><value>Download CV</value></data>
   <data name="Retrouvez-moi" xml:space="preserve"><value>Find me on</value></data>
   <data name="Portrait de {0}" xml:space="preserve"><value>Portrait of {0}</value></data>
-  <data name="Stack principale : .NET, Java, Flutter, Azure" xml:space="preserve"><value>Main stack: .NET, Java, Flutter, Azure</value></data>
+  <data name="Stack principale : {0}" xml:space="preserve"><value>Main stack: {0}</value></data>
   <data name="Descendre vers la section À propos" xml:space="preserve"><value>Scroll down to the About section</value></data>
 
   <!-- À propos -->

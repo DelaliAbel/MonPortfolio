@@ -5,7 +5,8 @@ public enum ImageFolder
 {
     Projects,
     Activities,
-    Certifications
+    Certifications,
+    Profile
 }
 
 public static class ImageRules
